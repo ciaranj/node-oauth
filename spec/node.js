@@ -1,7 +1,4 @@
-var kiwi= require('kiwi');
-kiwi.require('express') 
 require.paths.unshift('spec', 'lib', 'spec/lib')
-
 require("jspec")
 
 print = require('sys').puts
@@ -29,5 +26,4 @@ switch (process.ARGV[2]) {
     run([process.ARGV[2]])
 }
 
-Express.environment = 'test'
 JSpec.run({ reporter: JSpec.reporters.Terminal, failuresOnly: true }).report()
