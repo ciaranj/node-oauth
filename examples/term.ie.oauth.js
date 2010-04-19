@@ -2,7 +2,7 @@ var sys= require('sys')
 
 var OAuth= require('../lib/oauth').OAuth;
 
-var oa= new OAuth("http://term.ie/oauth/example/request_token.php",
+var oa= new OAuth("http://term.ie/oauth/example/request_token.php?foo=bar",
                   "http://term.ie/oauth/example/access_token.php",
                   null,
                   "key",
@@ -23,14 +23,8 @@ oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, authori
       sys.puts('accesstoken results :' + sys.inspect(results2))
       sys.puts("Requesting access token")
       var data= "";
-      oa.getProtectedResource("http://term.ie/oauth/example/echo_api.php?foo=bar&too=roo", "GET", oauth_access_token, oauth_access_token_secret,  function (response) {
-        response.setEncoding('utf8');
-        response.addListener('data', function (chunk) {
-          data+=chunk;
-        });
-        response.addListener('end', function () {
-          sys.puts(response.statusCode + " : " + data);
-        });
+      oa.getProtectedResource("http://term.ie/oauth/example/echo_api.php?foo=bar&too=roo", "GET", oauth_access_token, oauth_access_token_secret,  function (error, data, response) {
+          sys.puts(data);
       });
     });
   }
