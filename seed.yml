@@ -1,4 +1,4 @@
 ---
   name: oauth
   description: An implementation of an OAuth client.
-  version: 0.0.1
+  version: 0.0.2
