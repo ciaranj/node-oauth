@@ -4,13 +4,12 @@ var OAuth= require('../lib/oauth').OAuth;
 
 var oa= new OAuth("http://term.ie/oauth/example/request_token.php?foo=bar",
                   "http://term.ie/oauth/example/access_token.php",
-                  null,
                   "key",
                   "secret",
                   "1.0",
                   "PLAINTEXT")
 
-oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, authorize_url,  results){
+oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret,  results){
   if(error) sys.puts('error :' + error)
   else { 
     sys.puts('oauth_token :' + oauth_token)
