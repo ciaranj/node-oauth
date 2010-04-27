@@ -26,10 +26,27 @@ describe 'node-oauth'
           oa._normalizeUrl("http://somehost.com").should_be "http://somehost.com/"
         end
       end
-      describe 'host headers for non default ports should contain the port'
-        before_each
+      describe 'Url signing'
+        it 'should provide a valid signature when no token present'
+          oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", "HMAC-SHA1");
+          oa.stub('_getTimestamp').and_return("1272399856")
+          oa.stub('_getNonce').and_return("ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp")
+          oa.signUrl("http://somehost.com:3323/foo/poop?bar=foo").should_be ("http://somehost.com:3323/foo/poop?bar=foo&oauth_consumer_key=consumerkey&oauth_nonce=ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1272399856&oauth_version=1.0&oauth_signature=7ytO8vPSLut2GzHjU9pn1SV9xjc%3D")
         end
-
+        it 'should provide a valid signature when a token is present'
+          oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", "HMAC-SHA1");
+          oa.stub('_getTimestamp').and_return("1272399856")
+          oa.stub('_getNonce').and_return("ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp")
+          oa.signUrl("http://somehost.com:3323/foo/poop?bar=foo", "token").should_be ("http://somehost.com:3323/foo/poop?bar=foo&oauth_consumer_key=consumerkey&oauth_nonce=ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1272399856&oauth_token=token&oauth_version=1.0&oauth_signature=9LwCuCWw5sURtpMroIolU3YwsdI%3D")
+        end
+        it 'should provide a valid signature when a token and a token secret is present'
+          oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", "HMAC-SHA1");
+          oa.stub('_getTimestamp').and_return("1272399856")
+          oa.stub('_getNonce').and_return("ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp")
+          oa.signUrl("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret").should_be ("http://somehost.com:3323/foo/poop?bar=foo&oauth_consumer_key=consumerkey&oauth_nonce=ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1272399856&oauth_token=token&oauth_version=1.0&oauth_signature=zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D")
+        end
+      end
+      describe 'host headers for non default ports should contain the port'
         describe 'when getProtectedResource is called'
           it 'should set the correct Host header when provided with an unusual port'
             oa2= new OAuth(null, null, null, null, null, "HMAC-SHA1");
