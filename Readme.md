@@ -9,6 +9,7 @@ Also provides rudimentary OAuth2 support, tested against facebook connect.
 
 Change History
 ==============
+0.7.1 - Stopped adding irrelevant (and wrong) parameters to the OAuth Authorization header, and added optional oauth_verifier argument to the request token method.
 0.7.0 - Introduces support for HTTPS end points and callback URLS for OAuth 1.0A and Oauth 2 (Please be aware that this was a breaking change to the constructor arguments order)
 
 
