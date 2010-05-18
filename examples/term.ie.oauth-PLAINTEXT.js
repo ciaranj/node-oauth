@@ -7,6 +7,7 @@ var oa= new OAuth("http://term.ie/oauth/example/request_token.php?foo=bar",
                   "key",
                   "secret",
                   "1.0",
+                  null,
                   "PLAINTEXT")
 
 oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret,  results){

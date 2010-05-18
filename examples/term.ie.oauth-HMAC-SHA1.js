@@ -2,11 +2,12 @@ var sys= require('sys')
 
 var OAuth= require('../lib/oauth').OAuth;
 
-var oa= new OAuth("http://term.ie/oauth/example/request_token.php?foo=bar",
+var oa= new OAuth("http://term.ie/oauth/example/request_token.php",
                   "http://term.ie/oauth/example/access_token.php",
                   "key",
                   "secret",
                   "1.0",
+                  null,
                   "HMAC-SHA1")
 
 oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
