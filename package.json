@@ -1,0 +1,5 @@
+{ "name" : "oauth"
+, "version" : "0.7.4"
+, "directories" : { "lib" : "./lib" }
+, "author" : "Ciaran Jessup"
+}
