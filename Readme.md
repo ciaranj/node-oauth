@@ -8,7 +8,8 @@ Also provides rudimentary OAuth2 support, tested against facebook connect and gi
 at express-auth (http://github.com/ciaranj/express-auth) 
 
 Change History
-==============
+============== 
+* 0.7.7 - Looks like non oauth_ parameters where appearing within the Authorization headers, which I believe to be inccorrect.
 * 0.7.6 - Added in oauth_verifier property to getAccessToken required for 1.0A
 * 0.7.5 - Added in a main.js to simplify the require'ing of OAuth
 * 0.7.4 - Minor change to add an error listener to the OAuth client (thanks troyk)
