@@ -17,7 +17,7 @@ oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret,  result
     sys.puts('oauth_token_secret :' + oauth_token_secret)
     sys.puts('requestoken results :' + sys.inspect(results))
     sys.puts("Requesting access token")
-    oa.getOauthAccessToken(oauth_token, oauth_token_secret, function(error, oauth_access_token, oauth_access_token_secret, results2) {
+    oa.getOAuthAccessToken(oauth_token, oauth_token_secret, function(error, oauth_access_token, oauth_access_token_secret, results2) {
       sys.puts('oauth_access_token :' + oauth_access_token)
       sys.puts('oauth_token_secret :' + oauth_access_token_secret)
       sys.puts('accesstoken results :' + sys.inspect(results2))
