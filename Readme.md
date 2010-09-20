@@ -9,6 +9,8 @@ at connect-auth (http://github.com/ciaranj/connect-auth)
 
 Change History
 ==============
+
+* 0.8.2 - The request returning methods will now write the POST body if provided (Chris Anderson), the code responsible for manipulating the headers is a bit safe now when working with other code (Paul McKellar) and tweaked the package.json to use index.js instead of main.js
 * 0.8.1 - Added mechanism to get hold of a signed Node Request object, ready for attaching response listeners etc. (Perfect for streaming APIs)
 * 0.8.0 - Standardised method capitalisation, the old getOauthAccessToken is now getOAuthAccessToken (Breaking change to existing code) 
 * 0.7.7 - Looks like non oauth_ parameters where appearing within the Authorization headers, which I believe to be inccorrect.
@@ -21,5 +23,6 @@ Change History
 
 Contributors
 ============
-Ciaran Jessup - ciaranj@gmail.com
-Mark Wubben - http://equalmedia.com/
+
+* Ciaran Jessup - ciaranj@gmail.com
+* Mark Wubben - http://equalmedia.com/
