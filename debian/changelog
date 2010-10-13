@@ -1,3 +1,9 @@
+nodejs-oauth (0.8.2-0sg1) UNRELEASED; urgency=low
+
+  * UNRELEASED
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Wed, 13 Oct 2010 23:19:29 +0000
+
 nodejs-oauth (0.8.2-0sg0) unstable; urgency=low
 
   * Debianized
