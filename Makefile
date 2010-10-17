@@ -1,9 +1,7 @@
-
-NODE = node
-
-all: test
-	
+#
+# Run all tests
+#
 test:
-	@$(NODE) spec/node.js all
-	
-.PHONY: test
+	vows tests/* --spec
+
+.PHONY: test install

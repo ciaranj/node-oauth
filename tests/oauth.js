@@ -1,4 +1,4 @@
-describe 'node-oauth'
+/*describe 'node-oauth'
   before_each
     OAuth= require('oauth').OAuth
   end
@@ -96,4 +96,4 @@ describe 'node-oauth'
       end 
     end
   end
-end
+end*/
