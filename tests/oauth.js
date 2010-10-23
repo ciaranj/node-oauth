@@ -85,6 +85,21 @@ vows.describe('OAuth').addBatch({
           ["oauth_consumer_key",      "asdasdnm2321b3"],
           ["foobar",      "asdasdnm2321b3"]];
         assert.equal(oa._buildAuthorizationHeaders(parameters), 'OAuth oauth_timestamp="1234567",oauth_nonce="ABCDEF",oauth_version="1.0",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="asdasdnm2321b3"'); 
+      },
+      '_buildAuthorizationHeaders should not depends on Array.prototype.toString' : function(oa) {
+       var _toString = Array.prototype.toString;
+       Array.prototype.toString = function(){ return '[Array] ' + this.length; }; // toString overwrite example used in jsdom.
+       var parameters= [
+          ["foo",         "2343"],
+          ["oauth_timestamp",         "1234567"],
+          ["oauth_nonce",             "ABCDEF"],
+          ["bar",             "dfsdfd"],
+          ["oauth_version",           "1.0"],
+          ["oauth_signature_method",  "HMAC-SHA1"],
+          ["oauth_consumer_key",      "asdasdnm2321b3"],
+          ["foobar",      "asdasdnm2321b3"]];
+        assert.equal(oa._buildAuthorizationHeaders(parameters), 'OAuth oauth_timestamp="1234567",oauth_nonce="ABCDEF",oauth_version="1.0",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="asdasdnm2321b3"');
+       Array.prototype.toString = _toString;
       }
     }
 }).export(module);
