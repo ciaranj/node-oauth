@@ -110,21 +110,31 @@ vows.describe('OAuth').addBatch({
       'using the POST method' : {
         'Any passed extra_params should form part of the POST body': function(oa) {
           var post_body_written= false;
-          var _oldRequest= oa.request;
-          oa.request= function(method, path, headers) {
-            return {
-              write: function(post_body) {
-                post_body_written= true;
-                assert.equal(post_body,"FOO");
+          var op= oa._createClient;
+          try {
+            oa._createClient= function() {
+              return {
+                request: function(method, path, headers) {
+                  return {
+                    write: function(post_body){
+                      post_body_written= true;
+                      assert.equal(post_body,"scope=foobar%2C1%2C2");
+                    },
+                    socket: {addListener: function(){}},
+                    addListener: function() {},
+                    end: function() {}
+                  }
+                }
               }
             }
+            oa._performSecureRequest("token", "token_secret", 'POST', 'http://foo.com/protected_resource', {"scope": "foobar,1,2"});
+            assert.equal(post_body_written, true);
           }
-          //  oa._performSecureRequest("token", "token_secret", 'POST', 'http://foo.com/protected_resource', {"scope": "foobar"});
-          oa.request= _oldRequest;
-          assert.equal(post_body_written, true);
+          finally {
+            oa._createClient= op;
+          }
         }
       }
-// exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
     },
     'When performing a secure' : {
       topic: new OAuth("http://foo.com/RequestToken",
@@ -144,102 +154,118 @@ vows.describe('OAuth').addBatch({
           "it should call the internal request's end method and return nothing": function(oa) {
             var callbackCalled= false;
             var op= oa._createClient;
-            oa._createClient= function() {
-              return {
-                request: function(method, path, headers) {
-                  return {
-                    write: function(){},
-                    socket: {addListener: function(){}},
-                    addListener: function() {},
-                    end: function() {
-                      callbackCalled= true;
+            try {
+              oa._createClient= function() {
+                return {
+                  request: function(method, path, headers) {
+                    return {
+                      write: function(){},
+                      socket: {addListener: function(){}},
+                      addListener: function() {},
+                      end: function() {
+                        callbackCalled= true;
+                      }
                     }
                   }
                 }
               }
+              var request= oa.post("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){})
+              assert.equal(callbackCalled, true);
+              assert.isUndefined(request);
             }
-            var request= oa.post("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){})
-            assert.equal(callbackCalled, true);
-            assert.isUndefined(request);
-            oa._createClient= op;
+            finally {
+              oa._createClient= op;
+            }
           }
         },
         'if the post_body is not a string' : {
           "It should be url encoded and the content type set to be x-www-form-urlencoded" : function(oa) {
             var op= oa._createClient;
-            var callbackCalled= false;
-            oa._createClient= function() {
-              return {
-                request: function(method, path, headers) {
-                  assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
-                  return {
-                    socket: {addListener: function(){}},
-                    write: function(data) {
-                        callbackCalled= true;
-                        assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                     },
-                    addListener: function() {},
-                    end: function() {}
+            try {
+              var callbackCalled= false;
+              oa._createClient= function() {
+                return {
+                  request: function(method, path, headers) {
+                    assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
+                    return {
+                      socket: {addListener: function(){}},
+                      write: function(data) {
+                          callbackCalled= true;
+                          assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
+                       },
+                      addListener: function() {},
+                      end: function() {}
+                    }
                   }
                 }
               }
+              var request= oa.post("http://foo.com/blah", "token", "token_secret", {"foo":"1,2,3", "bar":"1+2"})
+              assert.equal(callbackCalled, true);
             }
-            var request= oa.post("http://foo.com/blah", "token", "token_secret", {"foo":"1,2,3", "bar":"1+2"})
-            assert.equal(callbackCalled, true);
-            oa._createClient= op;
+            finally {
+              oa._createClient= op;
+            }
           }
         },
         'if the post_body is a string' : {
           "and no post_content_type is specified" : {
             "It should be written as is, with a content length specified, and the encoding should be set to be x-www-form-urlencoded" : function(oa) {
               var op= oa._createClient;
-              var callbackCalled= false;
-               oa._createClient= function() {
-                 return {
-                   request: function(method, path, headers) {
-                     assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
-                     assert.equal(headers["Content-length"], 23);
-                     return {
-                       socket: {addListener: function(){}},
-                       write: function(data) {
-                          callbackCalled= true;
-                          assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                        },
-                       addListener: function() {},
-                       end: function() {}
+              try {
+                var callbackCalled= false;
+                 oa._createClient= function() {
+                   return {
+                     request: function(method, path, headers) {
+                       assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
+                       assert.equal(headers["Content-length"], 23);
+                       return {
+                         socket: {addListener: function(){}},
+                         write: function(data) {
+                            callbackCalled= true;
+                            assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
+                          },
+                         addListener: function() {},
+                         end: function() {}
+                       }
                      }
                    }
                  }
+                 var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2")
+                 assert.equal(callbackCalled, true);
                }
-               var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2")
-               assert.equal(callbackCalled, true);
-               oa._createClient= op;
+               finally {
+                 oa._createClient= op;
+               }
              }
            },
            "and a post_content_type is specified" : {
              "It should be written as is, with a content length specified, and the encoding should be set to be as specified" : function(oa) {
                var op= oa._createClient;
-               var callbackCalled= false;
-               oa._createClient= function() {
-                 return {
-                   request: function(method, path, headers) {
-                     assert.equal(headers["Content-Type"], "unicorn/encoded");
-                     assert.equal(headers["Content-length"], 23);
-                     return {
-                       socket: {addListener: function(){}},
-                       write: function(data) {
-                          callbackCalled= true;
-                          assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                        },
-                       addListener: function() {},
-                       end: function() {}
+               try { 
+                 var callbackCalled= false;
+                 oa._createClient= function() {
+                   return {
+                     request: function(method, path, headers) {
+                       assert.equal(headers["Content-Type"], "unicorn/encoded");
+                       assert.equal(headers["Content-length"], 23);
+                       return {
+                         socket: {addListener: function(){}},
+                         write: function(data) {
+                            callbackCalled= true;
+                            assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
+                          },
+                         addListener: function() {},
+                         end: function() {}
+                       }
                      }
                    }
                  }
+                 var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded")
+                 assert.equal(callbackCalled, true);
                }
-               var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded")
-               assert.equal(callbackCalled, true);
-               oa._createClient= op;
+               finally {
+                 oa._createClient= op;
+               }
              }
            }
          }
@@ -248,7 +274,7 @@ vows.describe('OAuth').addBatch({
          'if no callback is passed' : {
            'it should return a request object': function(oa) {
              var request= oa.get("http://foo.com/blah", "token", "token_secret")
-             assert.isObject(request);
+             assert.isObject(request); 
              assert.equal(request.method, "GET");
              request.end();
            }
@@ -257,23 +283,27 @@ vows.describe('OAuth').addBatch({
            "it should call the internal request's end method and return nothing": function(oa) {
              var callbackCalled= false;
              var op= oa._createClient;
-             oa._createClient= function() {
-               return {
-                 request: function(method, path, headers) {
-                   return {
-                     socket: {addListener: function(){}},
-                     addListener: function() {},
-                     end: function() {
-                       callbackCalled= true;
+             try {
+               oa._createClient= function() {
+                 return {
+                   request: function(method, path, headers) {
+                     return {
+                       socket: {addListener: function(){}},
+                       addListener: function() {},
+                       end: function() {
+                         callbackCalled= true;
+                       }
                      }
                    }
                  }
                }
+               var request= oa.get("http://foo.com/blah", "token", "token_secret", function(e,d) {})
+               assert.equal(callbackCalled, true);
+               assert.isUndefined(request);
              }
-             var request= oa.get("http://foo.com/blah", "token", "token_secret", function(e,d) {})
-             assert.equal(callbackCalled, true);
-             assert.isUndefined(request);
-             oa._createClient= op;
+             finally {
+               oa._createClient= op;
+             }
            }
          },
        }
