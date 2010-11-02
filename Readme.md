@@ -9,7 +9,7 @@ at connect-auth (http://github.com/ciaranj/connect-auth)
 
 Change History
 ==============
-
+* 0.8.3 - Fixed an issue where the auth header code depended on the Array's toString method (Yohei Sasaki) Updated the getOAuthRequestToken method so we can access google's OAuth secured methods. Also re-implemented and fleshed out the test suite.
 * 0.8.2 - The request returning methods will now write the POST body if provided (Chris Anderson), the code responsible for manipulating the headers is a bit safe now when working with other code (Paul McKellar) and tweaked the package.json to use index.js instead of main.js
 * 0.8.1 - Added mechanism to get hold of a signed Node Request object, ready for attaching response listeners etc. (Perfect for streaming APIs)
 * 0.8.0 - Standardised method capitalisation, the old getOauthAccessToken is now getOAuthAccessToken (Breaking change to existing code) 
