@@ -1,0 +1,26 @@
+nodejs-oauth (0.8.2-0sg4) UNRELEASED; urgency=low
+
+  * UNRELEASED
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Mon, 15 Nov 2010 19:30:19 +0000
+
+nodejs-oauth (0.8.2-0sg2) UNRELEASED; urgency=low
+
+  [ Wade Simmons ]
+  * update copyright
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Thu, 14 Oct 2010 17:51:51 +0000
+
+nodejs-oauth (0.8.2-0sg1) UNRELEASED; urgency=low
+
+  * UNRELEASED
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Wed, 13 Oct 2010 23:19:29 +0000
+
+nodejs-oauth (0.8.2-0sg0) unstable; urgency=low
+
+  * Debianized
+
+ -- Wade Simmons <wade@simplegeo.com>  Wed, 13 Oct 2010 17:08:18 -0600

@@ -1,0 +1,9 @@
+This package was debianised by Wade Simmons <wade@simplegeo.com>
+
+The upstream repo is:
+    http://github.com/ciaranj/node-oauth
+    MIT license
+
+The Debian packaging is
+    Copyright 2010, SimpleGeo, Inc.
+    MIT license

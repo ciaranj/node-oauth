@@ -1,0 +1,13 @@
+Source: nodejs-oauth
+Section: misc
+Priority: extra
+Uploaders: Wade Simmons <wade@simplegeo.com>
+Maintainer: SimpleGeo Nerds <nerds@simplegeo.com>
+build-Depends: cdbs, debhelper (>= 7)
+Standards-Version: 3.9.1
+
+Package: nodejs-oauth
+Depends: nodejs (>= 0.2.3), ${misc:Depends}
+Architecture: all
+Description: node-oauth
+ http://github.com/ciaranj/node-oauth
