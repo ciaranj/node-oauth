@@ -1,4 +1,0 @@
----
-  name: oauth
-  description: An implementation of an OAuth client.
-  version: 0.7.4
