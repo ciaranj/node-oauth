@@ -24,6 +24,67 @@ vows.describe('OAuth').addBatch({
         assert.equal( oa._normalizeUrl("http://somehost.com"),  "http://somehost.com/")
       }
     },
+    'When making an array out of the arguments hash' : {
+      topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
+      'flatten out arguments that are arrays' : function(oa) {
+        var parameters= {"z": "a",
+                      "a": ["1", "2"], 
+                      "1": "c" };
+        var parameterResults= oa._makeArrayOfArgumentsHash(parameters);
+        assert.equal(parameterResults.length, 4);
+        assert.equal(parameterResults[0][0], "1");
+        assert.equal(parameterResults[1][0], "z");
+        assert.equal(parameterResults[2][0], "a");
+        assert.equal(parameterResults[3][0], "a");
+      }
+    },
+    'When ordering the request parameters'  : {
+      topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
+      'Order them by name' : function(oa) {
+        var parameters= {"z": "a",
+                      "a": "b", 
+                      "1": "c" };
+        var parameterResults= oa._sortRequestParams(oa._makeArrayOfArgumentsHash(parameters))
+        assert.equal(parameterResults[0][0], "1");
+        assert.equal(parameterResults[1][0], "a");        
+        assert.equal(parameterResults[2][0], "z");        
+      },
+      'If two parameter names are the same then order by the value': function(oa) {
+        var parameters= {"z": "a",
+                      "a": ["z", "b", "b", "a", "y"], 
+                      "1": "c" };
+        var parameterResults= oa._sortRequestParams(oa._makeArrayOfArgumentsHash(parameters))
+        assert.equal(parameterResults[0][0], "1");
+        assert.equal(parameterResults[1][0], "a");        
+        assert.equal(parameterResults[1][1], "a");        
+        assert.equal(parameterResults[2][0], "a");        
+        assert.equal(parameterResults[2][1], "b");        
+        assert.equal(parameterResults[3][0], "a");        
+        assert.equal(parameterResults[3][1], "b");        
+        assert.equal(parameterResults[4][0], "a");        
+        assert.equal(parameterResults[4][1], "y");        
+        assert.equal(parameterResults[5][0], "a");        
+        assert.equal(parameterResults[5][1], "z");        
+        assert.equal(parameterResults[6][0], "z");        
+      }
+    },
+    'When normalising the request parameters': {
+      topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
+      'the resulting parameters should be encoded and ordered as per http://tools.ietf.org/html/rfc5849#section-3.1 (3.4.1.3.2)' : function(oa) {
+        var parameters= {"b5" : "=%3D",
+          "a3": ["a", "2 q"],
+          "c@": "",
+          "a2": "r b",
+          "oauth_consumer_key": "9djdj82h48djs9d2",
+          "oauth_token":"kkk9d7dh3k39sjv7",
+          "oauth_signature_method": "HMAC-SHA1",
+          "oauth_timestamp": "137131201",
+          "oauth_nonce": "7d8f3e4a",
+          "c2" :  ""};
+        var normalisedParameterString= oa._normaliseRequestParams(parameters);
+        assert.equal(normalisedParameterString, "a2=r%20b&a3=2%20q&a3=a&b5=%3D%253D&c%40=&c2=&oauth_consumer_key=9djdj82h48djs9d2&oauth_nonce=7d8f3e4a&oauth_signature_method=HMAC-SHA1&oauth_timestamp=137131201&oauth_token=kkk9d7dh3k39sjv7");
+      }
+    },
     'When signing a url': {
       topic: function() {
         var oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", null, "HMAC-SHA1");
