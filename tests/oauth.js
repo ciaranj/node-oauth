@@ -85,6 +85,16 @@ vows.describe('OAuth').addBatch({
         assert.equal(normalisedParameterString, "a2=r%20b&a3=2%20q&a3=a&b5=%3D%253D&c%40=&c2=&oauth_consumer_key=9djdj82h48djs9d2&oauth_nonce=7d8f3e4a&oauth_signature_method=HMAC-SHA1&oauth_timestamp=137131201&oauth_token=kkk9d7dh3k39sjv7");
       }
     },
+    'When preparing the parameters for use in signing': {
+      topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
+      'We need to be wary of node\'s auto object creation from foo[bar] style url parameters' : function(oa) {
+        var result= oa._prepareParameters( "", "", "", "http://foo.com?foo[bar]=xxx&bar[foo]=yyy", {} );
+        assert.equal( result[0][0], "bar[foo]")
+        assert.equal( result[0][1], "yyy")
+        assert.equal( result[1][0], "foo[bar]")
+        assert.equal( result[1][1], "xxx")
+      }
+    },
     'When signing a url': {
       topic: function() {
         var oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", null, "HMAC-SHA1");
