@@ -126,23 +126,21 @@ vows.describe('OAuth').addBatch({
     'When non standard ports are used': {
         topic: function() {
           var oa= new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
-              mockProvider= {};
-              
-          mockProvider.request= function(method, path, headers) {
+          mockProvider= {};
+
+          oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
             assert.equal(headers.Host, "somehost.com:8080");
-            return result= {addListener:function(){}, 
-                            end:function(){},
-                            socket: {addListener: function(){}}};
-          }
-          oa._createClient= function(port, host) { 
-            assert.equal(port, '8080');
-            assert.equal(host, 'somehost.com');
-            return mockProvider; 
+            assert.equal(hostname, "somehost.com");
+            assert.equal(port, "8080");
+            return {
+              on: function() {},
+              end: function() {}
+            };
           }
           return oa;
         },
-        'getProtectedResrouce should correctly define the host headers': function(oa) {
-          oa.getProtectedResource("http://somehost.com:8080", "GET", "oauth_token", null, function(){require('sys').p('dddd')})
+        'getProtectedResource should correctly define the host headers': function(oa) {
+          oa.getProtectedResource("http://somehost.com:8080", "GET", "oauth_token", null, function(){})
         }
     },
     'When building the OAuth Authorization header': {
@@ -194,20 +192,13 @@ vows.describe('OAuth').addBatch({
           var post_body_written= false;
           var op= oa._createClient;
           try {
-            oa._createClient= function() {
+            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               return {
-                request: function(method, path, headers) {
-                  return {
-                    write: function(post_body){
-                      post_body_written= true;
-                      assert.equal(post_body,"scope=foobar%2C1%2C2");
-                    },
-                    socket: {addListener: function(){}},
-                    addListener: function() {},
-                    end: function() {}
-                  }
+                write: function(post_body){
+                  post_body_written= true;
+                  assert.equal(post_body,"scope=foobar%2C1%2C2");
                 }
-              }
+              };
             }
             oa._performSecureRequest("token", "token_secret", 'POST', 'http://foo.com/protected_resource', {"scope": "foobar,1,2"});
             assert.equal(post_body_written, true);
@@ -237,19 +228,14 @@ vows.describe('OAuth').addBatch({
             var callbackCalled= false;
             var op= oa._createClient;
             try {
-              oa._createClient= function() {
+              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 return {
-                  request: function(method, path, headers) {
-                    return {
-                      write: function(){},
-                      socket: {addListener: function(){}},
-                      addListener: function() {},
-                      end: function() {
-                        callbackCalled= true;
-                      }
-                    }
+                  write: function(){},
+                  on: function() {},
+                  end: function() {
+                    callbackCalled= true;
                   }
-                }
+                };
               }
               var request= oa.post("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){})
               assert.equal(callbackCalled, true);
@@ -265,21 +251,17 @@ vows.describe('OAuth').addBatch({
             var op= oa._createClient;
             try {
               var callbackCalled= false;
-              oa._createClient= function() {
+              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
                 return {
-                  request: function(method, path, headers) {
-                    assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
-                    return {
-                      socket: {addListener: function(){}},
-                      write: function(data) {
-                          callbackCalled= true;
-                          assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                       },
-                      addListener: function() {},
-                      end: function() {}
-                    }
+                  write: function(data){
+                    callbackCalled= true;
+                    assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
+                  },
+                  on: function() {},
+                  end: function() {
                   }
-                }
+                };
               }
               var request= oa.post("http://foo.com/blah", "token", "token_secret", {"foo":"1,2,3", "bar":"1+2"})
               assert.equal(callbackCalled, true);
@@ -295,22 +277,18 @@ vows.describe('OAuth').addBatch({
               var op= oa._createClient;
               try {
                 var callbackCalled= false;
-                 oa._createClient= function() {
-                   return {
-                     request: function(method, path, headers) {
-                       assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
-                       assert.equal(headers["Content-length"], 23);
-                       return {
-                         socket: {addListener: function(){}},
-                         write: function(data) {
-                            callbackCalled= true;
-                            assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                          },
-                         addListener: function() {},
-                         end: function() {}
-                       }
-                     }
-                   }
+                oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                  assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
+                  assert.equal(headers["Content-length"], 23);
+                  return {
+                    write: function(data){
+                      callbackCalled= true;
+                      assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
+                    },
+                    on: function() {},
+                    end: function() {
+                    }
+                  };
                  }
                  var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2")
                  assert.equal(callbackCalled, true);
@@ -325,23 +303,19 @@ vows.describe('OAuth').addBatch({
                var op= oa._createClient;
                try { 
                  var callbackCalled= false;
-                 oa._createClient= function() {
+                 oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                   assert.equal(headers["Content-Type"], "unicorn/encoded");
+                   assert.equal(headers["Content-length"], 23);
                    return {
-                     request: function(method, path, headers) {
-                       assert.equal(headers["Content-Type"], "unicorn/encoded");
-                       assert.equal(headers["Content-length"], 23);
-                       return {
-                         socket: {addListener: function(){}},
-                         write: function(data) {
-                            callbackCalled= true;
-                            assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                          },
-                         addListener: function() {},
-                         end: function() {}
-                       }
+                     write: function(data){
+                       callbackCalled= true;
+                       assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
+                     },
+                     on: function() {},
+                     end: function() {
                      }
-                   }
-                 }
+                   };
+                  }
                  var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded")
                  assert.equal(callbackCalled, true);
                }
@@ -366,18 +340,13 @@ vows.describe('OAuth').addBatch({
              var callbackCalled= false;
              var op= oa._createClient;
              try {
-               oa._createClient= function() {
+               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                  return {
-                   request: function(method, path, headers) {
-                     return {
-                       socket: {addListener: function(){}},
-                       addListener: function() {},
-                       end: function() {
-                         callbackCalled= true;
-                       }
-                     }
+                   on: function() {},
+                   end: function() {
+                     callbackCalled= true;
                    }
-                 }
+                 };
                }
                var request= oa.get("http://foo.com/blah", "token", "token_secret", function(e,d) {})
                assert.equal(callbackCalled, true);
@@ -400,25 +369,22 @@ vows.describe('OAuth').addBatch({
          },
          'if a callback is passed' : {
            "it should call the internal request's end method and return nothing": function(oa) {
-             var callbackCalled= false;
+             var callbackCalled= 0;
              var op= oa._createClient;
              try {
-               oa._createClient= function() {
+               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                  return {
-                   request: function(method, path, headers) {
-                     return {
-                       write: function(){},
-                       socket: {addListener: function(){}},
-                       addListener: function() {},
-                       end: function() {
-                         callbackCalled= true;
-                       }
-                     }
+                   on: function() {},
+                   write: function(data) {
+                     callbackCalled++;
+                   },
+                   end: function() {
+                     callbackCalled++;
                    }
-                 }
+                 };
                }
                var request= oa.put("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){})
-               assert.equal(callbackCalled, true);
+               assert.equal(callbackCalled, 2);
                assert.isUndefined(request);
              }
              finally {
@@ -431,21 +397,14 @@ vows.describe('OAuth').addBatch({
              var op= oa._createClient;
              try {
                var callbackCalled= false;
-               oa._createClient= function() {
+               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                 assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
                  return {
-                   request: function(method, path, headers) {
-                     assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
-                     return {
-                       socket: {addListener: function(){}},
-                       write: function(data) {
-                           callbackCalled= true;
-                           assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                        },
-                       addListener: function() {},
-                       end: function() {}
-                     }
+                   write: function(data) {
+                     callbackCalled= true;
+                     assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
                    }
-                 }
+                 };
                }
                var request= oa.put("http://foo.com/blah", "token", "token_secret", {"foo":"1,2,3", "bar":"1+2"})
                assert.equal(callbackCalled, true);
@@ -458,25 +417,18 @@ vows.describe('OAuth').addBatch({
          'if the post_body is a string' : {
            "and no post_content_type is specified" : {
              "It should be written as is, with a content length specified, and the encoding should be set to be x-www-form-urlencoded" : function(oa) {
-               var op= oa._createClient;
-               try {
-                 var callbackCalled= false;
-                  oa._createClient= function() {
+                var op= oa._createClient;
+                try {
+                  var callbackCalled= false;
+                  oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                    assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
+                    assert.equal(headers["Content-length"], 23);
                     return {
-                      request: function(method, path, headers) {
-                        assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
-                        assert.equal(headers["Content-length"], 23);
-                        return {
-                          socket: {addListener: function(){}},
-                          write: function(data) {
-                             callbackCalled= true;
-                             assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                           },
-                          addListener: function() {},
-                          end: function() {}
-                        }
+                      write: function(data) {
+                        callbackCalled= true;
+                        assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
                       }
-                    }
+                    };
                   }
                   var request= oa.put("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2")
                   assert.equal(callbackCalled, true);
@@ -491,22 +443,15 @@ vows.describe('OAuth').addBatch({
                 var op= oa._createClient;
                 try { 
                   var callbackCalled= false;
-                  oa._createClient= function() {
+                  oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                    assert.equal(headers["Content-Type"], "unicorn/encoded");
+                    assert.equal(headers["Content-length"], 23);  
                     return {
-                      request: function(method, path, headers) {
-                        assert.equal(headers["Content-Type"], "unicorn/encoded");
-                        assert.equal(headers["Content-length"], 23);
-                        return {
-                          socket: {addListener: function(){}},
-                          write: function(data) {
-                             callbackCalled= true;
-                             assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
-                           },
-                          addListener: function() {},
-                          end: function() {}
-                        }
-                      }
-                    }
+                      write: function(data) {
+                         callbackCalled= true;
+                         assert.equal(data, "foo=1%2C2%2C3&bar=1%2B2");
+                       }
+                    };
                   }
                   var request= oa.put("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded")
                   assert.equal(callbackCalled, true);
@@ -532,18 +477,13 @@ vows.describe('OAuth').addBatch({
              var callbackCalled= false;
              var op= oa._createClient;
              try {
-               oa._createClient= function() {
+               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                  return {
-                   request: function(method, path, headers) {
-                     return {
-                       socket: {addListener: function(){}},
-                       addListener: function() {},
-                       end: function() {
-                         callbackCalled= true;
-                       }
-                     }
+                   on: function() {},
+                   end: function() {
+                     callbackCalled= true;
                    }
-                 }
+                 };
                }
                var request= oa.delete("http://foo.com/blah", "token", "token_secret", function(e,d) {})
                assert.equal(callbackCalled, true);
