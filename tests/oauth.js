@@ -1,5 +1,6 @@
 var vows = require('vows'),
     assert = require('assert'),
+    events = require('events'),
     OAuth= require('../lib/oauth').OAuth;
 
 vows.describe('OAuth').addBatch({
@@ -494,6 +495,107 @@ vows.describe('OAuth').addBatch({
              }
            }
          }
+       },
+       'Request With a Callback' : {
+          'And A 302 redirect is received' : {
+            'and there is a location header' : {
+              'it should (re)perform the secure request but with the new location' : function(oa) {
+                var op= oa._createClient;
+                var psr= oa._performSecureRequest;
+                var responseCounter = 1;
+                var callbackCalled = false;
+                var DummyResponse =function() {
+                  if( responseCounter == 1 ){
+                    this.statusCode= 302;
+                    this.headers= {location:"http://redirectto.com"};
+                    responseCounter++;
+                  }
+                  else {
+                    this.statusCode= 200;
+                  }
+                }
+                DummyResponse.prototype= events.EventEmitter.prototype;
+                DummyResponse.prototype.setEncoding= function() {}
+
+                var DummyRequest =function() {
+                  this.response=  new DummyResponse();
+                }
+                DummyRequest.prototype= events.EventEmitter.prototype;
+                DummyRequest.prototype.write= function(post_body){}
+                DummyRequest.prototype.write= function(post_body){
+                  this.emit('response',this.response);
+                }
+                DummyRequest.prototype.end= function(){
+                  this.response.emit('end');
+                }
+
+                try {
+                  oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                    return new DummyRequest();
+                  }
+                  oa._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
+                    if( responseCounter == 1 ) {
+                      assert.equal(url, "http://originalurl.com");
+                    }
+                    else {
+                      assert.equal(url, "http://redirectto.com");
+                    }
+                    return psr.call(oa, oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback )
+                  }
+
+                  oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function() {
+                    // callback
+                    assert.equal(responseCounter, 2);
+                    callbackCalled= true;
+                  });
+                  assert.equal(callbackCalled, true)
+                }
+                finally {
+                  oa._createClient= op;
+                  oa._performSecureRequest= psr;
+                }
+              }
+            },
+            'but there is no location header' : {
+              'it should execute the callback, passing the HTTP Response code' : function(oa) {
+                var op= oa._createClient;
+                var callbackCalled = false;
+                var DummyResponse =function() {
+                    this.statusCode= 302;
+                    this.headers= {};
+                }
+                DummyResponse.prototype= events.EventEmitter.prototype;
+                DummyResponse.prototype.setEncoding= function() {}
+
+                var DummyRequest =function() {
+                  this.response=  new DummyResponse();
+                }
+                DummyRequest.prototype= events.EventEmitter.prototype;
+                DummyRequest.prototype.write= function(post_body){}
+                DummyRequest.prototype.write= function(post_body){
+                  this.emit('response',this.response);
+                }
+                DummyRequest.prototype.end= function(){
+                  this.response.emit('end');
+                }
+
+                try {
+                  oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                    return new DummyRequest();
+                  }
+                  oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
+                    // callback
+                    assert.equal(error.statusCode, 302);
+                    callbackCalled= true;
+                  });
+                  assert.equal(callbackCalled, true)
+                }
+                finally {
+                  oa._createClient= op;
+                }
+              }
+            }
+          }
        }
      }
 }).export(module);

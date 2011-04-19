@@ -1,6 +1,6 @@
 { "name" : "oauth"
 , "description" : "Library for interacting with OAuth 1.0, 1.0A and 2.  Provides simplified client access and allows for construction of more complex apis and OAuth providers."
-, "version" : "0.8.4"
+, "version" : "0.9.1"
 , "directories" : { "lib" : "./lib" }
 , "main" : "index.js"
 , "author" : "Ciaran Jessup <ciaranj@gmail.com>"

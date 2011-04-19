@@ -14,7 +14,8 @@ Please be aware that when moving from 0.8.x to 0.9.0 there are no major API chan
 so that I can release fixes to the 0.8.x stream if problems come out.
 
 Change History
-==============
+============== 
+* 0.9.1 - Added support for automatically following 302 redirects (Thanks neyric)
 * 0.9.0 - Compatibility fixes to bring node-oauth up to speed with node.js 0.4x [thanks to Rasmus Andersson for starting the work ]
 * 0.8.4 - Fixed issue #14 (Parameter ordering ignored encodings).  Added support for repeated parameter names. Implements issue #15 (Use native SHA1 if available, 10x speed improvement!). Fixed issue #16 (Should use POST when requesting access tokens.).  Fixed Issue #17 (OAuth2 spec compliance).  Implemented enhancement #13 (Adds support for PUT & DELETE http verbs). Fixes issue #18 (Complex/Composite url arguments [thanks novemberborn])
 * 0.8.3 - Fixed an issue where the auth header code depended on the Array's toString method (Yohei Sasaki) Updated the getOAuthRequestToken method so we can access google's OAuth secured methods. Also re-implemented and fleshed out the test suite.
