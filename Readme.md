@@ -1,8 +1,8 @@
 node-oauth
 ===========
-A simple oauth API for node.js .  This API allows users to authenticate against OAUTH providers, and thus act as OAuth consumers
+A simple oauth API for node.js .  This API allows users to authenticate against OAUTH providers, and thus act as OAuth consumers. It also has support for OAuth Echo, which is used for communicating with 3rd party media providers such as TwitPic and yFrog.
 
-Tested against both Twitter (http://twitter.com),  term.ie (http://term.ie/oauth/example/) and Yahoo! 
+Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/example/), TwitPic, and Yahoo! 
 
 Also provides rudimentary OAuth2 support, tested against facebook connect and github.   For more complete usage examples please take a look
 at connect-auth (http://github.com/ciaranj/connect-auth) 
@@ -35,3 +35,4 @@ Contributors
 
 * Ciaran Jessup - ciaranj@gmail.com
 * Mark Wubben - http://equalmedia.com/
+* Ryan LeFevre - http://meltingice.net
