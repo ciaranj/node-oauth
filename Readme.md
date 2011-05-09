@@ -8,7 +8,7 @@ Also provides rudimentary OAuth2 support, tested against facebook connect and gi
 at connect-auth (http://github.com/ciaranj/connect-auth) 
 
 If you're running a node.js version more recent than 0.4 then you will need to use a version of node.js greater than or equal to 0.9.0.
-If you're running a node.js version in the 0.2x stable branc, then you will need to use version 0.8.4.
+If you're running a node.js version in the 0.2x stable branch, then you will need to use version 0.8.4.
 
 Please be aware that when moving from 0.8.x to 0.9.0 there are no major API changes your, I've bumped the semi-major version element
 so that I can release fixes to the 0.8.x stream if problems come out.
