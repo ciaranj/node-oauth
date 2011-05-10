@@ -1,4 +1,3 @@
-
 var express = require('express'),
 	 OAuth = require('oauth').OAuth,
 	 querystring = require('querystring');
@@ -6,8 +5,8 @@ var express = require('express'),
 // Setup the Express.js server
 var app = express.createServer();
 app.use(express.logger());
-app.use(express.bodyDecoder());
-app.use(express.cookieDecoder());
+app.use(express.bodyParser());
+app.use(express.cookieParser());
 app.use(express.session({
 	secret: "skjghskdjfhbqigohqdiouk"
 }));
@@ -63,7 +62,18 @@ app.get('/google_login', function(req, res) {
 app.get('/google_cb', function(req, res) {
 		
 	// get the OAuth access token with the 'oauth_verifier' that we received
-	req.session.oa.getOAuthAccessToken(
+	
+	var oa = new OAuth(req.session.oa._requestUrl,
+	                  req.session.oa._accessUrl,
+	                  req.session.oa._consumerKey,
+	                  req.session.oa._consumerSecret,
+	                  req.session.oa._version,
+	                  req.session.oa._authorize_callback,
+	                  req.session.oa._signatureMethod);
+	
+    console.log(oa);
+	
+	oa.getOAuthAccessToken(
 		req.session.oauth_token, 
 		req.session.oauth_token_secret, 
 		req.param('oauth_verifier'), 
@@ -96,12 +106,21 @@ function require_google_login(req, res, next) {
 };
 
 app.get('/google_contacts', require_google_login, function(req, res) {
+	var oa = new OAuth(req.session.oa._requestUrl,
+	                  req.session.oa._accessUrl,
+	                  req.session.oa._consumerKey,
+	                  req.session.oa._consumerSecret,
+	                  req.session.oa._version,
+	                  req.session.oa._authorize_callback,
+	                  req.session.oa._signatureMethod);
+	
+    console.log(oa);
 
 	// Example using GData API v3
 	// GData Specific Header
-	req.session.oa._headers['GData-Version'] = '3.0'; 
+	oa._headers['GData-Version'] = '3.0'; 
 	
-	req.session.oa.getProtectedResource(
+	oa.getProtectedResource(
 		"https://www.google.com/m8/feeds/contacts/default/full?alt=json", 
 		"GET", 
 		req.session.oauth_access_token, 
@@ -118,12 +137,18 @@ app.get('/google_contacts', require_google_login, function(req, res) {
 });
 
 app.get('/google_calendars', require_google_login, function(req, res) {
-	
+		var oa = new OAuth(req.session.oa._requestUrl,
+	                  req.session.oa._accessUrl,
+	                  req.session.oa._consumerKey,
+	                  req.session.oa._consumerSecret,
+	                  req.session.oa._version,
+	                  req.session.oa._authorize_callback,
+	                  req.session.oa._signatureMethod);
 	// Example using GData API v2
 	// GData Specific Header
-	req.session.oa._headers['GData-Version'] = '2'; 
+	oa._headers['GData-Version'] = '2'; 
 	
-	req.session.oa.getProtectedResource(
+	oa.getProtectedResource(
 		"https://www.google.com/calendar/feeds/default/allcalendars/full?alt=jsonc", 
 		"GET", 
 		req.session.oauth_access_token, 
