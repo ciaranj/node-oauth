@@ -4,6 +4,25 @@ var vows = require('vows'),
     OAuth= require('../lib/oauth').OAuth,
     OAuthEcho= require('../lib/oauth').OAuthEcho;
 
+var DummyResponse =function( statusCode ) {
+    this.statusCode= statusCode;
+    this.headers= {};
+}
+DummyResponse.prototype= events.EventEmitter.prototype;
+DummyResponse.prototype.setEncoding= function() {}
+
+var DummyRequest =function( response ) {
+  this.response=  response;
+}
+DummyRequest.prototype= events.EventEmitter.prototype;
+DummyRequest.prototype.write= function(post_body){}
+DummyRequest.prototype.write= function(post_body){
+  this.emit('response',this.response);
+}
+DummyRequest.prototype.end= function(){
+  this.response.emit('end');
+}    
+
 vows.describe('OAuth').addBatch({
     'When generating the signature base string described in http://oauth.net/core/1.0/#sig_base_example': {
         topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
@@ -511,6 +530,46 @@ vows.describe('OAuth').addBatch({
          }
        },
        'Request With a Callback' : {
+          'and a 200 response code is received' : {
+            'it should callback successfully' : function(oa) {
+              var op= oa._createClient;
+              var callbackCalled = false;
+              try {
+                oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                  return new DummyRequest( new DummyResponse(200) );
+                }
+                oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
+                  // callback
+                  callbackCalled= true;
+                  assert.equal(error, undefined);
+                });
+                assert.equal(callbackCalled, true)
+              }
+              finally {
+                oa._createClient= op;
+              }              
+            }
+          },
+          'and a 210 response code is received' : {
+            'it should callback successfully' : function(oa) {
+              var op= oa._createClient;
+              var callbackCalled = false;
+              try {
+                oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                  return new DummyRequest( new DummyResponse(210) );
+                }
+                oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
+                  // callback
+                  callbackCalled= true;
+                  assert.equal(error, undefined);
+                });
+                assert.equal(callbackCalled, true)
+              }
+              finally {
+                oa._createClient= op;
+              }              
+            }
+          },
           'And A 302 redirect is received' : {
             'and there is a location header' : {
               'it should (re)perform the secure request but with the new location' : function(oa) {
@@ -531,21 +590,9 @@ vows.describe('OAuth').addBatch({
                 DummyResponse.prototype= events.EventEmitter.prototype;
                 DummyResponse.prototype.setEncoding= function() {}
 
-                var DummyRequest =function() {
-                  this.response=  new DummyResponse();
-                }
-                DummyRequest.prototype= events.EventEmitter.prototype;
-                DummyRequest.prototype.write= function(post_body){}
-                DummyRequest.prototype.write= function(post_body){
-                  this.emit('response',this.response);
-                }
-                DummyRequest.prototype.end= function(){
-                  this.response.emit('end');
-                }
-
                 try {
                   oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
-                    return new DummyRequest();
+                    return new DummyRequest( new DummyResponse() );
                   }
                   oa._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
                     if( responseCounter == 1 ) {
@@ -574,28 +621,9 @@ vows.describe('OAuth').addBatch({
               'it should execute the callback, passing the HTTP Response code' : function(oa) {
                 var op= oa._createClient;
                 var callbackCalled = false;
-                var DummyResponse =function() {
-                    this.statusCode= 302;
-                    this.headers= {};
-                }
-                DummyResponse.prototype= events.EventEmitter.prototype;
-                DummyResponse.prototype.setEncoding= function() {}
-
-                var DummyRequest =function() {
-                  this.response=  new DummyResponse();
-                }
-                DummyRequest.prototype= events.EventEmitter.prototype;
-                DummyRequest.prototype.write= function(post_body){}
-                DummyRequest.prototype.write= function(post_body){
-                  this.emit('response',this.response);
-                }
-                DummyRequest.prototype.end= function(){
-                  this.response.emit('end');
-                }
-
                 try {
                   oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
-                    return new DummyRequest();
+                    return new DummyRequest( new DummyResponse(302) );
                   }
                   oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
                     // callback
