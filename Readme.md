@@ -6,14 +6,11 @@ Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/examp
 
 Also provides rudimentary OAuth2 support, tested against facebook connect and github.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
-If you're running a node.js version more recent than 0.4 then you will need to use a version of node-oauth greater than or equal to 0.9.0.
-If you're running a node.js version in the 0.2x stable branch, then you will need to use version 0.8.4.
-
-Please be aware that when moving from 0.8.x to 0.9.0 there are no major API changes your, I've bumped the semi-major version element
-so that I can release fixes to the 0.8.x stream if problems come out.
 
 Change History
 ============== 
+
+* 0.9.2 - Correct content length calculated for non-ascii post bodies (Thanks selead)
 * 0.9.1 - Added support for automatically following 302 redirects (Thanks neyric) Added support for OAuth Echo (Thanks Ryan LeFevre). Improved handling of 2xx responses (Thanks Neil Mansilla).
 * 0.9.0 - Compatibility fixes to bring node-oauth up to speed with node.js 0.4x [thanks to Rasmus Andersson for starting the work ]
 * 0.8.4 - Fixed issue #14 (Parameter ordering ignored encodings).  Added support for repeated parameter names. Implements issue #15 (Use native SHA1 if available, 10x speed improvement!). Fixed issue #16 (Should use POST when requesting access tokens.).  Fixed Issue #17 (OAuth2 spec compliance).  Implemented enhancement #13 (Adds support for PUT & DELETE http verbs). Fixes issue #18 (Complex/Composite url arguments [thanks novemberborn])
