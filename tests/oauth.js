@@ -306,6 +306,36 @@ vows.describe('OAuth').addBatch({
           }
         },
         'if the post_body is a string' : {
+          "and it contains non ascii (7/8bit) characters" : {
+           "the content length should be the byte count, and not the string length"  : function(oa) {
+             var testString= "Tôi yêu node";
+             var testStringLength= testString.length;
+             var testStringBytesLength= Buffer.byteLength(testString);
+             assert.notEqual(testStringLength, testStringBytesLength); // Make sure we're testing a string that differs between byte-length and char-length!
+             
+             var op= oa._createClient;
+             try {
+               var callbackCalled= false;
+               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                 assert.equal(headers["Content-length"], testStringBytesLength);
+                 return {
+                   write: function(data){
+                     callbackCalled= true;
+                     assert.equal(data, testString);
+                   },
+                   on: function() {},
+                   end: function() {
+                   }
+                 };
+                }
+                var request= oa.post("http://foo.com/blah", "token", "token_secret", "Tôi yêu node")
+                assert.equal(callbackCalled, true);
+              }
+              finally {
+                oa._createClient= op;
+              }
+           }
+          },
           "and no post_content_type is specified" : {
             "It should be written as is, with a content length specified, and the encoding should be set to be x-www-form-urlencoded" : function(oa) {
               var op= oa._createClient;
