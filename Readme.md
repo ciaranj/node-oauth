@@ -11,6 +11,7 @@ Change History
 ============== 
 
 * 0.9.2 - Correct content length calculated for non-ascii post bodies (Thanks selead)
+Allowed for configuration of the 'access token' name used when requesting protected resources (OAuth2)
 * 0.9.1 - Added support for automatically following 302 redirects (Thanks neyric) Added support for OAuth Echo (Thanks Ryan LeFevre). Improved handling of 2xx responses (Thanks Neil Mansilla).
 * 0.9.0 - Compatibility fixes to bring node-oauth up to speed with node.js 0.4x [thanks to Rasmus Andersson for starting the work ]
 * 0.8.4 - Fixed issue #14 (Parameter ordering ignored encodings).  Added support for repeated parameter names. Implements issue #15 (Use native SHA1 if available, 10x speed improvement!). Fixed issue #16 (Should use POST when requesting access tokens.).  Fixed Issue #17 (OAuth2 spec compliance).  Implemented enhancement #13 (Adds support for PUT & DELETE http verbs). Fixes issue #18 (Complex/Composite url arguments [thanks novemberborn])
