@@ -600,6 +600,74 @@ vows.describe('OAuth').addBatch({
               }              
             }
           },
+          'And A 301 redirect is received' : {
+              'and there is a location header' : {
+                'it should (re)perform the secure request but with the new location' : function(oa) {
+                  var op= oa._createClient;
+                  var psr= oa._performSecureRequest;
+                  var responseCounter = 1;
+                  var callbackCalled = false;
+                  var DummyResponse =function() {
+                    if( responseCounter == 1 ){
+                      this.statusCode= 301;
+                      this.headers= {location:"http://redirectto.com"};
+                      responseCounter++;
+                    }
+                    else {
+                      this.statusCode= 200;
+                    }
+                  }
+                  DummyResponse.prototype= events.EventEmitter.prototype;
+                  DummyResponse.prototype.setEncoding= function() {}
+
+                  try {
+                    oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                      return new DummyRequest( new DummyResponse() );
+                    }
+                    oa._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
+                      if( responseCounter == 1 ) {
+                        assert.equal(url, "http://originalurl.com");
+                      }
+                      else {
+                        assert.equal(url, "http://redirectto.com");
+                      }
+                      return psr.call(oa, oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback )
+                    }
+
+                    oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function() {
+                      // callback
+                      assert.equal(responseCounter, 2);
+                      callbackCalled= true;
+                    });
+                    assert.equal(callbackCalled, true)
+                  }
+                  finally {
+                    oa._createClient= op;
+                    oa._performSecureRequest= psr;
+                  }
+                }
+              },
+              'but there is no location header' : {
+                'it should execute the callback, passing the HTTP Response code' : function(oa) {
+                  var op= oa._createClient;
+                  var callbackCalled = false;
+                  try {
+                    oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                      return new DummyRequest( new DummyResponse(301) );
+                    }
+                    oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
+                      // callback
+                      assert.equal(error.statusCode, 301);
+                      callbackCalled= true;
+                    });
+                    assert.equal(callbackCalled, true)
+                  }
+                  finally {
+                    oa._createClient= op;
+                  }
+                }
+              }
+            },
           'And A 302 redirect is received' : {
             'and there is a location header' : {
               'it should (re)perform the secure request but with the new location' : function(oa) {
