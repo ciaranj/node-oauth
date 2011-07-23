@@ -10,6 +10,7 @@ Also provides rudimentary OAuth2 support, tested against facebook connect and gi
 Change History
 ============== 
 
+* 0.9.3 - Adds support for following 301 redirects (Thanks bdickason)
 * 0.9.2 - Correct content length calculated for non-ascii post bodies (Thanks selead)
 Allowed for configuration of the 'access token' name used when requesting protected resources (OAuth2)
 * 0.9.1 - Added support for automatically following 302 redirects (Thanks neyric) Added support for OAuth Echo (Thanks Ryan LeFevre). Improved handling of 2xx responses (Thanks Neil Mansilla).
