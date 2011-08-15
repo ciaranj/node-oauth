@@ -6,7 +6,7 @@ vows.describe('OAuth2').addBatch({
     'When handling the access token response': {
         topic: new OAuth2(),
         'we should correctly extract the token if received as form-data': function (oa) {
-            oa._request= function( method, url, fo, bar, callback) {
+            oa._request= function( method, url, fo, bar, bleh, callback) {
               callback(null, "access_token=access&refresh_token=refresh");
             };
             oa.getOAuthAccessToken("", {}, function(error, access_token, refresh_token) {
@@ -15,7 +15,7 @@ vows.describe('OAuth2').addBatch({
             });
         },
         'we should correctly extract the token if received as a JSON literal': function (oa) {
-          oa._request= function( method, url, fo, bar, callback) {
+          oa._request= function(method, url, headers, post_body, access_token, callback) {
             callback(null, '{"access_token":"access","refresh_token":"refresh"}');
           };
           oa.getOAuthAccessToken("", {}, function(error, access_token, refresh_token) {
