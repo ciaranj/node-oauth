@@ -142,8 +142,12 @@ vows.describe('OAuth').addBatch({
           return oa;
         },
         'Use the provided HTTP method': function(oa) {
-          oa.getOAuthRequestToken(function() {}, "GET");
+          oa.getOAuthRequestToken("GET", function() {});
           assert.equal(oa.requestArguments[2], "GET");
+        },
+        'Use a POST by default': function(oa) {
+          oa.getOAuthRequestToken(function() {});
+          assert.equal(oa.requestArguments[2], "POST");
         }
     },
     'When get authorization header' : {
