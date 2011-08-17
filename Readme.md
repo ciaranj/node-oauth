@@ -10,6 +10,7 @@ Also provides rudimentary OAuth2 support, tested against facebook connect and gi
 Change History
 ============== 
 
+* 0.9.5 - Allow usage of HTTP verbs other than GET for retrieving the access and request tokens (OAuth1) (Thanks to Raoul Millais)
 * 0.9.4 - Support for OAuth providers that drop connections (don't send response lengths? [Google]) And change OAuth2 getOAuthAccessToken to POST rather than GET ( Possible Breaking change!!! ... re-tested against Google, Github, Facebook, FourSquare and Janrain and seems ok .. is closer to the spec (v20) )
 * 0.9.3 - Adds support for following 301 redirects (Thanks bdickason) 
 * 0.9.2 - Correct content length calculated for non-ascii post bodies (Thanks selead) 
@@ -35,3 +36,4 @@ Contributors
 * Ciaran Jessup - ciaranj@gmail.com
 * Mark Wubben - http://equalmedia.com/
 * Ryan LeFevre - http://meltingice.net
+* Raoul Millais
