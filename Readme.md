@@ -10,7 +10,10 @@ Also provides rudimentary OAuth2 support, tested against facebook connect and gi
 Change History
 ============== 
 
-* 0.9.2 - Correct content length calculated for non-ascii post bodies (Thanks selead)
+* 0.9.5 - Allow usage of HTTP verbs other than GET for retrieving the access and request tokens (OAuth1) (Thanks to Raoul Millais)
+* 0.9.4 - Support for OAuth providers that drop connections (don't send response lengths? [Google]) And change OAuth2 getOAuthAccessToken to POST rather than GET ( Possible Breaking change!!! ... re-tested against Google, Github, Facebook, FourSquare and Janrain and seems ok .. is closer to the spec (v20) )
+* 0.9.3 - Adds support for following 301 redirects (Thanks bdickason) 
+* 0.9.2 - Correct content length calculated for non-ascii post bodies (Thanks selead) 
 Allowed for configuration of the 'access token' name used when requesting protected resources (OAuth2)
 * 0.9.1 - Added support for automatically following 302 redirects (Thanks neyric) Added support for OAuth Echo (Thanks Ryan LeFevre). Improved handling of 2xx responses (Thanks Neil Mansilla).
 * 0.9.0 - Compatibility fixes to bring node-oauth up to speed with node.js 0.4x [thanks to Rasmus Andersson for starting the work ]
@@ -19,7 +22,7 @@ Allowed for configuration of the 'access token' name used when requesting protec
 * 0.8.2 - The request returning methods will now write the POST body if provided (Chris Anderson), the code responsible for manipulating the headers is a bit safe now when working with other code (Paul McKellar) and tweaked the package.json to use index.js instead of main.js
 * 0.8.1 - Added mechanism to get hold of a signed Node Request object, ready for attaching response listeners etc. (Perfect for streaming APIs)
 * 0.8.0 - Standardised method capitalisation, the old getOauthAccessToken is now getOAuthAccessToken (Breaking change to existing code)
-* 0.7.7 - Looks like non oauth_ parameters where appearing within the Authorization headers, which I believe to be inccorrect.
+* 0.7.7 - Looks like non oauth_ parameters where appearing within the Authorization headers, which I believe to be incorrect.
 * 0.7.6 - Added in oauth_verifier property to getAccessToken required for 1.0A
 * 0.7.5 - Added in a main.js to simplify the require'ing of OAuth
 * 0.7.4 - Minor change to add an error listener to the OAuth client (thanks troyk)
@@ -33,3 +36,4 @@ Contributors
 * Ciaran Jessup - ciaranj@gmail.com
 * Mark Wubben - http://equalmedia.com/
 * Ryan LeFevre - http://meltingice.net
+* Raoul Millais
