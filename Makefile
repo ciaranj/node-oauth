@@ -2,6 +2,6 @@
 # Run all tests
 #
 test:
-	@@vows tests/* --spec
+	@@node_modules/.bin/vows tests/* --spec
 
 .PHONY: test install
