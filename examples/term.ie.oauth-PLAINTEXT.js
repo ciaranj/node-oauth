@@ -1,4 +1,4 @@
-var sys= require('sys')
+var util= require('util')
 
 var OAuth= require('../lib/oauth').OAuth;
 
