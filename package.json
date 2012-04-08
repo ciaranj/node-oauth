@@ -11,4 +11,9 @@
 , "scripts": {
     "test": "make test"
   }
+, "licenses" :
+  [ { "type" : "MIT"
+    , "url" : "http://github.com/ciaranj/node-oauth/raw/master/LICENSE"
+    }
+  ]
 }
