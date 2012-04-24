@@ -22,6 +22,18 @@ vows.describe('OAuth2').addBatch({
             assert.equal( access_token, "access");
             assert.equal( refresh_token, "refresh");
           });
+        },
+        'we should return the received data to the calling method': function (oa) {
+          oa._request= function(method, url, headers, post_body, access_token, callback) {
+            callback(null, '{"access_token":"access","refresh_token":"refresh","extra_1":1, "extra_2":"foo"}');
+          };
+          oa.getOAuthAccessToken("", {}, function(error, access_token, refresh_token, results) {
+            assert.equal( access_token, "access");
+            assert.equal( refresh_token, "refresh");
+            assert.isNotNull( results );
+            assert.equal( results.extra_1, 1);
+            assert.equal( results.extra_2, "foo");
+          });
         }
     }
 }).export(module);
