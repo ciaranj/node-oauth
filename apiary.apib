@@ -1,0 +1,83 @@
+-- Shopping Cart Resources --
+GET /shopping-cart
+< 200
+{ "items": [
+  { "url": "/shopping-cart/1", "product":"2ZY48XPZ", "quantity": 1, "name": "New socks", "price": 1.25 }
+] }
+
+
+Comment block for this resource (support [Markdown](http://daringfireball.net/projects/markdown/syntax) format syntax)
+POST /shopping-cart
+> Content-Type: application/json
+{ "product":"1AB23ORM", "quantity": 2 }
+< 201
+< Content-Type: application/json
+{ "status": "created", "url": "/shopping-cart/2" }
+
+
+-- Payment Resources --
+This resource allows you to submit payment information to process **your** *shopping cart* items
+Also important is to realize that the comments can be multi-line, including lists like this one:
+
+* Red
+* Green
+* Blue
+
+And headings like this one:
+
+# I am a cool heading!
+POST /payment
+{ cc: "12345678900", cvc: "123", expiry: "0112" }
+< 200
+{ receipt: "/payment/receipt/1" }
+
+-- JSON Schema Validations --
+POST /shopping-cart
+{
+  "type": "object",
+  "properties": {
+    "product": {
+      "type": "string",
+      "length": 8,
+      "format": "alphanumeric"
+    },
+    "quantity": {
+      "type": "number"
+    }
+  }
+}
+
+GET /shopping-cart-off
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "required": true,
+            "type": "string"
+          },
+          "product": {
+            "required": true,
+            "type": "string",
+            "length": 8,
+            "format": "alphanumeric"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "name": {
+            "required": true,
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
