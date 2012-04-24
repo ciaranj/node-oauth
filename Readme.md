@@ -10,7 +10,7 @@ Also provides rudimentary OAuth2 support, tested against facebook connect and gi
 Change History
 ============== 
 
-* 0.10.0 - OAuth2: Pass back any extra response data for calls to getOAuthAccessToken (Thanks to Tang Bo Hao)  OAuth2: Don't force a https request if given a http url (Thanks to Damien Mathieu)
+* 0.10.0 - OAuth2: Pass back any extra response data for calls to getOAuthAccessToken (Thanks to Tang Bo Hao)  OAuth2: Don't force a https request if given a http url (Thanks to Damien Mathieu) OAuth2: Supports specifying a grant_type of 'refresh_token' (Thanks to Luke Baker)
 * 0.9.6 - Support for 302 redirects on OAuth2 (Thanks Patrick Negri). Some code tidying. ( Thanks to Raoul Millais )  
 * 0.9.5 - Allow usage of HTTP verbs other than GET for retrieving the access and request tokens (OAuth1) (Thanks to Raoul Millais)  
 * 0.9.4 - Support for OAuth providers that drop connections (don't send response lengths? [Google]) And change OAuth2 getOAuthAccessToken to POST rather than GET ( Possible Breaking change!!! ... re-tested against Google, Github, Facebook, FourSquare and Janrain and seems ok .. is closer to the spec (v20) )  
@@ -42,3 +42,4 @@ Contributors
 * Patrick Negri - http://github.com/pnegri
 * Tang Bo Hao - http://github.com/btspoony
 * Damien Mathieu - http://42.dmathieu.com
+* Luke Baker - http://github.com/lukebaker
