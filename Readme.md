@@ -7,6 +7,12 @@ Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/examp
 Also provides rudimentary OAuth2 support, tested against facebook, github, foursquare, google and Janrain.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
 
+Installation
+============== 
+
+    $ npm install oauth
+
+
 Change History
 ============== 
 
