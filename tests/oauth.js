@@ -189,7 +189,11 @@ vows.describe('OAuth').addBatch({
         },
         'Provide a valid signature when a token and a token secret is present': function(oa) {
           assert.equal( oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth oauth_consumer_key="consumerkey",oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1272399856",oauth_token="token",oauth_version="1.0",oauth_signature="zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D"');
-      }
+        },
+        'Support variable whitespace separating the arguments': function(oa) {
+            oa._oauthParameterSeperator= ", ";
+            assert.equal( oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth oauth_consumer_key="consumerkey", oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1272399856", oauth_token="token", oauth_version="1.0", oauth_signature="zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D"');
+        }        
     },
     'When get the OAuth Echo authorization header': {
       topic: function () {
