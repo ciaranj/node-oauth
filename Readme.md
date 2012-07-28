@@ -17,9 +17,9 @@ Change History
 ============== 
 
 * 0.9.8
-    - OAuth:    Support overly-strict OAuth server's that require whitespace separating the Authorization Header parameters  (e.g. 500px.com) (Thanks to Christian Schwarz)
-    - OAuth:    Fix incorrect double-encoding of PLAINTEXT OAuth connections (Thanks to Joe Rozner)
-    - OAuth:    Minor safety check added when checking hostnames. (Thanks to Garrick Cheung)
+    - OAuth1:    Support overly-strict OAuth server's that require whitespace separating the Authorization Header parameters  (e.g. 500px.com) (Thanks to Christian Schwarz)
+    - OAuth1:    Fix incorrect double-encoding of PLAINTEXT OAuth connections (Thanks to Joe Rozner)
+    - OAuth1:    Minor safety check added when checking hostnames. (Thanks to Garrick Cheung)
 * 0.9.7
     - OAuth2:   Pass back any extra response data for calls to getOAuthAccessToken (Thanks to Tang Bo Hao)
     - OAuth2:   Don't force a https request if given a http url (Thanks to Damien Mathieu)
