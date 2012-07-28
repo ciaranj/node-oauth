@@ -16,6 +16,10 @@ Installation
 Change History
 ============== 
 
+* 0.9.8
+    - OAuth:    Support overly-strict OAuth server's that require whitespace separating the Authorization Header parameters  (e.g. 500px.com) (Thanks to Christian Schwarz)
+    - OAuth:    Fix incorrect double-encoding of PLAINTEXT OAuth connections (Thanks to Joe Rozner)
+    - OAuth:    Minor safety check added when checking hostnames. (Thanks to Garrick Cheung)
 * 0.9.7
     - OAuth2:   Pass back any extra response data for calls to getOAuthAccessToken (Thanks to Tang Bo Hao)
     - OAuth2:   Don't force a https request if given a http url (Thanks to Damien Mathieu)
@@ -71,8 +75,8 @@ Change History
 * 0.7.0
     - OAuth1/2: Introduces support for HTTPS end points and callback URLS for OAuth 1.0A and Oauth 2 (Please be aware that this was a breaking change to the constructor arguments order)  
 
-Contributors
-============
+Contributors (In no particular order)
+=====================================
 
 * Ciaran Jessup - ciaranj@gmail.com
 * Mark Wubben - http://equalmedia.com/
@@ -82,3 +86,6 @@ Contributors
 * Tang Bo Hao - http://github.com/btspoony
 * Damien Mathieu - http://42.dmathieu.com
 * Luke Baker - http://github.com/lukebaker
+* Christian Schwarz  - http://github.com/chrischw/
+* Joe Rozer - http://www.deadbytes.net
+* Garrick Cheung - http://www.garrickcheung.com/
