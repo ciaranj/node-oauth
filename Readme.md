@@ -6,6 +6,8 @@ Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/examp
 
 Also provides rudimentary OAuth2 support, tested against facebook, github, foursquare, google and Janrain.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
+Requests may use a HTTP or HTTPS proxy if desired. Set the environment variables `HTTP_PROXY_HOST` and `HTTP_PROXY_PORT` to proxy http traffic. Similarly `HTTPS_PROXY_HOST` and `HTTPS_PROXY_PORT` for https traffic.
+
 
 Installation
 ============== 
