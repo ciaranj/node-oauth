@@ -267,6 +267,18 @@ vows.describe('OAuth').addBatch({
        Array.prototype.toString = _toString;
       }
     },
+    'When building the OAuth Authorization header with a realm': {
+      topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1", null, null, 'http://foobar.com/'), 
+      'The realm should be prepended correctly' : function(oa) {
+       var parameters= [
+          ["oauth_timestamp",         "1234567"],
+          ["oauth_nonce",             "ABCDEF"],
+          ["oauth_version",           "1.0"],
+          ["oauth_signature_method",  "HMAC-SHA1"],
+          ["oauth_consumer_key",      "asdasdnm2321b3"]];
+        assert.equal(oa._buildAuthorizationHeaders(parameters), 'OAuth realm="http://foobar.com/",oauth_timestamp="1234567",oauth_nonce="ABCDEF",oauth_version="1.0",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="asdasdnm2321b3"'); 
+      }
+    },
     'When performing the Secure Request' : {
       topic: new OAuth("http://foo.com/RequestToken",
                        "http://foo.com/AccessToken",
