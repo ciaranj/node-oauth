@@ -2,7 +2,8 @@ var vows = require('vows'),
     assert = require('assert'),
     events = require('events'),
     OAuth= require('../lib/oauth').OAuth,
-    OAuthEcho= require('../lib/oauth').OAuthEcho;
+    OAuthEcho= require('../lib/oauth').OAuthEcho,
+    crypto = require('crypto');
 
 var DummyResponse =function( statusCode ) {
     this.statusCode= statusCode;
@@ -23,6 +24,30 @@ DummyRequest.prototype.end= function(){
   this.response.emit('end');
 }    
 
+//Valid RSA keypair used to test RSA-SHA1 signature method
+var RsaPrivateKey = "-----BEGIN RSA PRIVATE KEY-----\n" +
+"MIICXQIBAAKBgQDizE4gQP5nPQhzof/Vp2U2DDY3UY/Gxha2CwKW0URe7McxtnmE\n" +
+"CrZnT1n/YtfrrCNxY5KMP4o8hMrxsYEe05+1ZGFT68ztms3puUxilU5E3BQMhz1t\n" +
+"JMJEGcTt8nZUlM4utli7fHgDtWbhvqvYjRMGn3AjyLOfY8XZvnFkGjipvQIDAQAB\n" +
+"AoGAKgk6FcpWHOZ4EY6eL4iGPt1Gkzw/zNTcUsN5qGCDLqDuTq2Gmk2t/zn68VXt\n" +
+"tVXDf/m3qN0CDzOBtghzaTZKLGhnSewQ98obMWgPcvAsb4adEEeW1/xigbMiaW2X\n" +
+"cu6GhZxY16edbuQ40LRrPoVK94nXQpj8p7w4IQ301Sm8PSECQQD1ZlOj4ugvfhEt\n" +
+"exi4WyAaM45fylmN290UXYqZ8SYPI/VliDytIlMfyq5Rv+l+dud1XDPrWOQ0ImgV\n" +
+"HJn7uvoZAkEA7JhHNmHF9dbdF9Koj86K2Cl6c8KUu7U7d2BAuB6pPkt8+D8+y4St\n" +
+"PaCmN4oP4X+sf5rqBYoXywHlqEei2BdpRQJBAMYgR4cZu7wcXGIL8HlnmROObHSK\n" +
+"OqN9z5CRtUV0nPW8YnQG+nYOMG6KhRMbjri750OpnYF100kEPmRNI0VKQIECQE8R\n" +
+"fQsRleTYz768ahTVQ9WF1ySErMwmfx8gDcD6jjkBZVxZVpURXAwyehopi7Eix/VF\n" +
+"QlxjkBwKIEQi3Ks297kCQQCL9by1bueKDMJO2YX1Brm767pkDKkWtGfPS+d3xMtC\n" +
+"KJHHCqrS1V+D5Q89x5wIRHKxE5UMTc0JNa554OxwFORX\n" +
+"-----END RSA PRIVATE KEY-----";
+
+var RsaPublicKey = "-----BEGIN PUBLIC KEY-----\n" +
+"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDizE4gQP5nPQhzof/Vp2U2DDY3\n" +
+"UY/Gxha2CwKW0URe7McxtnmECrZnT1n/YtfrrCNxY5KMP4o8hMrxsYEe05+1ZGFT\n" +
+"68ztms3puUxilU5E3BQMhz1tJMJEGcTt8nZUlM4utli7fHgDtWbhvqvYjRMGn3Aj\n" +
+"yLOfY8XZvnFkGjipvQIDAQAB\n" +
+"-----END PUBLIC KEY-----";
+
 vows.describe('OAuth').addBatch({
     'When generating the signature base string described in http://oauth.net/core/1.0/#sig_base_example': {
         topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
@@ -30,6 +55,20 @@ vows.describe('OAuth').addBatch({
           var result= oa._createSignatureBase("GET", "http://photos.example.net/photos", 
                                               "file=vacation.jpg&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_nonce=kllo9940pd9333jh&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_token=nnch734d00sl2jdk&oauth_version=1.0&size=original")
           assert.equal( result, "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal");
+        }
+    },
+    'When generating the signature with RSA-SHA1': {
+        topic: new OAuth(null, null, null, RsaPrivateKey, null, null, "RSA-SHA1"),
+        'we get a valid oauth signature': function (oa) {
+            var signatureBase = "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DRSA-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal";
+            var oauthSignature = oa._createSignature(signatureBase, "xyz4992k83j47x0b");
+            
+            assert.equal( oauthSignature, "qS4rhWog7GPgo4ZCJvUdC/1ZAax/Q4Ab9yOBvgxSopvmKUKp5rso+Zda46GbyN2hnYDTiA/g3P/d/YiPWa454BEBb/KWFV83HpLDIoqUUhJnlXX9MqRQQac0oeope4fWbGlfTdL2PXjSFJmvfrzybERD/ZufsFtVrQKS3QBpYiw=");
+            
+            //now check that given the public key we can verify this signature
+            var verifier = crypto.createVerify("RSA-SHA1").update(signatureBase);
+            var valid = verifier.verify(RsaPublicKey, oauthSignature, 'base64');
+            assert.ok( valid, "Signature could not be verified with RSA public key");
         }
     },
     'When generating the signature base string with PLAINTEXT': {
