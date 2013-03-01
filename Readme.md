@@ -16,10 +16,13 @@ Installation
 Change History
 ============== 
 
+* 0.9.9
+    - OAuth1:   Fix the mismatch between the output of querystring.stringify() and this._encodeData(). (thank you rolandboon)
+    - OAuth2:   Adds Authorization Header and supports extra headers by default ( thanks to Brian Park)
 * 0.9.8
-    - OAuth1:    Support overly-strict OAuth server's that require whitespace separating the Authorization Header parameters  (e.g. 500px.com) (Thanks to Christian Schwarz)
-    - OAuth1:    Fix incorrect double-encoding of PLAINTEXT OAuth connections (Thanks to Joe Rozner)
-    - OAuth1:    Minor safety check added when checking hostnames. (Thanks to Garrick Cheung)
+    - OAuth1:   Support overly-strict OAuth server's that require whitespace separating the Authorization Header parameters  (e.g. 500px.com) (Thanks to Christian Schwarz)
+    - OAuth1:   Fix incorrect double-encoding of PLAINTEXT OAuth connections (Thanks to Joe Rozner)
+    - OAuth1:   Minor safety check added when checking hostnames. (Thanks to Garrick Cheung)
 * 0.9.7
     - OAuth2:   Pass back any extra response data for calls to getOAuthAccessToken (Thanks to Tang Bo Hao)
     - OAuth2:   Don't force a https request if given a http url (Thanks to Damien Mathieu)
@@ -89,3 +92,5 @@ Contributors (In no particular order)
 * Christian Schwarz  - http://github.com/chrischw/
 * Joe Rozer - http://www.deadbytes.net
 * Garrick Cheung - http://www.garrickcheung.com/
+* rolandboon - http://rolandboon.com
+* Brian Park - http://github.com/yaru22
