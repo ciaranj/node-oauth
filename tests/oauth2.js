@@ -1,7 +1,8 @@
 var vows = require('vows'),
     assert = require('assert'),
     https = require('https'),
-    OAuth2= require('../lib/oauth2').OAuth2;
+    OAuth2= require('../lib/oauth2').OAuth2,
+    url = require('url');
 
 vows.describe('OAuth2').addBatch({
     'Given an OAuth2 instance with clientId and clientSecret, ': {
@@ -14,6 +15,16 @@ vows.describe('OAuth2').addBatch({
             oa.getOAuthAccessToken("", {}, function(error, access_token, refresh_token) {
               assert.equal( access_token, "access");
               assert.equal( refresh_token, "refresh");
+            });
+        },
+        'we should not include access token in both querystring and headers': function (oa) {
+            oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
+            oa._executeRequest= function( http_library, options, post_body, callback) {
+              callback(null, url.parse(options.path, true).query, options.headers);
+            };
+            oa.get("/userinfo", 'access', function(error, query, headers) {
+              assert.ok( !('access_token' in query), "access_token not in query");
+              assert.ok( 'Authorization' in headers, "Authorization in headers");
             });
         },
         'we should correctly extract the token if received as a JSON literal': function (oa) {
