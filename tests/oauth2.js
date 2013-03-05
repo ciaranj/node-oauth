@@ -87,8 +87,8 @@ vows.describe('OAuth2').addBatch({
           { 'SomeHeader': '123' }),
       'When calling get': {
         'we should see the custom headers mixed into headers property in options passed to http-library' : function(oa) {
-          https.request = function(options, callback) {
-            assert.equal(headers["SomeHeader"], "123");
+          oa._executeRequest= function( http_library, options, callback ) {
+            assert.equal(options.headers["SomeHeader"], "123");
           };
           oa.get("", {});
         }
