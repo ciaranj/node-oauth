@@ -16,6 +16,8 @@ Installation
 Change History
 ============== 
 
+* 0.9.10
+    - OAuth2:   Addresses 2 issues that came in with 0.9.9, #129 & #125
 * 0.9.9
     - OAuth1:   Fix the mismatch between the output of querystring.stringify() and this._encodeData(). (thank you rolandboon)
     - OAuth2:   Adds Authorization Header and supports extra headers by default ( thanks to Brian Park)
