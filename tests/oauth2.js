@@ -17,14 +17,25 @@ vows.describe('OAuth2').addBatch({
               assert.equal( refresh_token, "refresh");
             });
         },
-        'we should not include access token in both querystring and headers': function (oa) {
+        'we should not include access token in both querystring and headers (favours headers if specified)': function (oa) {
             oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
             oa._executeRequest= function( http_library, options, post_body, callback) {
               callback(null, url.parse(options.path, true).query, options.headers);
             };
-            oa.get("/userinfo", 'access', function(error, query, headers) {
-              assert.ok( !('access_token' in query), "access_token not in query");
-              assert.ok( 'Authorization' in headers, "Authorization in headers");
+
+            oa._request("GET", "http://foo/", {"Authorization":"Bearer BadNews"}, null, "accessx",  function(error, query, headers) {
+              assert.ok( !('access_token' in query), "access_token also in query");
+              assert.ok( 'Authorization' in headers, "Authorization not in headers");
+            });
+        },
+        'we should include access token in the querystring if no Authorization header present to override it': function (oa) {
+           oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
+           oa._executeRequest= function( http_library, options, post_body, callback) {
+             callback(null, url.parse(options.path, true).query, options.headers);
+           };
+           oa._request("GET", "http://foo/", {}, null, "access",  function(error, query, headers) {
+             assert.ok( 'access_token' in query, "access_token not present in query");
+              assert.ok( !('Authorization' in headers), "Authorization in headers");
             });
         },
         'we should correctly extract the token if received as a JSON literal': function (oa) {
