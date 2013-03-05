@@ -64,21 +64,39 @@ vows.describe('OAuth2').addBatch({
           oa.getOAuthAccessToken("sdsds2", {grant_type:"refresh_token"} );
         }
       },
-      'When calling get with the default authorization method': {
-        'we should pass the authorization header with Bearer method and value of the access_token' : function(oa) {
-          oa._request= function(method, url, headers, post_body, access_token, callback) {
-            assert.equal(headers["Authorization"], "Bearer abcd5");
-          };
-          oa.get("", "abcd5");
+      'When we use the authorization header': {
+        'and call get with the default authorization method': {
+          'we should pass the authorization header with Bearer method and value of the access_token, _request should be passed a null access_token' : function(oa) {
+            oa._request= function(method, url, headers, post_body, access_token, callback) {
+              assert.equal(headers["Authorization"], "Bearer abcd5");
+              assert.isNull( access_token );
+            };
+            oa.useAuthorizationHeaderforGET(true);
+            oa.get("", "abcd5");
+          }
+        },
+        'and call get with the authorization method set to Basic': {
+          'we should pass the authorization header with Basic method and value of the access_token, _request should be passed a null access_token' : function(oa) {
+            oa._request= function(method, url, headers, post_body, access_token, callback) {
+              assert.equal(headers["Authorization"], "Basic cdg2");
+              assert.isNull( access_token );
+            };
+            oa.useAuthorizationHeaderforGET(true);
+            oa.setAuthMethod("Basic");
+            oa.get("", "cdg2");
+          }
         }
       },
-      'When calling get with the authorization method set to Basic': {
-        'we should pass the authorization header with Basic method and value of the access_token' : function(oa) {
-          oa._request= function(method, url, headers, post_body, access_token, callback) {
-            assert.equal(headers["Authorization"], "Basic cdg2");
-          };
-          oa.setAuthMethod("Basic");
-          oa.get("", "cdg2");
+      'When we do not use the authorization header': {
+        'and call get': {
+          'we should pass NOT provide an authorization header and the access_token should be being passed to _request' : function(oa) {
+            oa._request= function(method, url, headers, post_body, access_token, callback) {
+              assert.isUndefined(headers["Authorization"]);
+              assert.equal( access_token, "abcd5" );
+            };
+            oa.useAuthorizationHeaderforGET(false);
+            oa.get("", "abcd5");
+          }
         }
       }
     },
