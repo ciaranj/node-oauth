@@ -17,12 +17,12 @@ Examples
 ==========
 
 ```javascript
-describe('Trends',function(){
+describe('OAuth',function(){
   var request = require('superagent');
-  var OAuth = require('OAuth').OAuth;
+  var OAuth = require('OAuth');
 
    it('gets bearer token', function(done){
-     var OAuth2 = require('OAuth').OAuth2;    
+     var OAuth2 = OAuth.OAuth2;    
      var twitterConsumerKey = 'your key';
      var twitterConsumerSecret = 'your secret';
      var oauth2 = new OAuth2(server.config.keys.twitter.consumerKey,
