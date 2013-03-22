@@ -28,16 +28,16 @@ describe('OAuth1.0',function(){
     var oauth = new OAuth.OAuth(
       'https://api.twitter.com/oauth/request_token',
       'https://api.twitter.com/oauth/access_token',
-      "your application consumer key',
-      "your application secret",
+      'your application consumer key',
+      'your application secret',
       '1.0A',
       null,
       'HMAC-SHA1'
     );
     oauth.get(
       'https://api.twitter.com/1.1/trends/place.json?id=23424977',
-      "your user toke for this app", //test user token
-      "your user secret for this app", //test user secret            
+      'your user toke for this app', //test user token
+      'your user secret for this app', //test user secret            
       function (e, data, res){
         if (e) console.error(e);        
         console.log(require('util').inspect(data));
