@@ -16,6 +16,8 @@ Installation
 Examples
 ==========
 
+To run examples/tests insall Mocha `$ npm install -g mocha` and run `$ mocha you-file-name.js`:
+
 ```javascript
 describe('OAuth',function(){
   var request = require('superagent');
