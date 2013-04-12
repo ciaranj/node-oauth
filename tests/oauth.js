@@ -21,13 +21,13 @@ DummyRequest.prototype.write= function(post_body){
 }
 DummyRequest.prototype.end= function(){
   this.response.emit('end');
-}    
+}
 
 vows.describe('OAuth').addBatch({
     'When generating the signature base string described in http://oauth.net/core/1.0/#sig_base_example': {
         topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
         'we get the expected result string': function (oa) {
-          var result= oa._createSignatureBase("GET", "http://photos.example.net/photos", 
+          var result= oa._createSignatureBase("GET", "http://photos.example.net/photos",
                                               "file=vacation.jpg&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_nonce=kllo9940pd9333jh&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_token=nnch734d00sl2jdk&oauth_version=1.0&size=original")
           assert.equal( result, "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal");
         }
@@ -35,7 +35,7 @@ vows.describe('OAuth').addBatch({
     'When generating the signature base string with PLAINTEXT': {
         topic: new OAuth(null, null, null, null, null, null, "PLAINTEXT"),
         'we get the expected result string': function (oa) {
-          var result= oa._getSignature("GET", "http://photos.example.net/photos", 
+          var result= oa._getSignature("GET", "http://photos.example.net/photos",
                                               "file=vacation.jpg&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_nonce=kllo9940pd9333jh&oauth_signature_method=PLAINTEXT&oauth_timestamp=1191242096&oauth_token=nnch734d00sl2jdk&oauth_version=1.0&size=original",
                                               "test");
           assert.equal( result, "&test");
@@ -58,7 +58,7 @@ vows.describe('OAuth').addBatch({
       topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
       'flatten out arguments that are arrays' : function(oa) {
         var parameters= {"z": "a",
-                      "a": ["1", "2"], 
+                      "a": ["1", "2"],
                       "1": "c" };
         var parameterResults= oa._makeArrayOfArgumentsHash(parameters);
         assert.equal(parameterResults.length, 4);
@@ -72,30 +72,30 @@ vows.describe('OAuth').addBatch({
       topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
       'Order them by name' : function(oa) {
         var parameters= {"z": "a",
-                      "a": "b", 
+                      "a": "b",
                       "1": "c" };
         var parameterResults= oa._sortRequestParams(oa._makeArrayOfArgumentsHash(parameters))
         assert.equal(parameterResults[0][0], "1");
-        assert.equal(parameterResults[1][0], "a");        
-        assert.equal(parameterResults[2][0], "z");        
+        assert.equal(parameterResults[1][0], "a");
+        assert.equal(parameterResults[2][0], "z");
       },
       'If two parameter names are the same then order by the value': function(oa) {
         var parameters= {"z": "a",
-                      "a": ["z", "b", "b", "a", "y"], 
+                      "a": ["z", "b", "b", "a", "y"],
                       "1": "c" };
         var parameterResults= oa._sortRequestParams(oa._makeArrayOfArgumentsHash(parameters))
         assert.equal(parameterResults[0][0], "1");
-        assert.equal(parameterResults[1][0], "a");        
-        assert.equal(parameterResults[1][1], "a");        
-        assert.equal(parameterResults[2][0], "a");        
-        assert.equal(parameterResults[2][1], "b");        
-        assert.equal(parameterResults[3][0], "a");        
-        assert.equal(parameterResults[3][1], "b");        
-        assert.equal(parameterResults[4][0], "a");        
-        assert.equal(parameterResults[4][1], "y");        
-        assert.equal(parameterResults[5][0], "a");        
-        assert.equal(parameterResults[5][1], "z");        
-        assert.equal(parameterResults[6][0], "z");        
+        assert.equal(parameterResults[1][0], "a");
+        assert.equal(parameterResults[1][1], "a");
+        assert.equal(parameterResults[2][0], "a");
+        assert.equal(parameterResults[2][1], "b");
+        assert.equal(parameterResults[3][0], "a");
+        assert.equal(parameterResults[3][1], "b");
+        assert.equal(parameterResults[4][0], "a");
+        assert.equal(parameterResults[4][1], "y");
+        assert.equal(parameterResults[5][0], "a");
+        assert.equal(parameterResults[5][1], "z");
+        assert.equal(parameterResults[6][0], "z");
       }
     },
     'When normalising the request parameters': {
@@ -193,7 +193,7 @@ vows.describe('OAuth').addBatch({
         'Support variable whitespace separating the arguments': function(oa) {
             oa._oauthParameterSeperator= ", ";
             assert.equal( oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth oauth_consumer_key="consumerkey", oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1272399856", oauth_token="token", oauth_version="1.0", oauth_signature="zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D"');
-        }        
+        }
     },
     'When get the OAuth Echo authorization header': {
       topic: function () {
@@ -229,7 +229,7 @@ vows.describe('OAuth').addBatch({
         }
     },
     'When building the OAuth Authorization header': {
-      topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"), 
+      topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
       'All provided oauth arguments should be concatentated correctly' : function(oa) {
        var parameters= [
           ["oauth_timestamp",         "1234567"],
@@ -237,7 +237,7 @@ vows.describe('OAuth').addBatch({
           ["oauth_version",           "1.0"],
           ["oauth_signature_method",  "HMAC-SHA1"],
           ["oauth_consumer_key",      "asdasdnm2321b3"]];
-        assert.equal(oa._buildAuthorizationHeaders(parameters), 'OAuth oauth_timestamp="1234567",oauth_nonce="ABCDEF",oauth_version="1.0",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="asdasdnm2321b3"'); 
+        assert.equal(oa._buildAuthorizationHeaders(parameters), 'OAuth oauth_timestamp="1234567",oauth_nonce="ABCDEF",oauth_version="1.0",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="asdasdnm2321b3"');
       },
       '*Only* Oauth arguments should be concatentated, others should be disregarded' : function(oa) {
        var parameters= [
@@ -249,7 +249,7 @@ vows.describe('OAuth').addBatch({
           ["oauth_signature_method",  "HMAC-SHA1"],
           ["oauth_consumer_key",      "asdasdnm2321b3"],
           ["foobar",      "asdasdnm2321b3"]];
-        assert.equal(oa._buildAuthorizationHeaders(parameters), 'OAuth oauth_timestamp="1234567",oauth_nonce="ABCDEF",oauth_version="1.0",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="asdasdnm2321b3"'); 
+        assert.equal(oa._buildAuthorizationHeaders(parameters), 'OAuth oauth_timestamp="1234567",oauth_nonce="ABCDEF",oauth_version="1.0",oauth_signature_method="HMAC-SHA1",oauth_consumer_key="asdasdnm2321b3"');
       },
       '_buildAuthorizationHeaders should not depends on Array.prototype.toString' : function(oa) {
        var _toString = Array.prototype.toString;
@@ -363,7 +363,7 @@ vows.describe('OAuth').addBatch({
              var testStringLength= testString.length;
              var testStringBytesLength= Buffer.byteLength(testString);
              assert.notEqual(testStringLength, testStringBytesLength); // Make sure we're testing a string that differs between byte-length and char-length!
-             
+
              var op= oa._createClient;
              try {
                var callbackCalled= false;
@@ -416,7 +416,7 @@ vows.describe('OAuth').addBatch({
            "and a post_content_type is specified" : {
              "It should be written as is, with a content length specified, and the encoding should be set to be as specified" : function(oa) {
                var op= oa._createClient;
-               try { 
+               try {
                  var callbackCalled= false;
                  oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                    assert.equal(headers["Content-Type"], "unicorn/encoded");
@@ -445,7 +445,7 @@ vows.describe('OAuth').addBatch({
          'if no callback is passed' : {
            'it should return a request object': function(oa) {
              var request= oa.get("http://foo.com/blah", "token", "token_secret")
-             assert.isObject(request); 
+             assert.isObject(request);
              assert.equal(request.method, "GET");
              request.end();
            }
@@ -471,7 +471,7 @@ vows.describe('OAuth').addBatch({
                oa._createClient= op;
              }
            }
-         }
+         },
        },
        'PUT' : {
          'if no callback is passed' : {
@@ -556,11 +556,11 @@ vows.describe('OAuth').addBatch({
             "and a post_content_type is specified" : {
               "It should be written as is, with a content length specified, and the encoding should be set to be as specified" : function(oa) {
                 var op= oa._createClient;
-                try { 
+                try {
                   var callbackCalled= false;
                   oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                     assert.equal(headers["Content-Type"], "unicorn/encoded");
-                    assert.equal(headers["Content-length"], 23);  
+                    assert.equal(headers["Content-length"], 23);
                     return {
                       write: function(data) {
                          callbackCalled= true;
@@ -582,7 +582,7 @@ vows.describe('OAuth').addBatch({
          'if no callback is passed' : {
            'it should return a request object': function(oa) {
              var request= oa.delete("http://foo.com/blah", "token", "token_secret")
-             assert.isObject(request); 
+             assert.isObject(request);
              assert.equal(request.method, "DELETE");
              request.end();
            }
@@ -628,7 +628,7 @@ vows.describe('OAuth').addBatch({
               }
               finally {
                 oa._createClient= op;
-              }              
+              }
             }
           },
           'and a 210 response code is received' : {
@@ -648,7 +648,7 @@ vows.describe('OAuth').addBatch({
               }
               finally {
                 oa._createClient= op;
-              }              
+              }
             }
           },
           'And A 301 redirect is received' : {
@@ -715,6 +715,78 @@ vows.describe('OAuth').addBatch({
                   }
                   finally {
                     oa._createClient= op;
+                  }
+                }
+              },
+              'and followRedirect is true' : {
+                'it should (re)perform the secure request but with the new location' : function(oa) {
+                  var op= oa._createClient;
+                  var psr= oa._performSecureRequest;
+                  var responseCounter = 1;
+                  var callbackCalled = false;
+                  var DummyResponse =function() {
+                    if( responseCounter == 1 ){
+                      this.statusCode= 301;
+                      this.headers= {location:"http://redirectto.com"};
+                      responseCounter++;
+                    }
+                    else {
+                      this.statusCode= 200;
+                    }
+                  }
+                  DummyResponse.prototype= events.EventEmitter.prototype;
+                  DummyResponse.prototype.setEncoding= function() {}
+
+                  try {
+                    oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                      return new DummyRequest( new DummyResponse() );
+                    }
+                    oa._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
+                      if( responseCounter == 1 ) {
+                        assert.equal(url, "http://originalurl.com");
+                      }
+                      else {
+                        assert.equal(url, "http://redirectto.com");
+                      }
+                      return psr.call(oa, oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback )
+                    }
+
+                    oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function() {
+                      // callback
+                      assert.equal(responseCounter, 2);
+                      callbackCalled= true;
+                    });
+                    assert.equal(callbackCalled, true)
+                  }
+                  finally {
+                    oa._createClient= op;
+                    oa._performSecureRequest= psr;
+                  }
+                }
+              },
+              'and followRedirect is false' : {
+                'it should not perform the secure request with the new location' : function(oa) {
+                  var op= oa._createClient;
+                  oa.setClientOptions({ followRedirects: false });
+                  var DummyResponse =function() {
+                      this.statusCode= 301;
+                      this.headers= {location:"http://redirectto.com"};
+                  }
+                  DummyResponse.prototype= events.EventEmitter.prototype;
+                  DummyResponse.prototype.setEncoding= function() {}
+
+                  try {
+                    oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                      return new DummyRequest( new DummyResponse() );
+                    }
+                    oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(res, data, response) {
+                      // callback
+                      assert.equal(res.statusCode, 301);
+                    });
+                  }
+                  finally {
+                    oa._createClient= op;
+                    oa.setClientOptions({followRedirects:true});
                   }
                 }
               }
