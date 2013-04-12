@@ -857,7 +857,79 @@ vows.describe('OAuth').addBatch({
                   oa._createClient= op;
                 }
               }
-            }
+            },
+            'and followRedirect is true' : {
+                'it should (re)perform the secure request but with the new location' : function(oa) {
+                  var op= oa._createClient;
+                  var psr= oa._performSecureRequest;
+                  var responseCounter = 1;
+                  var callbackCalled = false;
+                  var DummyResponse =function() {
+                    if( responseCounter == 1 ){
+                      this.statusCode= 302;
+                      this.headers= {location:"http://redirectto.com"};
+                      responseCounter++;
+                    }
+                    else {
+                      this.statusCode= 200;
+                    }
+                  }
+                  DummyResponse.prototype= events.EventEmitter.prototype;
+                  DummyResponse.prototype.setEncoding= function() {}
+
+                  try {
+                    oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                      return new DummyRequest( new DummyResponse() );
+                    }
+                    oa._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
+                      if( responseCounter == 1 ) {
+                        assert.equal(url, "http://originalurl.com");
+                      }
+                      else {
+                        assert.equal(url, "http://redirectto.com");
+                      }
+                      return psr.call(oa, oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback )
+                    }
+
+                    oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function() {
+                      // callback
+                      assert.equal(responseCounter, 2);
+                      callbackCalled= true;
+                    });
+                    assert.equal(callbackCalled, true)
+                  }
+                  finally {
+                    oa._createClient= op;
+                    oa._performSecureRequest= psr;
+                  }
+                }
+              },
+              'and followRedirect is false' : {
+                'it should not perform the secure request with the new location' : function(oa) {
+                  var op= oa._createClient;
+                  oa.setClientOptions({ followRedirects: false });
+                  var DummyResponse =function() {
+                      this.statusCode= 302;
+                      this.headers= {location:"http://redirectto.com"};
+                  }
+                  DummyResponse.prototype= events.EventEmitter.prototype;
+                  DummyResponse.prototype.setEncoding= function() {}
+
+                  try {
+                    oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                      return new DummyRequest( new DummyResponse() );
+                    }
+                    oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(res, data, response) {
+                      // callback
+                      assert.equal(res.statusCode, 302);
+                    });
+                  }
+                  finally {
+                    oa._createClient= op;
+                    oa.setClientOptions({followRedirects:true});
+                  }
+                }
+              }
           }
        }
      }
