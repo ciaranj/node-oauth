@@ -24,6 +24,12 @@ DummyRequest.prototype.end= function(){
 }
 
 vows.describe('OAuth').addBatch({
+    'When newing OAuth': {
+      topic: new OAuth(null, null, null, null, null, null, "PLAINTEXT"),
+      'followRedirects is enabled by default': function (oa) {
+        assert.equal(oa._clientOptions.followRedirects, true)
+      }
+    },
     'When generating the signature base string described in http://oauth.net/core/1.0/#sig_base_example': {
         topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
         'we get the expected result string': function (oa) {
