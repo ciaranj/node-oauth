@@ -133,5 +133,29 @@ vows.describe('OAuth2').addBatch({
           oa.get("", {});
         }
       }
+    },
+    'When the user passes in the User-Agent in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          { 'User-Agent': '123Agent' }),
+      'When calling get': {
+        'we should see the User-Agent mixed into headers property in options passed to http-library' : function(oa) {
+          oa._executeRequest= function( http_library, options, callback ) {
+            assert.equal(options.headers["User-Agent"], "123Agent");
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'When the user does not pass in a User-Agent in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+        undefined),
+      'When calling get': {
+        'we should see the default User-Agent mixed into headers property in options passed to http-library' : function(oa) {
+          oa._executeRequest= function( http_library, options, callback ) {
+            assert.equal(options.headers["User-Agent"], "Node-oauth");
+            };
+          oa.get("", {});
+        }
+      }
     }
 }).export(module);
