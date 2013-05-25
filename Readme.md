@@ -16,7 +16,7 @@ Installation
 Examples
 ==========
 
-To run examples/tests insall Mocha `$ npm install -g mocha` and run `$ mocha you-file-name.js`:
+To run examples/tests install Mocha `$ npm install -g mocha` and run `$ mocha you-file-name.js`:
 
 ## OAuth1.0
 
