@@ -208,6 +208,18 @@ vows.describe('OAuth').addBatch({
         assert.equal( oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth realm="http://foobar.com/",oauth_consumer_key="consumerkey",oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1272399856",oauth_token="token",oauth_version="1.0A",oauth_signature="0rr1LhSxACX2IEWRq3uCb4IwtOs%3D"');
       }
     },
+    'When building a string for xoauth requests': {
+      topic: function () {
+        var oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", null, "HMAC-SHA1");
+        oa._getTimestamp= function(){ return "1272399856"; }
+        oa._getNonce= function(){ return "ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp"; }
+        return oa;
+      },
+      'Should return appropritae base64 encoded xoauth string': function (oa) {
+        var b64XOAuthString = new Buffer('GET http://somehost.com:3323/foo/poop?bar=foo oauth_consumer_key="consumerkey",oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1272399856",oauth_token="token",oauth_version="1.0",oauth_signature="zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D"', 'utf8').toString('base64');
+        assert.equal( oa.buildOAuthString("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), b64XOAuthString);
+      }
+    },
     'When non standard ports are used': {
         topic: function() {
           var oa= new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),

@@ -36,7 +36,7 @@ describe('OAuth1.0',function(){
     );
     oauth.get(
       'https://api.twitter.com/1.1/trends/place.json?id=23424977',
-      'your user toke for this app', //test user token
+      'your user token for this app', //test user token
       'your user secret for this app', //test user secret            
       function (e, data, res){
         if (e) console.error(e);        
@@ -70,6 +70,35 @@ describe('OAuth2',function(){
        done();
      });
    });
+```
+
+## Build XOAuth String
+```javascript
+var Imap = require('imap');
+
+describe('Build XOAuth String',function(){
+  var OAuth = require('OAuth');
+
+  it('tests GMail XOAuth API',function(done){
+    var oauth = new OAuth.OAuth(null, null, 'your application consumer key', 'your application secret', '1.0', null, 'HMAC-SHA1'),
+      imap = new Imap({
+        host: 'imap.googlemail.com',
+        port: 993,
+        xoauth: oauth.buildOAuthString('https://mail.google.com/mail/b/' + email + '/imap/', 'your user token for this app', 'your user secret for this app'),
+        secure: true
+      });
+
+    imap.connect(function(err) {
+      imap.getBoxes(function(err, boxes) {
+        if (e) console.error(e);        
+        console.log(require('util').inspect(boxes));
+        imap.logout();
+        done();
+      });
+    });
+ 
+  });
+});
 ```
 
 Change History
