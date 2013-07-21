@@ -156,9 +156,23 @@ vows.describe('OAuth').addBatch({
           assert.equal(oa.requestArguments[2], "GET");
         },
         'Use a POST by default': function(oa) {
-          oa.setClientOptions({});
-          oa.getOAuthRequestToken(function() {});
-          assert.equal(oa.requestArguments[2], "POST");
+            oa.setClientOptions({});
+            oa.getOAuthRequestToken(function() {});
+            assert.equal(oa.requestArguments[2], "POST");
+        }
+    },
+    'When getting a reverse-authentication request token': {
+        topic: function() {
+            var oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", "http://callback.com", "HMAC-SHA1");
+            oa._getTimestamp= function(){ return "1272399856"; }
+            oa._getNonce= function(){ return "ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp"; }
+            oa._performSecureRequest= function(){ return this.requestArguments = arguments; }
+            return oa;
+        },
+        'Callback not included in reverse authentications request': function(oa) {
+            oa.setClientOptions({});
+            oa.getOAuthRequestToken({x_auth_mode: 'reverse_auth'}, function() {});
+            assert.strictEqual(oa.requestArguments[4].oauth_callback, undefined);
         }
     },
     'When getting an access token': {
@@ -176,6 +190,7 @@ vows.describe('OAuth').addBatch({
         },
         'Use a POST by default': function(oa) {
           oa.setClientOptions({});
+          oa.set
           oa.getOAuthAccessToken(function() {});
           assert.equal(oa.requestArguments[2], "POST");
         }
