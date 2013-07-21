@@ -71,6 +71,29 @@ describe('OAuth2',function(){
      });
    });
 ```
+## Twitter's reverse authentication step one
+See https://dev.twitter.com/docs/ios/using-reverse-auth
+```javascript
+var OAuth = require('OAuth');
+
+oauth = new Oauth.OAuth(
+  'https://api.twitter.com/oauth/request_token',
+  'https://api.twitter.com/oauth/access_token',
+  CONSUMER_KEY,
+  CONSUMER_SECRET,
+  '1.0A',
+  null,
+  'HMAC-SHA1'
+)
+
+oauth.getOAuthRequestToken(
+  {x_auth_mode: 'reverse_auth'},   // Twitter's reverse authentication trigger
+  function (err, token, token_secret, parsedQueryString, rawDataReceived) {
+    console.log("Pass this oauth string to the iOS client for use:", rawDataReceived);
+  });
+
+```
+
 
 Change History
 ============== 
