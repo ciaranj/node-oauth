@@ -19,8 +19,8 @@ vows.describe('OAuth2').addBatch({
         },
         'we should not include access token in both querystring and headers (favours headers if specified)': function (oa) {
             oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
-            oa._executeRequest= function( http_library, options, post_body, callback) {
-              callback(null, url.parse(options.path, true).query, options.headers);
+            oa._executeRequest= function( options, callback) {
+              callback(null, options.url.query, options.headers);
             };
 
             oa._request("GET", "http://foo/", {"Authorization":"Bearer BadNews"}, null, "accessx",  function(error, query, headers) {
@@ -30,8 +30,8 @@ vows.describe('OAuth2').addBatch({
         },
         'we should include access token in the querystring if no Authorization header present to override it': function (oa) {
            oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
-           oa._executeRequest= function( http_library, options, post_body, callback) {
-             callback(null, url.parse(options.path, true).query, options.headers);
+           oa._executeRequest= function( options, callback) {
+             callback(null, options.url.query, options.headers);
            };
            oa._request("GET", "http://foo/", {}, null, "access",  function(error, query, headers) {
              assert.ok( 'access_token' in query, "access_token not present in query");
@@ -127,7 +127,7 @@ vows.describe('OAuth2').addBatch({
           { 'SomeHeader': '123' }),
       'When calling get': {
         'we should see the custom headers mixed into headers property in options passed to http-library' : function(oa) {
-          oa._executeRequest= function( http_library, options, callback ) {
+          oa._executeRequest= function( options, callback ) {
             assert.equal(options.headers["SomeHeader"], "123");
           };
           oa.get("", {});
