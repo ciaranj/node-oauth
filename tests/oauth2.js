@@ -126,9 +126,67 @@ vows.describe('OAuth2').addBatch({
       topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
           { 'SomeHeader': '123' }),
       'When calling get': {
-        'we should see the custom headers mixed into headers property in options passed to http-library' : function(oa) {
+        'we should see the custom headers mixed into headers property in options passed to request' : function(oa) {
           oa._executeRequest= function( options, callback ) {
             assert.equal(options.headers["SomeHeader"], "123");
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'Given an OAuth2 instance with clientId, clientSecret and proxy': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          undefined, 'http://someproxy:8080'),
+      'When calling get with HTTPS_PROXY environment variable set': {
+        'we should see the given proxy in options passed to request' : function(oa) {
+          oa._executeRequest= function( options, callback ) {
+            assert.equal("http://someproxy:8080", options.proxy);
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'Given an OAuth2 instance with clientId, clientSecret and NULL as proxy': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          undefined, null),
+      'When calling get with HTTPS_PROXY environment variable set': {
+        'we should not have a proxy in options passed to request' : function(oa) {
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(undefined, options.proxy);
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'Given an OAuth2 instance with clientId, clientSecret and undefined proxy': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          undefined, undefined),
+      'When calling get with HTTPS_PROXY and HTTP_PROXY environment variables set': {
+        'we should see HTTPS_PROXY as proxy in options passed to request' : function(oa) {
+          process.env.HTTPS_PROXY = 'https://ssl-proxy-from-env';
+          process.env.HTTP_PROXY  = 'http://proxy-from-env';
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(process.env.HTTPS_PROXY, options.proxy);
+          };
+          oa.get("", {});
+        }
+      },
+      'When calling get with only HTTP_PROXY environment variable set': {
+        'we should see HTTP_PROXY as proxy in options passed to request' : function(oa) {
+          delete process.env.HTTPS_PROXY;
+          process.env.HTTP_PROXY = 'http://proxy-from-env';
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(process.env.HTTP_PROXY, options.proxy);
+          };
+          oa.get("", {});
+        }
+      },
+      'When calling get with no environment variable set': {
+        'we should not have a proxy in options passed to request' : function(oa) {
+          delete process.env.HTTPS_PROXY;
+          delete process.env.HTTP_PROXY;
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(undefined, options.proxy);
           };
           oa.get("", {});
         }
