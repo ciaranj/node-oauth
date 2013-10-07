@@ -20,7 +20,7 @@ vows.describe('OAuth2').addBatch({
         'we should not include access token in both querystring and headers (favours headers if specified)': function (oa) {
             oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
             oa._executeRequest= function( options, callback) {
-              callback(null, options.url.query, options.headers);
+              callback(null, url.parse(options.uri, true).query, options.headers);
             };
 
             oa._request("GET", "http://foo/", {"Authorization":"Bearer BadNews"}, null, "accessx",  function(error, query, headers) {
@@ -31,10 +31,10 @@ vows.describe('OAuth2').addBatch({
         'we should include access token in the querystring if no Authorization header present to override it': function (oa) {
            oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
            oa._executeRequest= function( options, callback) {
-             callback(null, options.url.query, options.headers);
+              callback(null, url.parse(options.uri, true).query, options.headers);
            };
            oa._request("GET", "http://foo/", {}, null, "access",  function(error, query, headers) {
-             assert.ok( 'access_token' in query, "access_token not present in query");
+              assert.ok( 'access_token' in query, "access_token not present in query");
               assert.ok( !('Authorization' in headers), "Authorization in headers");
             });
         },
