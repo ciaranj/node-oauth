@@ -1,6 +1,7 @@
 var vows = require('vows'),
     assert = require('assert'),
     events = require('events'),
+    URL = require('url'),
     OAuth= require('../lib/oauth').OAuth,
     OAuthEcho= require('../lib/oauth').OAuthEcho;
 
@@ -227,6 +228,68 @@ vows.describe('OAuth').addBatch({
         'getProtectedResource should correctly define the host headers': function(oa) {
           oa.getProtectedResource("http://somehost.com:8080", "GET", "oauth_token", null, function(){})
         }
+    },
+    'When a proxy is given': {
+      'and HTTPS_PROXY / HTTP_PROXY environment variables are set': {
+        topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1", null, null, 'http://someproxy:8080'),
+        'createClient should return a request object with the given proxy': function(oa) {
+          process.env.HTTPS_PROXY = 'https://ssl-proxy-from-env:443';
+          process.env.HTTP_PROXY  = 'http://proxy-from-env:8080';
+
+          var request = oa._createClient(URL.parse('http://somehost.com'), "GET");
+          assert.equal(request.proxy.hostname, "someproxy");
+          assert.equal(request.proxy.protocol, "http:");
+          assert.equal(request.proxy.port, "8080");
+        }
+      }
+    },
+    'When NULL is given as a proxy': {
+      'and HTTPS_PROXY / HTTP_PROXY environment variables are set': {
+        topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1", null, null, null),
+        'createClient should return a request object with no proxy': function(oa) {
+          process.env.HTTPS_PROXY = 'https://ssl-proxy-from-env:443';
+          process.env.HTTP_PROXY  = 'http://proxy-from-env:8080';
+
+          var request = oa._createClient(URL.parse('http://somehost.com'), "GET");
+          assert.isUndefined(request.proxy);
+        }
+      }
+    },
+    'When no proxy is given': {
+      'and HTTPS_PROXY / HTTP_PROXY environment variables are set': {
+        topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1", null, null),
+        'createClient should return a request object with HTTPS_PROXY as proxy': function(oa) {
+          process.env.HTTPS_PROXY = 'https://ssl-proxy-from-env:443';
+          process.env.HTTP_PROXY  = 'http://proxy-from-env:8080';
+
+          var request = oa._createClient(URL.parse('http://somehost.com'), "GET");
+          assert.equal(request.proxy.hostname, "ssl-proxy-from-env");
+          assert.equal(request.proxy.protocol, "https:");
+          assert.equal(request.proxy.port, "443");
+        }
+      },
+      'and only HTTP_PROXY environment variable is set': {
+        topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1", null, null),
+        'createClient should return a request object with HTTP_PROXY as proxy': function(oa) {
+          delete process.env.HTTPS_PROXY;
+          process.env.HTTP_PROXY  = 'http://proxy-from-env:8080';
+
+          var request = oa._createClient(URL.parse('http://somehost.com'), "GET");
+          assert.equal(request.proxy.hostname, "proxy-from-env");
+          assert.equal(request.proxy.protocol, "http:");
+          assert.equal(request.proxy.port, "8080");
+        }
+      },
+      'and no proxy environment variable is set': {
+        topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1", null, null),
+        'createClient should return a request object with no proxy': function(oa) {
+          delete process.env.HTTPS_PROXY;
+          delete process.env.HTTP_PROXY;
+
+          var request = oa._createClient(URL.parse('http://somehost.com'), "GET");
+          assert.isUndefined(request.proxy);
+        }
+      }
     },
     'When building the OAuth Authorization header': {
       topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"), 
