@@ -213,10 +213,10 @@ vows.describe('OAuth').addBatch({
           var oa= new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
           mockProvider= {};
 
-          oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+          oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
             assert.equal(headers.Host, "somehost.com:8080");
-            assert.equal(hostname, "somehost.com");
-            assert.equal(port, "8080");
+            assert.equal(parsedUrl.hostname, "somehost.com");
+            assert.equal(parsedUrl.port, "8080");
             return {
               on: function() {},
               end: function() {}
@@ -336,7 +336,7 @@ vows.describe('OAuth').addBatch({
             var op= oa._createClient;
             try {
               var callbackCalled= false;
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+              oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
                 assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
                 return {
                   write: function(data){
@@ -367,7 +367,7 @@ vows.describe('OAuth').addBatch({
              var op= oa._createClient;
              try {
                var callbackCalled= false;
-               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+               oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
                  assert.equal(headers["Content-length"], testStringBytesLength);
                  return {
                    write: function(data){
@@ -392,7 +392,7 @@ vows.describe('OAuth').addBatch({
               var op= oa._createClient;
               try {
                 var callbackCalled= false;
-                oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
                   assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
                   assert.equal(headers["Content-length"], 23);
                   return {
@@ -418,7 +418,7 @@ vows.describe('OAuth').addBatch({
                var op= oa._createClient;
                try { 
                  var callbackCalled= false;
-                 oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                 oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
                    assert.equal(headers["Content-Type"], "unicorn/encoded");
                    assert.equal(headers["Content-length"], 23);
                    return {
@@ -512,7 +512,7 @@ vows.describe('OAuth').addBatch({
              var op= oa._createClient;
              try {
                var callbackCalled= false;
-               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+               oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
                  assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
                  return {
                    write: function(data) {
@@ -535,7 +535,7 @@ vows.describe('OAuth').addBatch({
                 var op= oa._createClient;
                 try {
                   var callbackCalled= false;
-                  oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                  oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
                     assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
                     assert.equal(headers["Content-length"], 23);
                     return {
@@ -558,7 +558,7 @@ vows.describe('OAuth').addBatch({
                 var op= oa._createClient;
                 try { 
                   var callbackCalled= false;
-                  oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                  oa._createClient= function( parsedUrl, method, headers, sshEnabled ) {
                     assert.equal(headers["Content-Type"], "unicorn/encoded");
                     assert.equal(headers["Content-length"], 23);  
                     return {
