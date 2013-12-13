@@ -19,8 +19,8 @@ vows.describe('OAuth2').addBatch({
         },
         'we should not include access token in both querystring and headers (favours headers if specified)': function (oa) {
             oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
-            oa._executeRequest= function( http_library, options, post_body, callback) {
-              callback(null, url.parse(options.path, true).query, options.headers);
+            oa._executeRequest= function( options, callback) {
+              callback(null, url.parse(options.uri, true).query, options.headers);
             };
 
             oa._request("GET", "http://foo/", {"Authorization":"Bearer BadNews"}, null, "accessx",  function(error, query, headers) {
@@ -30,11 +30,11 @@ vows.describe('OAuth2').addBatch({
         },
         'we should include access token in the querystring if no Authorization header present to override it': function (oa) {
            oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
-           oa._executeRequest= function( http_library, options, post_body, callback) {
-             callback(null, url.parse(options.path, true).query, options.headers);
+           oa._executeRequest= function( options, callback) {
+              callback(null, url.parse(options.uri, true).query, options.headers);
            };
            oa._request("GET", "http://foo/", {}, null, "access",  function(error, query, headers) {
-             assert.ok( 'access_token' in query, "access_token not present in query");
+              assert.ok( 'access_token' in query, "access_token not present in query");
               assert.ok( !('Authorization' in headers), "Authorization in headers");
             });
         },
@@ -126,9 +126,75 @@ vows.describe('OAuth2').addBatch({
       topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
           { 'SomeHeader': '123' }),
       'When calling get': {
-        'we should see the custom headers mixed into headers property in options passed to http-library' : function(oa) {
-          oa._executeRequest= function( http_library, options, callback ) {
+        'we should see the custom headers mixed into headers property in options passed to request' : function(oa) {
+          oa._executeRequest= function( options, callback ) {
             assert.equal(options.headers["SomeHeader"], "123");
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'Given an OAuth2 instance with clientId, clientSecret and proxy': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          undefined, 'http://someproxy:8080'),
+      'When calling get with HTTPS_PROXY / HTTP_PROXY environment variables set': {
+        'we should see the given proxy in options passed to request' : function(oa) {
+          process.env.HTTPS_PROXY = 'https://ssl-proxy-from-env:443';
+          process.env.HTTP_PROXY  = 'http://proxy-from-env:8080';
+
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(options.proxy, "http://someproxy:8080");
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'Given an OAuth2 instance with clientId, clientSecret and NULL as proxy': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          undefined, null),
+      'When calling get with HTTPS_PROXY / HTTP_PROXY environment variables set': {
+        'we should not have a proxy in options passed to request' : function(oa) {
+          process.env.HTTPS_PROXY = 'https://ssl-proxy-from-env:443';
+          process.env.HTTP_PROXY  = 'http://proxy-from-env:8080';
+
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(options.proxy, undefined);
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'Given an OAuth2 instance with clientId, clientSecret and undefined proxy': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          undefined, undefined),
+      'When calling get with HTTPS_PROXY and HTTP_PROXY environment variables set': {
+        'we should see HTTPS_PROXY as proxy in options passed to request' : function(oa) {
+          process.env.HTTPS_PROXY = 'https://ssl-proxy-from-env:443';
+          process.env.HTTP_PROXY  = 'http://proxy-from-env:8080';
+
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(options.proxy, process.env.HTTPS_PROXY);
+          };
+          oa.get("", {});
+        }
+      },
+      'When calling get with only HTTP_PROXY environment variable set': {
+        'we should see HTTP_PROXY as proxy in options passed to request' : function(oa) {
+          delete process.env.HTTPS_PROXY;
+          process.env.HTTP_PROXY = 'http://proxy-from-env:8080';
+
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(options.proxy, process.env.HTTP_PROXY);
+          };
+          oa.get("", {});
+        }
+      },
+      'When calling get with no environment variable set': {
+        'we should not have a proxy in options passed to request' : function(oa) {
+          delete process.env.HTTPS_PROXY;
+          delete process.env.HTTP_PROXY;
+          oa._executeRequest= function( options, callback ) {
+            assert.equal(options.proxy, undefined);
           };
           oa.get("", {});
         }
