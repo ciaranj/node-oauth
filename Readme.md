@@ -75,6 +75,11 @@ describe('OAuth2',function(){
 Change History
 ============== 
 
+* 0.9.11
+    - OAuth2:  No longer sends the type=webserver argument with the OAuth2 requests (thank you bendiy)
+    - OAuth2:  Provides a default (and overrideable) User-Agent header (thanks to Andrew Martens & Daniel Mahlow)
+    - OAuth1:  New followRedirects client option (true by default) (thanks to Pieter Joost van de Sande)
+    - OAuth1:  Adds RSA-SHA1 support (thanks to Jeffrey D. Van Alstine  & Michael Garvin &  Andreas Knecht)
 * 0.9.10
     - OAuth2:   Addresses 2 issues that came in with 0.9.9, #129 & #125 (thank you José F. Romaniello)
 * 0.9.9
@@ -156,3 +161,10 @@ Contributors (In no particular order)
 * rolandboon - http://rolandboon.com
 * Brian Park - http://github.com/yaru22
 * José F. Romaniello - http://github.com/jfromaniello
+* bendiy - https://github.com/bendiy
+* Andrew Martins - http://www.andrewmartens.com
+* Daniel Mahlow - https://github.com/dmahlow
+* Pieter Joost van de Sande - https://github.com/pjvds
+* Jeffrey D. Van Alstine
+* Michael Garvin
+* Andreas Knecht
