@@ -1,6 +1,6 @@
 { "name" : "oauth-tunnel"
 , "description" : "Tunnel integration for oauth lib, make proxy painless."
-, "version" : "0.0.1"
+, "version" : "0.0.2"
 , "directories" : { "lib" : "./lib" }
 , "main" : "index.js"
 , "author" : "Ciaran Jessup <ciaranj@gmail.com> Julien Valéry <darul75@gmail.com>"
@@ -9,10 +9,10 @@
 	"tunnel": "0.0.2"	
 }
 , "devDependencies": {
-    "vows": "0.5.x"
+    "mocha": ""
   }
 , "scripts": {
-    "test": "make test"
+    "test": "mocha tests/*.js"
   }
 , "licenses" :
   [ { "type" : "MIT"
