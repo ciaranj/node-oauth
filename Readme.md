@@ -1,11 +1,9 @@
-# Oauth-tunnel [![NPM version](https://badge.fury.io/js/oauth-tunnel.png)](http://badge.fury.io/js/oauth-tunnel) [![Build Status](https://travis-ci.org/darul75/oauth-tunnel.png?branch=master)](https://travis-ci.org/darul75/oauth-tunnel) [![Total views](https://sourcegraph.com/api/repos/github.com/darul75/oauth-tunnel/counters/views.png)](https://sourcegraph.com/github.com/darul75/node-oauth-tunnel)
-
+# Oauth-tunnel [![NPM version](https://badge.fury.io/js/oauth-tunnel.png)](http://badge.fury.io/js/oauth-tunnel) [![Build Status](https://travis-ci.org/darul75/node-oauth-tunnel.png?branch=master)](https://travis-ci.org/darul75/node-oauth-tunnel)
 
 Fork for oauth with tunnel (for proxy) integration
 
 * `oauth`  https://github.com/ciaranj/node-oauth
 * `tunnel` https://github.com/koichik/node-tunnel
-
 
 ## Why ?
 
