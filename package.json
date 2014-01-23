@@ -1,6 +1,6 @@
 { "name" : "oauth-tunnel"
 , "description" : "Tunnel integration for oauth lib, make proxy painless."
-, "version" : "0.0.2"
+, "version" : "0.0.3"
 , "directories" : { "lib" : "./lib" }
 , "main" : "index.js"
 , "author" : "Ciaran Jessup <ciaranj@gmail.com> Julien Valéry <darul75@gmail.com>"
