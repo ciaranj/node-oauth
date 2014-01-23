@@ -1,5 +1,5 @@
-{ "name" : "node-oauth-tunnel"
-, "description" : "Library for interacting with OAuth 1.0, 1.0A, 2 and Echo.  Provides simplified client access and allows for construction of more complex apis and OAuth providers."
+{ "name" : "oauth-tunnel"
+, "description" : "Tunnel integration for oauth lib, make proxy painless."
 , "version" : "0.0.1"
 , "directories" : { "lib" : "./lib" }
 , "main" : "index.js"
