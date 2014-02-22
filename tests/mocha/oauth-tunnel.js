@@ -1,8 +1,8 @@
 describe('tunnel with oauth',function() {
   var http = require('http');
   var net = require('net');
-  var OAuth= require('../lib/oauth');
-  var OAuth2= require('../lib/oauth2');
+  var OAuth= require('../../lib/oauth');
+  var OAuth2= require('../../lib/oauth2');
 
 
   // CREATE PROXY
