@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 { "name" : "oauth-tunnel"
 , "description" : "Tunnel integration for oauth lib, make proxy painless."
 , "keywords": [
@@ -8,10 +9,15 @@
     "nodejs"    
 ]
 , "version" : "0.0.4"
+=======
+{ "name" : "oauth"
+, "description" : "Library for interacting with OAuth 1.0, 1.0A, 2 and Echo.  Provides simplified client access and allows for construction of more complex apis and OAuth providers."
+, "version" : "0.9.10"
+>>>>>>> parent of 8073d11... Update package.json
 , "directories" : { "lib" : "./lib" }
 , "main" : "index.js"
-, "author" : "Ciaran Jessup <ciaranj@gmail.com> Julien Valéry <darul75@gmail.com>"
-, "repository" : { "type":"git", "url":"http://github.com/darul75/node-oauth-tunnel.git" }
+, "author" : "Ciaran Jessup <ciaranj@gmail.com>"
+, "repository" : { "type":"git", "url":"http://github.com/ciaranj/node-oauth.git" }
 , "dependencies": {
 	"tunnel": "0.0.2"	
 }
