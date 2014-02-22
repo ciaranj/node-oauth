@@ -9,10 +9,11 @@
 	"tunnel": "0.0.2"	
 }
 , "devDependencies": {
-    "vows": "0.5.x"
+    "vows": "0.5.x",
+    "mocha": ""
   }
 , "scripts": {
-    "test": "make test"
+    "test": "mocha tests/*.js"
   }
 , "licenses" :
   [ { "type" : "MIT"
