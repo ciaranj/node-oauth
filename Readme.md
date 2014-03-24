@@ -22,7 +22,7 @@ To run examples/tests insall Mocha `$ npm install -g mocha` and run `$ mocha you
 
 ```javascript
 describe('OAuth1.0',function(){
-  var OAuth = require('OAuth');
+  var OAuth = require('oauth');
 
   it('tests trends Twitter API v1.1',function(done){
     var oauth = new OAuth.OAuth(
@@ -50,7 +50,7 @@ describe('OAuth1.0',function(){
 ## OAuth2.0 
 ```javascript
 describe('OAuth2',function(){
-  var OAuth = require('OAuth');
+  var OAuth = require('oauth');
 
    it('gets bearer token', function(done){
      var OAuth2 = OAuth.OAuth2;    
