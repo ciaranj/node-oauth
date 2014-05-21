@@ -331,7 +331,57 @@ vows.describe('OAuth').addBatch({
             }
           }
         },
-        'if the post_body is not a string' : {
+        'if the post_body is a buffer' : {
+          "It should be passed through as is, and the original content-type (if specified) should be passed through": function(oa) {
+            var op= oa._createClient;
+            try {
+              var callbackCalled= false;
+              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                assert.equal(headers["Content-Type"], "image/jpeg")
+                return {
+                  write: function(data){
+                    callbackCalled= true;
+                    assert.equal(data.length, 4);
+                  },
+                  on: function() {},
+                  end: function() {
+                  }
+                };
+              }
+              var request= oa.post("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]), "image/jpeg")
+              assert.equal(callbackCalled, true);
+            }
+            finally {
+              oa._createClient= op;
+            }
+          },
+          "It should be passed through as is, and no content-type is specified.": function(oa) {
+            //Should probably actually set application/octet-stream, but to avoid a change in behaviour
+            // will just document (here) that the library will set it to application/x-www-form-urlencoded
+            var op= oa._createClient;
+            try {
+              var callbackCalled= false;
+              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
+                return {
+                  write: function(data){
+                    callbackCalled= true;
+                    assert.equal(data.length, 4);
+                  },
+                  on: function() {},
+                  end: function() {
+                  }
+                };
+              }
+              var request= oa.post("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]))
+              assert.equal(callbackCalled, true);
+            }
+            finally {
+              oa._createClient= op;
+            }
+          }
+        },
+        'if the post_body is not a string or a buffer' : {
           "It should be url encoded and the content type set to be x-www-form-urlencoded" : function(oa) {
             var op= oa._createClient;
             try {
@@ -501,6 +551,56 @@ vows.describe('OAuth').addBatch({
                var request= oa.put("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){})
                assert.equal(callbackCalled, 2);
                assert.isUndefined(request);
+             }
+             finally {
+               oa._createClient= op;
+             }
+           }
+         },
+         'if the post_body is a buffer' : {
+           "It should be passed through as is, and the original content-type (if specified) should be passed through": function(oa) {
+             var op= oa._createClient;
+             try {
+               var callbackCalled= false;
+               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                 assert.equal(headers["Content-Type"], "image/jpeg")
+                 return {
+                   write: function(data){
+                     callbackCalled= true;
+                     assert.equal(data.length, 4);
+                   },
+                   on: function() {},
+                   end: function() {
+                   }
+                 };
+               }
+               var request= oa.put("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]), "image/jpeg")
+               assert.equal(callbackCalled, true);
+             }
+             finally {
+               oa._createClient= op;
+             }
+           },
+           "It should be passed through as is, and no content-type is specified.": function(oa) {
+             //Should probably actually set application/octet-stream, but to avoid a change in behaviour
+             // will just document (here) that the library will set it to application/x-www-form-urlencoded
+             var op= oa._createClient;
+             try {
+               var callbackCalled= false;
+               oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                 assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded")
+                 return {
+                   write: function(data){
+                     callbackCalled= true;
+                     assert.equal(data.length, 4);
+                   },
+                   on: function() {},
+                   end: function() {
+                   }
+                 };
+               }
+               var request= oa.put("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]))
+               assert.equal(callbackCalled, true);
              }
              finally {
                oa._createClient= op;
