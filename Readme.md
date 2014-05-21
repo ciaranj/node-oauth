@@ -6,6 +6,8 @@ Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/examp
 
 Also provides rudimentary OAuth2 support, tested against facebook, github, foursquare, google and Janrain.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
+[![Clone in Koding](http://learn.koding.com/btn/clone_d.png)][koding]
+[koding]: https://koding.com/Teamwork?import=https://github.com/ciaranj/node-oauth/archive/master.zip&c=git1
 
 Installation
 ============== 
@@ -22,7 +24,7 @@ To run examples/tests insall Mocha `$ npm install -g mocha` and run `$ mocha you
 
 ```javascript
 describe('OAuth1.0',function(){
-  var OAuth = require('OAuth');
+  var OAuth = require('oauth');
 
   it('tests trends Twitter API v1.1',function(done){
     var oauth = new OAuth.OAuth(
@@ -36,7 +38,7 @@ describe('OAuth1.0',function(){
     );
     oauth.get(
       'https://api.twitter.com/1.1/trends/place.json?id=23424977',
-      'your user toke for this app', //test user token
+      'your user token for this app', //test user token
       'your user secret for this app', //test user secret            
       function (e, data, res){
         if (e) console.error(e);        
@@ -50,7 +52,7 @@ describe('OAuth1.0',function(){
 ## OAuth2.0 
 ```javascript
 describe('OAuth2',function(){
-  var OAuth = require('OAuth');
+  var OAuth = require('oauth');
 
    it('gets bearer token', function(done){
      var OAuth2 = OAuth.OAuth2;    
@@ -75,6 +77,11 @@ describe('OAuth2',function(){
 Change History
 ============== 
 
+* 0.9.11
+    - OAuth2:  No longer sends the type=webserver argument with the OAuth2 requests (thank you bendiy)
+    - OAuth2:  Provides a default (and overrideable) User-Agent header (thanks to Andrew Martens & Daniel Mahlow)
+    - OAuth1:  New followRedirects client option (true by default) (thanks to Pieter Joost van de Sande)
+    - OAuth1:  Adds RSA-SHA1 support (thanks to Jeffrey D. Van Alstine  & Michael Garvin &  Andreas Knecht)
 * 0.9.10
     - OAuth2:   Addresses 2 issues that came in with 0.9.9, #129 & #125 (thank you José F. Romaniello)
 * 0.9.9
@@ -156,3 +163,10 @@ Contributors (In no particular order)
 * rolandboon - http://rolandboon.com
 * Brian Park - http://github.com/yaru22
 * José F. Romaniello - http://github.com/jfromaniello
+* bendiy - https://github.com/bendiy
+* Andrew Martins - http://www.andrewmartens.com
+* Daniel Mahlow - https://github.com/dmahlow
+* Pieter Joost van de Sande - https://github.com/pjvds
+* Jeffrey D. Van Alstine
+* Michael Garvin
+* Andreas Knecht

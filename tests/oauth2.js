@@ -125,11 +125,88 @@ vows.describe('OAuth2').addBatch({
     'Given an OAuth2 instance with clientId, clientSecret and customHeaders': {
       topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
           { 'SomeHeader': '123' }),
-      'When calling get': {
+      'When GETing': {
         'we should see the custom headers mixed into headers property in options passed to http-library' : function(oa) {
           oa._executeRequest= function( http_library, options, callback ) {
             assert.equal(options.headers["SomeHeader"], "123");
           };
+          oa.get("", {});
+        },
+      }
+    },
+    'Given an OAuth2 instance with a clientId and clientSecret': {
+      topic: new OAuth2("clientId", "clientSecret"),
+        'When POSTing': {
+          'we should see a given string being sent to the request' : function(oa) {
+            var bodyWritten= false;
+            oa._chooseHttpLibrary= function() {
+              return {
+                request: function(options) {
+                  assert.equal(options.headers["Content-Type"], "text/plain");
+                  assert.equal(options.headers["Content-Length"], 26);
+                  assert.equal(options.method, "POST");
+                  return  {
+                    end: function() {},
+                    on: function() {},
+                    write: function(body) {
+                      bodyWritten= true;
+                      assert.isNotNull(body);
+                      assert.equal(body, "THIS_IS_A_POST_BODY_STRING")
+                    }
+                  }
+                }
+              };
+            }
+            oa._request("POST", "", {"Content-Type":"text/plain"}, "THIS_IS_A_POST_BODY_STRING");
+            assert.ok( bodyWritten );
+          }
+        },
+        'When PUTing': {
+          'we should see a given string being sent to the request' : function(oa) {
+            var bodyWritten= false;
+            oa._chooseHttpLibrary= function() {
+              return {
+                request: function(options) {
+                  assert.equal(options.headers["Content-Type"], "text/plain");
+                  assert.equal(options.headers["Content-Length"], 25);
+                  assert.equal(options.method, "PUT");
+                  return  {
+                    end: function() {},
+                    on: function() {},
+                    write: function(body) {
+                      bodyWritten= true;
+                      assert.isNotNull(body);
+                      assert.equal(body, "THIS_IS_A_PUT_BODY_STRING")
+                    }
+                  }
+                }
+              };
+            }
+            oa._request("PUT", "", {"Content-Type":"text/plain"}, "THIS_IS_A_PUT_BODY_STRING");
+            assert.ok( bodyWritten );
+          }
+        }
+    },
+    'When the user passes in the User-Agent in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          { 'User-Agent': '123Agent' }),
+      'When calling get': {
+        'we should see the User-Agent mixed into headers property in options passed to http-library' : function(oa) {
+          oa._executeRequest= function( http_library, options, callback ) {
+            assert.equal(options.headers["User-Agent"], "123Agent");
+          };
+          oa.get("", {});
+        }
+      }
+    },
+    'When the user does not pass in a User-Agent in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+        undefined),
+      'When calling get': {
+        'we should see the default User-Agent mixed into headers property in options passed to http-library' : function(oa) {
+          oa._executeRequest= function( http_library, options, callback ) {
+            assert.equal(options.headers["User-Agent"], "Node-oauth");
+            };
           oa.get("", {});
         }
       }
