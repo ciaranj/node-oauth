@@ -156,6 +156,118 @@ vows.describe('OAuth2').addBatch({
             };
           oa.get("", {});
         }
+      },
+      'When we use the authorization header': {
+        'and call post with the default authorization method': {
+          'we should pass the authorization header with Bearer method and value of the access_token, _request should be passed a null access_token' : function(oa) {
+            oa._request= function(method, url, headers, post_body, access_token, callback) {
+              assert.equal(headers["Authorization"], "Bearer abcd5");
+              assert.isNull( access_token );
+            };
+            oa.useAuthorizationHeaderforGET(true);
+            oa.post("", "abcd5");
+          }
+        },
+        'and call post with the authorization method set to Basic': {
+          'we should pass the authorization header with Basic method and value of the access_token, _request should be passed a null access_token' : function(oa) {
+            oa._request= function(method, url, headers, post_body, access_token, callback) {
+              assert.equal(headers["Authorization"], "Basic cdg2");
+              assert.isNull( access_token );
+            };
+            oa.useAuthorizationHeaderforGET(true);
+            oa.setAuthMethod("Basic");
+            oa.post("", "cdg2");
+          }
+        }
+      },
+      'When we do not use the authorization header': {
+        'and call post': {
+          'we should pass NOT provide an authorization header and the access_token should be being passed to _request' : function(oa) {
+            oa._request= function(method, url, headers, post_body, access_token, callback) {
+              assert.isUndefined(headers["Authorization"]);
+              assert.equal( access_token, "abcd5" );
+            };
+            oa.useAuthorizationHeaderforGET(false);
+            oa.post("", "abcd5");
+          }
+        }
+      }
+    },
+    'Given an OAuth2 instance with clientId, clientSecret and customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          { 'SomeHeader': '123' }),
+      'When calling post': {
+        'we should see the custom headers mixed into headers property in options passed to http-library' : function(oa) {
+          oa._executeRequest= function( http_library, options, callback ) {
+            assert.equal(options.headers["SomeHeader"], "123");
+          };
+          oa.post("", {});
+        }
+      }
+    },
+    'When the user does not pass in a Content-Type in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+        undefined),
+      'When calling post': {
+        'we should see the default Content-Type mixed into headers property in options passed to http-library and post_data as JSON string' : function(oa) {
+		  var data = {
+			  'a': 1
+		  }
+		  var data_str = '{"a":1}';
+          oa._executeRequest= function( http_library, options, post_body, callback ) {
+            assert.equal(options.headers["Content-Type"], "application/json");
+            assert.equal(post_body, data_str);
+          };
+          oa.post("", {}, data);
+        }
+      }
+    },
+    'When the user passes in a Content-Type in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          { 'Content-Type': 'application/x-www-form-urlencoded' }),
+      'When calling post': {
+        'we should see the default Content-Type mixed into headers property in options passed to http-library and post_data as JSON string' : function(oa) {
+		  var data = {
+			  'a': 1
+		  }
+		  var data_str = 'a=1';
+          oa._executeRequest= function( http_library, options, post_body, callback ) {
+            assert.equal(options.headers["Content-Type"], "application/x-www-form-urlencoded");
+            assert.equal(post_body, data_str);
+          };
+          oa.post("", {}, data);
+        }
+      }
+    },
+    'When the user does not pass in a Content-Type in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+        undefined),
+      'When calling post': {
+        'we should see the default Content-Type mixed into headers property in options passed to http-library and post_data as JSON string' : function(oa) {
+		  var data = {
+			  'a': 1
+		  }
+		  var data_str = '{"a":1}';
+          oa._executeRequest= function( http_library, options, post_body, callback ) {
+            assert.equal(options.headers["Content-Type"], "application/json");
+            assert.equal(post_body, data_str);
+          };
+          oa.post("", {}, data);
+        }
+      }
+    },
+    'When the user passes in a Content-Type in customHeaders': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+          { 'Content-Type': 'application/custom' }),
+      'When calling post': {
+        'we should see the default Content-Type mixed into headers property in options passed to http-library and post_data as JSON string' : function(oa) {
+		  var data = "this is some content as a string";
+          oa._executeRequest= function( http_library, options, post_body, callback ) {
+            assert.equal(options.headers["Content-Type"], "application/custom");
+            assert.equal(post_body, data);
+          };
+          oa.post("", {}, data);
+        }
       }
     }
 }).export(module);
