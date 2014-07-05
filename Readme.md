@@ -70,8 +70,9 @@ describe('OAuth2',function(){
        function (e, access_token, refresh_token, results){
        console.log('bearer: ',access_token);
        done();
-     });
-   });
+      });    
+  });
+});
 ```
 
 Change History
