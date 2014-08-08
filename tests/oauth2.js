@@ -1,6 +1,5 @@
 var vows = require('vows'),
     assert = require('assert'),
-    https = require('https'),
     OAuth2= require('../lib/oauth2').OAuth2,
     url = require('url');
 
@@ -209,6 +208,15 @@ vows.describe('OAuth2').addBatch({
             };
           oa.get("", {});
         }
+      }
+    },
+    'HTTPS URL connection testing, ': {
+      topic: function() {
+        var oa = new OAuth2("clientId", "clientSecret");
+        oa._request('GET', 'https://www.bing.com/', {}, null, '', this.callback);
+      },
+      'we should correctly get the response code == 200': function(error, result, response) {
+        assert.equal(response.statusCode, 200);
       }
     }
 }).export(module);
