@@ -1,7 +1,8 @@
 var vows = require('vows'),
     assert = require('assert'),
     OAuth2= require('../lib/oauth2').OAuth2,
-    url = require('url');
+    url = require('url'),
+    http = require('http');
 
 vows.describe('OAuth2').addBatch({
     'Given an OAuth2 instance with clientId and clientSecret, ': {
@@ -217,6 +218,19 @@ vows.describe('OAuth2').addBatch({
       },
       'we should correctly get the response code == 200': function(error, result, response) {
         assert.equal(response.statusCode, 200);
+      }
+    },
+    'OAuth Status codes, ': {
+      topic: function() {
+        var oa = new OAuth2("clientId", "clientSecret");
+        http.createServer(function (req, res) {
+          res.writeHead(201);
+          res.end('Hello World');
+        }).listen(1337, '127.0.0.1');
+        oa._request('GET', 'http://127.0.0.1:1337', {}, null, '', this.callback);
+      },
+      'we should accept a response code of 201': function(error, result, response) {
+        assert.equal(error, null);
       }
     }
 }).export(module);
