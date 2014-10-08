@@ -48,6 +48,29 @@ describe('OAuth1.0',function(){
   });
 });
 ```
+### Forcing ```.get()``` to return binary data
+To force the ```.get()``` (or any other function that uses ```_performSecureRequest()``` to return data as binary, simply pass the url as an object adding ```binary:true```
+
+eg:
+
+```javascript
+oauth.get(
+  {
+    url: 'https://api.twitter.com/1.1/trends/place.json?id=23424977',
+    binary: true
+  },
+  'your user toke for this app', //test user token
+  'your user secret for this app', //test user secret            
+  function (e, data, res){
+    if (e) console.error(e);        
+    console.log(data); //binary data
+    //save it to a file:
+    fs.writeFile('somefilename.jpg', data, function (err) {
+      if(err) return console.log(err);
+      console.log("The file was saved!");
+    });  
+  });  
+```
 
 ## OAuth2.0 
 ```javascript
