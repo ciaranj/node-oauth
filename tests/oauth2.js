@@ -218,5 +218,14 @@ vows.describe('OAuth2').addBatch({
       'we should correctly get the response code == 200': function(error, result, response) {
         assert.equal(response.statusCode, 200);
       }
+    },
+    'When the user gets an error back from ._request method' : {
+      topic: function(){
+        var oa = new OAuth2('clientId', 'clientSecret');
+        oa._request('POST', 'https://www.google.com/404', {}, null, '', this.callback);
+      },
+      'we should see the URL in the error': function(error, result, response){
+        assert.equal(error.url, 'www.google.com/404');
+      }
     }
 }).export(module);
