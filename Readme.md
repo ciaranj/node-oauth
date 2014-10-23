@@ -79,7 +79,23 @@ API Documentation
 
 ## OAuth 1.0
 
-`var oauth = new OAuth.OAuth(requestUrl, accessUrl, consumerKey, consumerSecret, version, authorize_callback, signatureMethod, nonceSize, customHeaders)`
+### Constructor
+
+```js
+var oauth = new OAuth.OAuth(
+  requestUrl,
+  accessUrl,
+  consumerKey,
+  consumerSecret,
+  version,
+  authorize_callback,
+  signatureMethod,
+  nonceSize,
+  customHeaders
+)
+```
+
+### Methods
 
 `oauth.setClientOptions(options)`
 
@@ -101,7 +117,20 @@ API Documentation
 
 ## OAuth 2.0
 
-`var oauth2 = new OAuth2(clientId, clientSecret, baseSite, authorizePath, accessTokenPath, customHeaders)`
+### Constructor
+
+```js
+var oauth2 = new OAuth2(
+  clientId,
+  clientSecret,
+  baseSite,
+  authorizePath,
+  accessTokenPath,
+  customHeaders
+)
+```
+
+### Methods
 
 `oauth2.setAccessTokenName(name)`
 
