@@ -99,21 +99,21 @@ var oauth = new OAuth.OAuth(
 
 `oauth.setClientOptions(options)`
 
-`oauth.getOAuthAccessToken(oauth_token, oauth_token_secret, oauth_verifier, callback)`
+`oauth.getOAuthAccessToken(token, token_secret, verifier, callback)`
 
-`oauth.delete(url, oauth_token, oauth_token_secret, callback)`
+`oauth.delete(url, token, token_secret, callback)`
 
-`oauth.get(url, oauth_token, oauth_token_secret, callback)`
+`oauth.get(url, token, token_secret, callback)`
 
-`oauth.put(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback)`
+`oauth.put(url, token, token_secret, body, content_type, callback)`
 
-`oauth.post(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback)`
+`oauth.post(url, token, token_secret, body, content_type, callback)`
 
-`oauth.getOAuthRequestToken( extraParams, callback )`
+`oauth.getOAuthRequestToken(extraParams, callback)`
 
-`oauth.signUrl(url, oauth_token, oauth_token_secret, method)`
+`oauth.signUrl(url, token, token_secret, method)`
 
-`oauth.authHeader(url, oauth_token, oauth_token_secret, method)`
+`oauth.authHeader(url, token, token_secret, method)`
 
 ## OAuth 2.0
 
