@@ -79,28 +79,45 @@ API Documentation
 
 ## OAuth 1.0
 
-### `var oauth = new OAuth.OAuth(requestUrl, accessUrl, consumerKey, consumerSecret, version, authorize_callback, signatureMethod, nonceSize, customHeaders)`
-### `oauth.setClientOptions(options)`
-### `oauth.getOAuthAccessToken(oauth_token, oauth_token_secret, oauth_verifier, callback)`
-### `oauth.delete(url, oauth_token, oauth_token_secret, callback)`
-### `oauth.get(url, oauth_token, oauth_token_secret, callback)`
-### `oauth.put(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback)`
-### `oauth.post(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback)`
-### `oauth.getOAuthRequestToken( extraParams, callback )`
-### `oauth.signUrl(url, oauth_token, oauth_token_secret, method)`
-### `oauth.authHeader(url, oauth_token, oauth_token_secret, method)`
+`var oauth = new OAuth.OAuth(requestUrl, accessUrl, consumerKey, consumerSecret, version, authorize_callback, signatureMethod, nonceSize, customHeaders)`
+
+`oauth.setClientOptions(options)`
+
+`oauth.getOAuthAccessToken(oauth_token, oauth_token_secret, oauth_verifier, callback)`
+
+`oauth.delete(url, oauth_token, oauth_token_secret, callback)`
+
+`oauth.get(url, oauth_token, oauth_token_secret, callback)`
+
+`oauth.put(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback)`
+
+`oauth.post(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback)`
+
+`oauth.getOAuthRequestToken( extraParams, callback )`
+
+`oauth.signUrl(url, oauth_token, oauth_token_secret, method)`
+
+`oauth.authHeader(url, oauth_token, oauth_token_secret, method)`
 
 ## OAuth 2.0
 
-### `var oauth2 = new OAuth2(clientId, clientSecret, baseSite, authorizePath, accessTokenPath, customHeaders)`
-### `oauth2.setAccessTokenName(name)`
-### `oauth2.setAuthMethod(authMethod)`
-### `oauth2.useAuthorizationHeaderforGET(useIt)`
-### `oauth2.buildAuthHeader(token)`
-### `oauth2.getAuthorizeUrl(params)`
-### `oauth2.getOAuthAccessToken(code, params, callback)`
-### `oauth2.getProtectedResource(url, access_token, callback)`
-### `oauth2.get(url, access_token, callback)`
+`var oauth2 = new OAuth2(clientId, clientSecret, baseSite, authorizePath, accessTokenPath, customHeaders)`
+
+`oauth2.setAccessTokenName(name)`
+
+`oauth2.setAuthMethod(authMethod)`
+
+`oauth2.useAuthorizationHeaderforGET(useIt)`
+
+`oauth2.buildAuthHeader(token)`
+
+`oauth2.getAuthorizeUrl(params)`
+
+`oauth2.getOAuthAccessToken(code, params, callback)`
+
+`oauth2.getProtectedResource(url, access_token, callback)`
+
+`oauth2.get(url, access_token, callback)`
 
 Change History
 ============== 
