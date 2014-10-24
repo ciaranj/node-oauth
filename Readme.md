@@ -98,23 +98,37 @@ var oauth = new OAuth.OAuth(
 
 ### Methods
 
-`oauth.setClientOptions(options)`
+**`oauth.setClientOptions(options)`**
 
-`oauth.getOAuthAccessToken(token, token_secret, verifier, callback)`
+**`oauth.getOAuthAccessToken(token, token_secret, verifier, callback)`**
 
-`oauth.delete(url, token, token_secret, callback)`
+**`oauth.delete(url, token, token_secret, callback)`**
 
-`oauth.get(url, token, token_secret, callback)`
+**`oauth.get(url, token, token_secret, callback)`**
 
-`oauth.put(url, token, token_secret, body, content_type, callback)`
+**`oauth.put(url, token, token_secret, body, content_type, callback)`**
 
-`oauth.post(url, token, token_secret, body, content_type, callback)`
+**`oauth.post(url, token, token_secret, body, content_type, callback)`**
 
-`oauth.getOAuthRequestToken(extraParams, callback)`
+**`oauth.getOAuthRequestToken(extraParams, callback)`**
 
-`oauth.signUrl(url, token, token_secret, method)`
+Gets a request token from the OAuth provider and passes that information back to the calling code.
+The callback should expect a function of the following form:
 
-`oauth.authHeader(url, token, token_secret, method)`
+```js
+function(err, token, token_secret, parsedQueryString) {}
+```
+
+This method has optional parameters so can be called in the following 2 ways:
+
+  1. Primary use case: Does a basic request with no extra parameters `getOAuthRequestToken( callbackFunction )`
+  2. As above but allows for provision of extra parameters to be sent as part of the query to the server. `getOAuthRequestToken( extraParams, callbackFunction )`
+
+N.B. This method will HTTP POST verbs by default, if you wish to override this behaviour you will need to provide a requestTokenHttpMethod option when creating the client.
+
+**`oauth.signUrl(url, token, token_secret, method)`**
+
+**`oauth.authHeader(url, token, token_secret, method)`**
 
 ## OAuth 2.0
 
@@ -134,21 +148,21 @@ var oauth2 = new OAuth.OAuth2(
 
 ### Methods
 
-`oauth2.setAccessTokenName(name)`
+**`oauth2.setAccessTokenName(name)`**
 
-`oauth2.setAuthMethod(authMethod)`
+**`oauth2.setAuthMethod(authMethod)`**
 
-`oauth2.useAuthorizationHeaderforGET(useIt)`
+**`oauth2.useAuthorizationHeaderforGET(useIt)`**
 
-`oauth2.buildAuthHeader(token)`
+**`oauth2.buildAuthHeader(token)`**
 
-`oauth2.getAuthorizeUrl(params)`
+**`oauth2.getAuthorizeUrl(params)`**
 
-`oauth2.getOAuthAccessToken(code, params, callback)`
+**`oauth2.getOAuthAccessToken(code, params, callback)`**
 
-`oauth2.getProtectedResource(url, access_token, callback)`
+**`oauth2.getProtectedResource(url, access_token, callback)`**
 
-`oauth2.get(url, access_token, callback)`
+**`oauth2.get(url, access_token, callback)`**
 
 Change History
 ============== 
