@@ -82,6 +82,7 @@ API Documentation
 ### Constructor
 
 ```js
+var OAuth = require('oauth');
 var oauth = new OAuth.OAuth(
   requestUrl,
   accessUrl,
@@ -120,7 +121,8 @@ var oauth = new OAuth.OAuth(
 ### Constructor
 
 ```js
-var oauth2 = new OAuth2(
+var OAuth = require('oauth');
+var oauth2 = new OAuth.OAuth2(
   clientId,
   clientSecret,
   baseSite,
