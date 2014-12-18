@@ -1,5 +1,6 @@
 var vows = require('vows'),
     assert = require('assert'),
+    https = require('https'),
     OAuth2= require('../lib/oauth2').OAuth2,
     url = require('url');
 
@@ -158,6 +159,29 @@ vows.describe('OAuth2').addBatch({
             }
             oa._request("POST", "", {"Content-Type":"text/plain"}, "THIS_IS_A_POST_BODY_STRING");
             assert.ok( bodyWritten );
+          },
+          'we should see a given buffer being sent to the request' : function(oa) {
+            var bodyWritten= false;
+            oa._chooseHttpLibrary= function() {
+              return {
+                request: function(options) {
+                  assert.equal(options.headers["Content-Type"], "application/octet-stream");
+                  assert.equal(options.headers["Content-Length"], 4);
+                  assert.equal(options.method, "POST");
+                  return  {
+                    end: function() {},
+                    on: function() {},
+                    write: function(body) {
+                      bodyWritten= true;
+                      assert.isNotNull(body);
+                      assert.equal(4, body.length)
+                    }
+                  }
+                }
+              };
+            }
+            oa._request("POST", "", {"Content-Type":"application/octet-stream"}, new Buffer([1,2,3,4]));
+            assert.ok( bodyWritten );
           }
         },
         'When PUTing': {
@@ -182,6 +206,29 @@ vows.describe('OAuth2').addBatch({
               };
             }
             oa._request("PUT", "", {"Content-Type":"text/plain"}, "THIS_IS_A_PUT_BODY_STRING");
+            assert.ok( bodyWritten );
+          },
+          'we should see a given buffer being sent to the request' : function(oa) {
+            var bodyWritten= false;
+            oa._chooseHttpLibrary= function() {
+              return {
+                request: function(options) {
+                  assert.equal(options.headers["Content-Type"], "application/octet-stream");
+                  assert.equal(options.headers["Content-Length"], 4);
+                  assert.equal(options.method, "PUT");
+                  return  {
+                    end: function() {},
+                    on: function() {},
+                    write: function(body) {
+                      bodyWritten= true;
+                      assert.isNotNull(body);
+                      assert.equal(4, body.length)
+                    }
+                  }
+                }
+              };
+            }
+            oa._request("PUT", "", {"Content-Type":"application/octet-stream"}, new Buffer([1,2,3,4]));
             assert.ok( bodyWritten );
           }
         }
@@ -208,15 +255,6 @@ vows.describe('OAuth2').addBatch({
             };
           oa.get("", {});
         }
-      }
-    },
-    'HTTPS URL connection testing, ': {
-      topic: function() {
-        var oa = new OAuth2("clientId", "clientSecret");
-        oa._request('GET', 'https://www.bing.com/', {}, null, '', this.callback);
-      },
-      'we should correctly get the response code == 200': function(error, result, response) {
-        assert.equal(response.statusCode, 200);
       }
     }
 }).export(module);
