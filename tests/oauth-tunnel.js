@@ -33,6 +33,7 @@ function onConnect(req, clientSocket, head) {
 
 var twitterConsumerKey = 'gxLbZ89CCGHQQPDWZBAbbQ';
 var twitterConsumerSecret = 'HNmpq2w7pBF3wLKi6qWUUsAw9iisWBMFuwZZpV2gR3w';
+var proxyHost = '127.0.0.1'; // your proxy address
 
 vows.describe('OAuth').addBatch({
   'tunnel with oauth2': {
@@ -47,7 +48,7 @@ vows.describe('OAuth').addBatch({
 
       oauth2.setTunnel({
         proxy: {
-          host: '10.115.100.103', // your proxy address
+          host: proxyHost,
           port: 8080
         }
       });
@@ -80,7 +81,7 @@ vows.describe('OAuth').addBatch({
 
       oauth.setTunnel({
         proxy: {
-          host: '10.115.100.103', // your proxy address
+          host: proxyHost,
           port: 8080
         }
       });
