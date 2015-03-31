@@ -8,6 +8,9 @@
 , "devDependencies": {
     "vows": "0.5.x"
   }
+, "dependencies": {
+    "request": "^2.54.0"
+  }
 , "scripts": {
     "test": "make test"
   }
