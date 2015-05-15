@@ -58,7 +58,7 @@ describe('OAuth2',function(){
      var OAuth2 = OAuth.OAuth2;    
      var twitterConsumerKey = 'your key';
      var twitterConsumerSecret = 'your secret';
-     var oauth2 = new OAuth2(server.config.keys.twitter.consumerKey,
+     var oauth2 = new OAuth2(twitterConsumerKey,
        twitterConsumerSecret, 
        'https://api.twitter.com/', 
        null,
