@@ -77,6 +77,8 @@ describe('OAuth2',function(){
 Change History
 ============== 
 
+* 0.9.13
+    - OAuth2:   Fixes the "createCredentials() is deprecated, use tls.createSecureContext instead" message. (thank you AJ ONeal)
 * 0.9.12
     - OAuth1/2: Can now pass Buffer instance directly for PUTs+POSTs (thank you Evan Prodromou)
     - OAuth1:   Improve interoperability with libraries that mess with the prototype. (thank you Jose Ignacio Andres)
@@ -179,3 +181,4 @@ Contributors (In no particular order)
 * Jeffrey D. Van Alstine
 * Michael Garvin
 * Andreas Knecht
+* AJ ONeal
