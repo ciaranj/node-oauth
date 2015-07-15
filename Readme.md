@@ -8,6 +8,8 @@ Also provides rudimentary OAuth2 support, tested against facebook, github, fours
 
 [![Clone in Koding](http://learn.koding.com/btn/clone_d.png)][koding]
 [koding]: https://koding.com/Teamwork?import=https://github.com/ciaranj/node-oauth/archive/master.zip&c=git1
+[![Pair on Thinkful](https://tf-assets-staging.s3.amazonaws.com/badges/thinkful_repo_badge.svg)][Thinkful]
+[Thinkful]: http://start.thinkful.com/node/?utm_source=github&utm_medium=badge&utm_campaign=node-oauth
 
 Installation
 ============== 
