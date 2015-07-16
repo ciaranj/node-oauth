@@ -120,6 +120,18 @@ vows.describe('OAuth2').addBatch({
             oa.get("", "abcd5");
           }
         }
+      },
+      'When we ignore certificate validation': {
+        'and call get': {
+          'we should see both rejectUnauthorized and agent properties in options set to false and passed to http-library': function(oa) {
+            oa._executeRequest= function(http_library, options, callback) {
+              assert.strictEqual(options.rejectUnauthorized, false);
+              assert.strictEqual(options.agent, false);
+            };
+            oa.ignoreCertificateVerification(false);
+            oa.get("", "abcd5");
+          }
+        }
       }
     },
     'Given an OAuth2 instance with clientId, clientSecret and customHeaders': {
