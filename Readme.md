@@ -76,6 +76,35 @@ describe('OAuth2',function(){
    });
 ```
 
+## Build XOAuth String
+```javascript
+var Imap = require('imap');
+
+describe('Build XOAuth String',function(){
+  var OAuth = require('OAuth');
+
+  it('tests GMail XOAuth API',function(done){
+    var oauth = new OAuth.OAuth(null, null, 'your application consumer key', 'your application secret', '1.0', null, 'HMAC-SHA1'),
+      imap = new Imap({
+        host: 'imap.googlemail.com',
+        port: 993,
+        xoauth: oauth.buildOAuthString('https://mail.google.com/mail/b/' + email + '/imap/', 'your user token for this app', 'your user secret for this app'),
+        secure: true
+      });
+
+    imap.connect(function(err) {
+      imap.getBoxes(function(err, boxes) {
+        if (e) console.error(e);        
+        console.log(require('util').inspect(boxes));
+        imap.logout();
+        done();
+      });
+    });
+ 
+  });
+});
+```
+
 Change History
 ============== 
 
