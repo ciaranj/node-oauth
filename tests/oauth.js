@@ -163,11 +163,18 @@ vows.describe('OAuth').addBatch({
     'When preparing the parameters for use in signing': {
       topic: new OAuth(null, null, null, null, null, null, "HMAC-SHA1"),
       'We need to be wary of node\'s auto object creation from foo[bar] style url parameters' : function(oa) {
-        var result= oa._prepareParameters( "", "", "", "http://foo.com?foo[bar]=xxx&bar[foo]=yyy", {} );
+        var result= oa._prepareParameters( "", "", "", "http://foo.com?foo[bar]=xxx&bar[foo]=yyy&multi=a&multi=b", {} );
         assert.equal( result[0][0], "bar[foo]")
         assert.equal( result[0][1], "yyy")
         assert.equal( result[1][0], "foo[bar]")
         assert.equal( result[1][1], "xxx")
+      },
+      'Make sure multi-value parameters don\'t get turned into foo[bar] style url parameters' : function(oa) {
+        var result= oa._prepareParameters( "", "", "", "http://foo.com?foo=bar&foo=baz", {} );
+        assert.equal( result[0][0], "foo")
+        assert.equal( result[0][1], "bar")
+        assert.equal( result[1][0], "foo")
+        assert.equal( result[1][1], "baz")
       }
     },
     'When signing a url': {
