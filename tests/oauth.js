@@ -68,9 +68,9 @@ vows.describe('OAuth').addBatch({
         'we get a valid oauth signature': function (oa) {
             var signatureBase = "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DRSA-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal";
             var oauthSignature = oa._createSignature(signatureBase, "xyz4992k83j47x0b");
-            
+
             assert.equal( oauthSignature, "qS4rhWog7GPgo4ZCJvUdC/1ZAax/Q4Ab9yOBvgxSopvmKUKp5rso+Zda46GbyN2hnYDTiA/g3P/d/YiPWa454BEBb/KWFV83HpLDIoqUUhJnlXX9MqRQQac0oeope4fWbGlfTdL2PXjSFJmvfrzybERD/ZufsFtVrQKS3QBpYiw=");
-            
+
             //now check that given the public key we can verify this signature
             var verifier = crypto.createVerify("RSA-SHA1").update(signatureBase);
             var valid = verifier.verify(RsaPublicKey, oauthSignature, 'base64');
@@ -238,6 +238,10 @@ vows.describe('OAuth').addBatch({
         'Support variable whitespace separating the arguments': function(oa) {
             oa._oauthParameterSeperator= ", ";
             assert.equal( oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth oauth_consumer_key="consumerkey", oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1272399856", oauth_token="token", oauth_version="1.0", oauth_signature="zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D"');
+        },
+        'Support extra OAuth parameters': function(oa) {
+          oa.setOAuthParams({ "xoauth_requestor_id": "1234" });
+          assert.equal(oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth oauth_consumer_key="consumerkey", oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1272399856", oauth_token="token", oauth_version="1.0", xoauth_requestor_id="1234", oauth_signature="4m9Dhy33e9Lw8vuDKbchj4Mw32A%3D"');
         }
     },
     'When get the OAuth Echo authorization header': {
@@ -566,7 +570,7 @@ vows.describe('OAuth').addBatch({
                oa._createClient= op;
              }
            }
-         },
+         }
        },
        'PUT' : {
          'if no callback is passed' : {
