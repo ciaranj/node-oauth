@@ -68,14 +68,6 @@ vows.describe('OAuth2').addBatch({
           oa.getOAuthAccessToken("xsds23", {} );
         }
       },
-      'When an invalid grant_type parameter is specified': {
-        'we should pass the value of the code argument as the code parameter': function(oa) {
-          oa._request= function(method, url, headers, post_body, access_token, callback) {
-            assert.isTrue( post_body.indexOf("code=xsds23") != -1 );
-          };
-          oa.getOAuthAccessToken("xsds23", {grant_type:"refresh_toucan"} );
-        }
-      },
       'When a grant_type parameter of value "refresh_token" is specified': {
         'we should pass the value of the code argument as the refresh_token parameter, should pass a grant_type parameter, but shouldn\'t pass a code parameter' : function(oa) {
           oa._request= function(method, url, headers, post_body, access_token, callback) {
