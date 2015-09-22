@@ -78,7 +78,8 @@ describe('OAuth2',function(){
 
 Change History
 ============== 
-
+* 0.9.14
+    - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
 * 0.9.13
     - OAuth2:   Fixes the "createCredentials() is deprecated, use tls.createSecureContext instead" message. (thank you AJ ONeal)
 * 0.9.12

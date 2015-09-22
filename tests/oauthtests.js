@@ -1,28 +1,11 @@
 var vows = require('vows'),
     assert = require('assert'),
+    DummyResponse= require('./shared').DummyResponse,
+    DummyRequest= require('./shared').DummyRequest,
     events = require('events'),
     OAuth= require('../lib/oauth').OAuth,
     OAuthEcho= require('../lib/oauth').OAuthEcho,
     crypto = require('crypto');
-
-var DummyResponse =function( statusCode ) {
-    this.statusCode= statusCode;
-    this.headers= {};
-}
-DummyResponse.prototype= events.EventEmitter.prototype;
-DummyResponse.prototype.setEncoding= function() {}
-
-var DummyRequest =function( response ) {
-  this.response=  response;
-}
-DummyRequest.prototype= events.EventEmitter.prototype;
-DummyRequest.prototype.write= function(post_body){}
-DummyRequest.prototype.write= function(post_body){
-  this.emit('response',this.response);
-}
-DummyRequest.prototype.end= function(){
-  this.response.emit('end');
-}
 
 //Valid RSA keypair used to test RSA-SHA1 signature method
 var RsaPrivateKey = "-----BEGIN RSA PRIVATE KEY-----\n" +
