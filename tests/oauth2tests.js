@@ -1,5 +1,7 @@
 var vows = require('vows'),
     assert = require('assert'),
+    DummyResponse= require('./shared').DummyResponse,
+    DummyRequest= require('./shared').DummyRequest,
     https = require('https'),
     OAuth2= require('../lib/oauth2').OAuth2,
     url = require('url');
@@ -7,6 +9,34 @@ var vows = require('vows'),
 vows.describe('OAuth2').addBatch({
     'Given an OAuth2 instance with clientId and clientSecret, ': {
       topic: new OAuth2("clientId", "clientSecret"),
+      'When dealing with the response from the OP': {
+        'we should treat a 201 response as a success': function(oa) {
+          var callbackCalled= false;
+          var http_library= {
+            request: function() {
+              return new DummyRequest(new DummyResponse(201));
+            }
+          };
+          oa._executeRequest( http_library, {}, null, function(err, result, response) {
+            callbackCalled= true;
+            assert.equal(err, null);
+          });
+          assert.ok(callbackCalled);
+        },
+        'we should treat a 200 response as a success': function(oa) {
+          var callbackCalled= false;
+          var http_library= {
+            request: function() {
+              return new DummyRequest(new DummyResponse(200));
+            }
+          };
+          oa._executeRequest( http_library, {}, null, function(err, result, response) {
+            callbackCalled= true;
+            assert.equal(err, null);
+          });
+          assert.ok(callbackCalled);
+        }
+      },
       'When handling the access token response': {
         'we should correctly extract the token if received as form-data': function (oa) {
             oa._request= function( method, url, fo, bar, bleh, callback) {
