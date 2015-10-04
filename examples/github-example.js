@@ -26,7 +26,7 @@ http.createServer(function (req, res) {
      */
     var authURL = oauth2.getAuthorizeUrl({
         redirect_uri: 'http://localhost:8080/code',
-        scope: ['repo', 'user'],
+        scope: 'repo,user',
         state: 'some random string to protect against cross-site request forgery attacks'
     });
 
