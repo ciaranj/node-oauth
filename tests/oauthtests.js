@@ -333,6 +333,7 @@ vows.describe('OAuth').addBatch({
             var request= oa.post("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain")
             assert.isObject(request);
             assert.equal(request.method, "POST");
+            request.on("error", function (r) {});
             request.end();
           }
         },
@@ -525,6 +526,7 @@ vows.describe('OAuth').addBatch({
              var request= oa.get("http://foo.com/blah", "token", "token_secret")
              assert.isObject(request);
              assert.equal(request.method, "GET");
+             request.on("error", function (r) {});
              request.end();
            }
          },
@@ -557,6 +559,7 @@ vows.describe('OAuth').addBatch({
              var request= oa.put("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain")
              assert.isObject(request);
              assert.equal(request.method, "PUT");
+             request.on("error", function (r) {});
              request.end();
            }
          },
@@ -712,6 +715,7 @@ vows.describe('OAuth').addBatch({
              var request= oa.delete("http://foo.com/blah", "token", "token_secret")
              assert.isObject(request);
              assert.equal(request.method, "DELETE");
+             request.on("error", function (r) {});
              request.end();
            }
          },
