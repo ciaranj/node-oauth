@@ -37,6 +37,14 @@ vows.describe('OAuth2').addBatch({
           assert.ok(callbackCalled);
         }
       },
+      'When handling the access token request': {
+        'we should accept application/json': function(oa) {
+          oa._request= function(method, url, headers, post_body, access_token, callback) {
+            assert.equal( headers["Accept"], "application/json" );
+          };
+          oa.getOAuthAccessToken("", {});
+        }
+      },
       'When handling the access token response': {
         'we should correctly extract the token if received as form-data': function (oa) {
             oa._request= function( method, url, fo, bar, bleh, callback) {
