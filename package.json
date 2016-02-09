@@ -1,5 +1,5 @@
 {
-    "name" : "oauth",
+    "name" : "oauth-libre",
     "description": "Library for interacting with OAuth 1.0, 1.0A, 2 and Echo.  Provides simplified client access and allows for construction of more complex apis and OAuth providers.",
     "version": "0.9.14",
     "directories": {
