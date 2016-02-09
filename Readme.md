@@ -15,7 +15,7 @@ If you go to the original project and modify the code there, your changes will b
 
 # Installation
 
-    $ npm install oauth
+    npm install oauth-libre
 
 
 # Examples
