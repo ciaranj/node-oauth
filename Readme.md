@@ -52,8 +52,43 @@ describe('OAuth1.0',function(){
 ```
 
 ## OAuth2.0 
+
+### Usage
+
 ```javascript
-describe('OAuth2',function(){
+var OAuth2 = require('oauth').OAuth2;
+
+console.log("Login here to get an authorization code: " + oauth2.getAuthorizeUrl());
+
+var oauth2 = new OAuth2(
+  "client_id", // client id
+  "client_secret", // client secret
+  "http://localhost:3000/", // base site url
+  null, // authorize path
+  "/oauth/token", // access token path
+  null // custom headers object
+);
+
+oauth2.getOAuthAccessToken(
+  "auth_code",
+  {
+    "grant_type": "authorization_code",
+    "redirect_uri": "http://example.com/redirect_uri"
+  },
+  function(error, accessToken, refreshToken, results) {
+    if (error) {
+      console.log("Error: " + error);
+    } else {
+      console.log("Results: " + results);
+    }
+  }
+);
+```
+
+### Test
+
+```javascript
+describe('OAuth2',function() {
   var OAuth = require('oauth');
 
    it('gets bearer token', function(done){
