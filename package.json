@@ -14,7 +14,10 @@
         }
     ]
     "repository": { "type":"git", "url":"http://github.com/omouse/node-oauth.git" },
-    "devDependencies": {
+  "dependencies": {
+    "bluebird": "^3.3.4"
+  },
+  "devDependencies": {
     "vows": "0.5.x"
   }
 , "scripts": {
