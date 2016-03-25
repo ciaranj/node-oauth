@@ -7,11 +7,15 @@ Also provides rudimentary OAuth2 support, tested against facebook, github, fours
 
 ## License and Copyright
 
-This code is covered under the GNU GPL version 3 or later with parts of the code also covered by the MIT license.
+**This code is covered under the GNU GPL version 3 or later with parts of the code also covered by the MIT license.**
 
 If you modify the code in this project, your changes will be under the GNU GPL version 3 or later.
 
 If you go to the original project and modify the code there, your changes will be under the MIT license.
+
+*Note: if you submit patches to the original project and they are applied here, I will assume that they
+are under the MIT license.* But someone else will have to go through the work to extract them away from
+the GPLv3 bits if they want to use them in a proprietary project
 
 # Installation
 
