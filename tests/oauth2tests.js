@@ -286,5 +286,19 @@ vows.describe('OAuth2').addBatch({
           oa.get("", {});
         }
       }
+    },
+    'When the user has an https_proxy environment variable set': {
+      topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+        undefined),
+      'When calling get': {
+        'we should see the http proxy agent in options passed to http-library' : function(oa) {
+          process.env.https_proxy = "http://proxy-server";
+          oa._executeRequest= function( http_library, options, callback ) {
+            assert.isNotNull(options.agent);
+            };
+          oa.get("", {});
+          delete process.env.https_proxy;
+        }
+      }
     }
 }).export(module);
