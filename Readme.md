@@ -246,6 +246,7 @@ describe('OAuth2',function() {
 # Contributors (In first-name alphabetical order)
 
 * AJ ONeal
+* Alex Nuccio - https://github.com/anuccio1
 * Andreas Knecht
 * Andrew Martins - http://www.andrewmartens.com
 * Brian Park - http://github.com/yaru22
