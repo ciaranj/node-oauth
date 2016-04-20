@@ -33,7 +33,7 @@
       "url": "https://github.com/omouse/node-oauth-libre/raw/master/LICENSE.mit"
     }
   ],
-  "dependencies": {
+  "optionalDependencies": {
     "bluebird": "^3.3.4"
   }
 }
