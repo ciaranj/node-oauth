@@ -26,6 +26,55 @@ the GPLv3 bits if they want to use them in a proprietary project
 
 To run examples/tests install Mocha `$ npm install -g mocha` and run `$ mocha you-file-name.js`:
 
+## Using Promises
+
+Using promises is *optional*.
+
+Install the bluebird promises library:
+
+    npm install bluebird
+
+An example of using oauth-libre with Promises:
+
+```
+var OAuth2 = require('oauth-libre').PromiseOAuth2;
+
+var clientId = '';
+var clientSecret = '';
+
+// Fill these in:
+var user = 'USER';
+var personalAccessToken = 'PERSONAL_ACCESS_TOKEN';
+
+var baseSiteUrl = 'https://' + user + ':' + personalAccessToken + '@api.github.com/';
+var authorizePath = 'oauth2/authorize';
+var accessTokenPath = 'oauth2/access_token';
+var customHeaders = null;
+
+var oauth2 = new OAuth2(
+  clientId, clientSecret, baseSiteUrl, authorizePath, accessTokenPath, customHeaders
+);
+
+var url = 'https://api.github.com/users/' + user + '/received_events';
+oauth2
+  .get(url, personalAccessToken)
+  .then(jsonParse)
+  .then(function(json) {
+    for (var i = 0; i < json.length; i += 1) {
+      console.log(json[i]['id'] + ': ' + json[i].type);
+    }
+  })
+  .catch(function(err) {
+    console.log('Error: ' + err);
+  });
+
+function jsonParse(data) {
+  return JSON.parse(data);
+}
+```
+
+Note that in the first line you must explicitly import OAuth2 with promises.
+
 ## OAuth1.0
 
 ```javascript
