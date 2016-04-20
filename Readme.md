@@ -167,6 +167,8 @@ describe('OAuth2',function() {
 Included with the source code are examples of using a web-based interface to login with:
 
 * Github: `examples/github-example.js`
+* Google: `examples/express-gdata/server.js`
+* Twitter: `examples/twitter-example.js`
 
 ### Example: Authentication with Github
 
@@ -180,6 +182,20 @@ Included with the source code are examples of using a web-based interface to log
 1. Click the link that says "Get Code"
 1. Login to Github and authorize the application
 1. You will be returned to `http://localhost:8080/code` and should see the access token, on the command-line you will see something like "Obtained access_token: ..."
+
+### Example: Authentication with Google
+
+1. Create Google Account
+1. Create credentials in Google APIs Developer Console
+1. Create OAuth Client ID, Web Application
+1. Set the Authorized redirect URIs to `http://localhost:8080/google_cb`
+1. Install express and its dependencies: `npm install express morgan body-parser express-session`
+1. Run the web server: `node examples/express-gdata/server.js`
+1. Open the website: `http://localhost:8080`
+1.
+
+### Example: Authentication with Twitter
+
 # Change History
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
