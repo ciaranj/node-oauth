@@ -31,7 +31,7 @@ var RsaPublicKey = "-----BEGIN PUBLIC KEY-----\n" +
       "yLOfY8XZvnFkGjipvQIDAQAB\n" +
       "-----END PUBLIC KEY-----";
 
-vows.describe('OAuth').addBatch({
+vows.describe('OAuth-Promise').addBatch({
   'When newing OAuth': {
     topic: new OAuth(null, null, null, null, null, null, "PLAINTEXT"),
     'followRedirects is enabled by default': function (oa) {
@@ -219,15 +219,15 @@ vows.describe('OAuth').addBatch({
   'When get authorization header' : {
     topic: function() {
       var oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", null, "HMAC-SHA1");
-      oa._getTimestamp = function() { return "1272399856"; };
-      oa._getNonce = function() { return "ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp"; };
+      oa._oa._getTimestamp = function() { return "1272399856"; };
+      oa._oa._getNonce = function() { return "ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp"; };
       return oa;
     },
     'Provide a valid signature when a token and a token secret is present': function(oa) {
       assert.equal( oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth oauth_consumer_key="consumerkey",oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1272399856",oauth_token="token",oauth_version="1.0",oauth_signature="zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D"');
     },
     'Support variable whitespace separating the arguments': function(oa) {
-      oa._oauthParameterSeperator= ", ";
+      oa._oa._oauthParameterSeperator= ", ";
       assert.equal( oa.authHeader("http://somehost.com:3323/foo/poop?bar=foo", "token", "tokensecret"), 'OAuth oauth_consumer_key="consumerkey", oauth_nonce="ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1272399856", oauth_token="token", oauth_version="1.0", oauth_signature="zeOR0Wsm6EG6XSg0Vw%2FsbpoSib8%3D"');
     }
   },
@@ -311,9 +311,9 @@ vows.describe('OAuth').addBatch({
     'using the POST method' : {
       'Any passed extra_params should form part of the POST body': function(oa) {
         var post_body_written= false;
-        var op= oa._createClient;
+        var op= oa._oa._createClient;
         try {
-          oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+          oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
             return {
               write: function(post_body){
                 post_body_written= true;
@@ -321,11 +321,11 @@ vows.describe('OAuth').addBatch({
               }
             };
           };
-          oa._performSecureRequest("token", "token_secret", 'POST', 'http://foo.com/protected_resource', {"scope": "foobar,1,2"});
+          oa._oa._performSecureRequest("token", "token_secret", 'POST', 'http://foo.com/protected_resource', {"scope": "foobar,1,2"});
           assert.equal(post_body_written, true);
         }
         finally {
-          oa._createClient= op;
+          oa._oa._createClient= op;
         }
       }
     }
@@ -337,42 +337,17 @@ vows.describe('OAuth').addBatch({
                      "1.0A", "http://foo.com/callback", "HMAC-SHA1"),
     'POST' : {
       'if no callback is passed' : {
-        'it should return a request object': function(oa) {
-          var request= oa.post("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain");
-          assert.isObject(request);
-          assert.equal(request.method, "POST");
-          request.end();
-        }
-      },
-      'if a callback is passed' : {
-        "it should call the internal request's end method and return nothing": function(oa) {
-          var callbackCalled= false;
-          var op= oa._createClient;
-          try {
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
-              return {
-                write: function(){},
-                on: function() {},
-                end: function() {
-                  callbackCalled= true;
-                }
-              };
-            };
-            var request= oa.post("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){});
-            assert.equal(callbackCalled, true);
-            assert.isUndefined(request);
-          }
-          finally {
-            oa._createClient= op;
-          }
+        'it should return a Promise object': function(oa) {
+          var promise = oa.post('http://foo.com/blah', 'token', 'token_secret', 'BLAH', 'text/plain');
+          assert.isObject(promise);
         }
       },
       'if the post_body is a buffer' : {
         "It should be passed through as is, and the original content-type (if specified) should be passed through": function(oa) {
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           try {
             var callbackCalled= false;
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               assert.equal(headers["Content-Type"], "image/jpeg");
               return {
                 write: function(data){
@@ -384,20 +359,21 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request= oa.post("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]), "image/jpeg");
-            assert.equal(callbackCalled, true);
+            oa.post("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]), "image/jpeg").nodeify(function() {
+              assert.equal(callbackCalled, true);
+            });
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         },
         "It should be passed through as is, and no content-type is specified.": function(oa) {
           //Should probably actually set application/octet-stream, but to avoid a change in behaviour
           // will just document (here) that the library will set it to application/x-www-form-urlencoded
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           try {
             var callbackCalled= false;
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
               return {
                 write: function(data){
@@ -409,20 +385,21 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request= oa.post("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]));
-            assert.equal(callbackCalled, true);
+            oa.post("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40])).nodeify(function() {
+              assert.equal(callbackCalled, true);
+            });
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
       'if the post_body is not a string or a buffer' : {
         "It should be url encoded and the content type set to be x-www-form-urlencoded": function(oa) {
-          var op = oa._createClient;
+          var op = oa._oa._createClient;
           try {
             var callbackCalled= false;
-            oa._createClient= function(port, hostname, method, path, headers, sshEnabled) {
+            oa._oa._createClient= function(port, hostname, method, path, headers, sshEnabled) {
               assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
               return {
                 write: function(data) {
@@ -434,10 +411,11 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request = oa.post("http://foo.com/blah", "token", "token_secret", { "foo": "1,2,3", "bar": "1+2" });
-            assert.equal(callbackCalled, true);
+            oa.post("http://foo.com/blah", "token", "token_secret", { "foo": "1,2,3", "bar": "1+2" }).nodeify(function() {
+              assert.equal(callbackCalled, true);
+            });
           } finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
@@ -449,10 +427,10 @@ vows.describe('OAuth').addBatch({
             var testStringBytesLength= Buffer.byteLength(testString);
             assert.notEqual(testStringLength, testStringBytesLength); // Make sure we're testing a string that differs between byte-length and char-length!
 
-            var op= oa._createClient;
+            var op= oa._oa._createClient;
             try {
               var callbackCalled= false;
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+              oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 assert.equal(headers["Content-length"], testStringBytesLength);
                 return {
                   write: function(data){
@@ -464,20 +442,21 @@ vows.describe('OAuth').addBatch({
                   }
                 };
               };
-              var request= oa.post("http://foo.com/blah", "token", "token_secret", "Tôi yêu node");
-              assert.equal(callbackCalled, true);
+              oa.post("http://foo.com/blah", "token", "token_secret", "Tôi yêu node").nodeify(function() {
+                assert.equal(callbackCalled, true);
+              });
             }
             finally {
-              oa._createClient= op;
+              oa._oa._createClient= op;
             }
           }
         },
         "and no post_content_type is specified" : {
           "It should be written as is, with a content length specified, and the encoding should be set to be x-www-form-urlencoded" : function(oa) {
-            var op= oa._createClient;
+            var op= oa._oa._createClient;
             try {
               var callbackCalled= false;
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+              oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
                 assert.equal(headers["Content-length"], 23);
                 return {
@@ -490,20 +469,21 @@ vows.describe('OAuth').addBatch({
                   }
                 };
               };
-              var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2");
-              assert.equal(callbackCalled, true);
+              oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2").nodeify(function() {
+                assert.equal(callbackCalled, true);
+              });
             }
             finally {
-              oa._createClient= op;
+              oa._oa._createClient= op;
             }
           }
         },
         "and a post_content_type is specified" : {
           "It should be written as is, with a content length specified, and the encoding should be set to be as specified" : function(oa) {
-            var op= oa._createClient;
+            var op= oa._oa._createClient;
             try {
               var callbackCalled= false;
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+              oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 assert.equal(headers["Content-Type"], "unicorn/encoded");
                 assert.equal(headers["Content-length"], 23);
                 return {
@@ -516,11 +496,12 @@ vows.describe('OAuth').addBatch({
                   }
                 };
               };
-              var request= oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded");
-              assert.equal(callbackCalled, true);
+              oa.post("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded").nodeify(function() {
+                assert.equal(callbackCalled, true);
+              });
             }
             finally {
-              oa._createClient= op;
+              oa._oa._createClient= op;
             }
           }
         }
@@ -529,18 +510,16 @@ vows.describe('OAuth').addBatch({
     'GET' : {
       'if no callback is passed' : {
         'it should return a request object': function(oa) {
-          var request= oa.get("http://foo.com/blah", "token", "token_secret");
-          assert.isObject(request);
-          assert.equal(request.method, "GET");
-          request.end();
+          var promise= oa.get("http://foo.com/blah", "token", "token_secret");
+          assert.isObject(promise);
         }
       },
       'if a callback is passed' : {
         "it should call the internal request's end method and return nothing": function(oa) {
           var callbackCalled= false;
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           try {
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               return {
                 on: function() {},
                 end: function() {
@@ -548,31 +527,29 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request= oa.get("http://foo.com/blah", "token", "token_secret", function(e,d) {});
-            assert.equal(callbackCalled, true);
-            assert.isUndefined(request);
+            oa.get("http://foo.com/blah", "token", "token_secret", function(e,d) {}).nodeify(function() {
+              assert.equal(callbackCalled, true);
+            });
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
     },
     'PUT' : {
       'if no callback is passed' : {
-        'it should return a request object': function(oa) {
-          var request= oa.put("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain");
-          assert.isObject(request);
-          assert.equal(request.method, "PUT");
-          request.end();
+        'it should return a promise object': function(oa) {
+          var promise= oa.put("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain");
+          assert.isObject(promise);
         }
       },
       'if a callback is passed' : {
         "it should call the internal request's end method and return nothing": function(oa) {
           var callbackCalled= 0;
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           try {
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               return {
                 on: function() {},
                 write: function(data) {
@@ -583,21 +560,21 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request= oa.put("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){});
-            assert.equal(callbackCalled, 2);
-            assert.isUndefined(request);
+            oa.put("http://foo.com/blah", "token", "token_secret", "BLAH", "text/plain", function(e,d){}).nodeify(function() {
+              assert.equal(callbackCalled, 2);
+            });
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
       'if the post_body is a buffer' : {
         "It should be passed through as is, and the original content-type (if specified) should be passed through": function(oa) {
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           try {
             var callbackCalled= false;
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               assert.equal(headers["Content-Type"], "image/jpeg");
               return {
                 write: function(data){
@@ -609,20 +586,21 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request= oa.put("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]), "image/jpeg");
-            assert.equal(callbackCalled, true);
+            oa.put("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]), "image/jpeg").nodeify(function() {
+              assert.equal(callbackCalled, true);
+            });
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         },
         "It should be passed through as is, and no content-type is specified.": function(oa) {
           //Should probably actually set application/octet-stream, but to avoid a change in behaviour
           // will just document (here) that the library will set it to application/x-www-form-urlencoded
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           try {
             var callbackCalled= false;
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
               return {
                 write: function(data){
@@ -634,20 +612,21 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request= oa.put("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40]));
-            assert.equal(callbackCalled, true);
+            oa.put("http://foo.com/blah", "token", "token_secret", new Buffer([10,20,30,40])).nodeify(function() {
+              assert.equal(callbackCalled, true);
+            });
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
       'if the post_body is not a string' : {
         "It should be url encoded and the content type set to be x-www-form-urlencoded" : function(oa) {
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           try {
             var callbackCalled= false;
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
               return {
                 write: function(data) {
@@ -656,21 +635,22 @@ vows.describe('OAuth').addBatch({
                 }
               };
             };
-            var request= oa.put("http://foo.com/blah", "token", "token_secret", {"foo":"1,2,3", "bar":"1+2"});
-            assert.equal(callbackCalled, true);
+            oa.put("http://foo.com/blah", "token", "token_secret", {"foo":"1,2,3", "bar":"1+2"}).nodeify(function() {
+              assert.equal(callbackCalled, true);
+            });
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
       'if the post_body is a string' : {
         "and no post_content_type is specified" : {
           "It should be written as is, with a content length specified, and the encoding should be set to be x-www-form-urlencoded" : function(oa) {
-            var op= oa._createClient;
+            var op= oa._oa._createClient;
             try {
               var callbackCalled= false;
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+              oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 assert.equal(headers["Content-Type"], "application/x-www-form-urlencoded");
                 assert.equal(headers["Content-length"], 23);
                 return {
@@ -680,20 +660,21 @@ vows.describe('OAuth').addBatch({
                   }
                 };
               };
-              var request= oa.put("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2");
-              assert.equal(callbackCalled, true);
+              oa.put("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2").nodeify(function() {
+                assert.equal(callbackCalled, true);
+              });
             }
             finally {
-              oa._createClient= op;
+              oa._oa._createClient= op;
             }
           }
         },
         "and a post_content_type is specified" : {
           "It should be written as is, with a content length specified, and the encoding should be set to be as specified" : function(oa) {
-            var op= oa._createClient;
+            var op= oa._oa._createClient;
             try {
               var callbackCalled= false;
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+              oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 assert.equal(headers["Content-Type"], "unicorn/encoded");
                 assert.equal(headers["Content-length"], 23);
                 return {
@@ -703,11 +684,12 @@ vows.describe('OAuth').addBatch({
                   }
                 };
               };
-              var request= oa.put("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded");
-              assert.equal(callbackCalled, true);
+              oa.put("http://foo.com/blah", "token", "token_secret", "foo=1%2C2%2C3&bar=1%2B2", "unicorn/encoded").nodeify(function() {
+                assert.equal(callbackCalled, true);
+              });
             }
             finally {
-              oa._createClient= op;
+              oa._oa._createClient= op;
             }
           }
         }
@@ -715,46 +697,22 @@ vows.describe('OAuth').addBatch({
     },
     'DELETE' : {
       'if no callback is passed' : {
-        'it should return a request object': function(oa) {
-          var request= oa.delete("http://foo.com/blah", "token", "token_secret");
-          assert.isObject(request);
-          assert.equal(request.method, "DELETE");
-          request.end();
-        }
-      },
-      'if a callback is passed' : {
-        "it should call the internal request's end method and return nothing": function(oa) {
-          var callbackCalled= false;
-          var op= oa._createClient;
-          try {
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
-              return {
-                on: function() {},
-                end: function() {
-                  callbackCalled= true;
-                }
-              };
-            };
-            var request= oa.delete("http://foo.com/blah", "token", "token_secret", function(e,d) {});
-            assert.equal(callbackCalled, true);
-            assert.isUndefined(request);
-          }
-          finally {
-            oa._createClient= op;
-          }
+        'it should return a promise object': function(oa) {
+          var promise = oa.delete("http://foo.com/blah", "token", "token_secret");
+          assert.isObject(promise);
         }
       }
     },
     'Request With a Callback' : {
       'and a 200 response code is received' : {
         'it should callback successfully' : function(oa) {
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           var callbackCalled = false;
           try {
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               return new DummyRequest( new DummyResponse(200) );
             };
-            oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
+            oa._oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
               // callback
               callbackCalled= true;
               assert.equal(error, undefined);
@@ -762,19 +720,19 @@ vows.describe('OAuth').addBatch({
             assert.equal(callbackCalled, true);
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
       'and a 210 response code is received' : {
         'it should callback successfully' : function(oa) {
-          var op= oa._createClient;
+          var op= oa._oa._createClient;
           var callbackCalled = false;
           try {
-            oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+            oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
               return new DummyRequest( new DummyResponse(210) );
             };
-            oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
+            oa._oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function(error) {
               // callback
               callbackCalled= true;
               assert.equal(error, undefined);
@@ -782,15 +740,15 @@ vows.describe('OAuth').addBatch({
             assert.equal(callbackCalled, true);
           }
           finally {
-            oa._createClient= op;
+            oa._oa._createClient= op;
           }
         }
       },
       'And A 301 redirect is received' : {
         'and there is a location header' : {
           'it should (re)perform the secure request but with the new location' : function(oa) {
-            var op= oa._createClient;
-            var psr= oa._performSecureRequest;
+            var op= oa._oa._createClient;
+            var psr= oa._oa._performSecureRequest;
             var responseCounter = 1;
             var callbackCalled = false;
             var DummyResponse =function() {
@@ -807,17 +765,17 @@ vows.describe('OAuth').addBatch({
             DummyResponse.prototype.setEncoding= function() {};
 
             try {
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+              oa._oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 return new DummyRequest( new DummyResponse() );
               };
-              oa._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
+              oa._oa._performSecureRequest= function( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback ) {
                 if( responseCounter == 1 ) {
                   assert.equal(url, "http://originalurl.com");
                 }
                 else {
                   assert.equal(url, "http://redirectto.com");
                 }
-                return psr.call(oa, oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback );
+                return psr.call(oa._oa, oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type,  callback );
               };
 
               oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', {"scope": "foobar,1,2"}, null, null, function() {
@@ -828,8 +786,8 @@ vows.describe('OAuth').addBatch({
               assert.equal(callbackCalled, true);
             }
             finally {
-              oa._createClient= op;
-              oa._performSecureRequest= psr;
+              oa._oa._createClient= op;
+              oa._oa._performSecureRequest= psr;
             }
           }
         },
