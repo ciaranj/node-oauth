@@ -24,8 +24,6 @@ the GPLv3 bits if they want to use them in a proprietary project
 
 # Examples
 
-To run examples/tests install Mocha `$ npm install -g mocha` and run `$ mocha you-file-name.js`:
-
 ## Using Promises
 
 Using promises is *optional*.
