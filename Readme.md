@@ -263,9 +263,11 @@ describe('OAuth2',function() {
 * Luke Baker - http://github.com/lukebaker
 * Mark Wubben - http://equalmedia.com/
 * Michael Garvin
+* Oleg Zd - https://github.com/olegzd
 * Patrick Negri - http://github.com/pnegri
 * Pieter Joost van de Sande - https://github.com/pjvds
 * Raoul Millais
+* Rudolf Olah - http://neverfriday.com
 * Ryan LeFevre - http://meltingice.net
 * Tang Bo Hao - http://github.com/btspoony
 * Ted Goddard
