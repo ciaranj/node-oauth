@@ -243,31 +243,31 @@ describe('OAuth2',function() {
 * 0.7.0
     - OAuth1/2: Introduces support for HTTPS end points and callback URLS for OAuth 1.0A and Oauth 2 (Please be aware that this was a breaking change to the constructor arguments order)
 
-# Contributors (In no particular order)
+# Contributors (In first-name alphabetical order)
 
-* Evan Prodromou
-* Jose Ignacio Andres
-* Ted Goddard
-* Derek Brooks
-* Ciaran Jessup - ciaranj@gmail.com
-* Mark Wubben - http://equalmedia.com/
-* Ryan LeFevre - http://meltingice.net
-* Raoul Millais
-* Patrick Negri - http://github.com/pnegri
-* Tang Bo Hao - http://github.com/btspoony
-* Damien Mathieu - http://42.dmathieu.com
-* Luke Baker - http://github.com/lukebaker
-* Christian Schwarz  - http://github.com/chrischw/
-* Joe Rozer - http://www.deadbytes.net
-* Garrick Cheung - http://www.garrickcheung.com/
-* rolandboon - http://rolandboon.com
-* Brian Park - http://github.com/yaru22
-* José F. Romaniello - http://github.com/jfromaniello
-* bendiy - https://github.com/bendiy
-* Andrew Martins - http://www.andrewmartens.com
-* Daniel Mahlow - https://github.com/dmahlow
-* Pieter Joost van de Sande - https://github.com/pjvds
-* Jeffrey D. Van Alstine
-* Michael Garvin
-* Andreas Knecht
 * AJ ONeal
+* Andreas Knecht
+* Andrew Martins - http://www.andrewmartens.com
+* Brian Park - http://github.com/yaru22
+* Christian Schwarz  - http://github.com/chrischw/
+* Ciaran Jessup - ciaranj@gmail.com
+* Damien Mathieu - http://42.dmathieu.com
+* Daniel Mahlow - https://github.com/dmahlow
+* Derek Brooks
+* Evan Prodromou
+* Garrick Cheung - http://www.garrickcheung.com/
+* Jeffrey D. Van Alstine
+* Joe Rozer - http://www.deadbytes.net
+* Jose Ignacio Andres
+* José F. Romaniello - http://github.com/jfromaniello
+* Luke Baker - http://github.com/lukebaker
+* Mark Wubben - http://equalmedia.com/
+* Michael Garvin
+* Patrick Negri - http://github.com/pnegri
+* Pieter Joost van de Sande - https://github.com/pjvds
+* Raoul Millais
+* Ryan LeFevre - http://meltingice.net
+* Tang Bo Hao - http://github.com/btspoony
+* Ted Goddard
+* bendiy - https://github.com/bendiy
+* rolandboon - http://rolandboon.com
