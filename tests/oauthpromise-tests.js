@@ -895,7 +895,7 @@ vows.describe('OAuth').addBatch({
         },
         'and followRedirect is false' : {
           'it should not perform the secure request with the new location' : function(oa) {
-            var op= oa._createClient;
+            var op = oa._oa._createClient;
             oa.setClientOptions({ followRedirects: false });
             var DummyResponse =function() {
               this.statusCode= 301;
@@ -905,14 +905,14 @@ vows.describe('OAuth').addBatch({
             DummyResponse.prototype.setEncoding= function() {};
 
             try {
-              oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
                 return new DummyRequest( new DummyResponse() );
+              oa._oa._createClient = function(port, hostname, method, path, headers, sshEnabled) {
               };
-              oa._performSecureRequest("token", "token_secret", 'POST', 'http://originalurl.com', { "scope": "foobar,1,2" }, null, null, function(res, data, response) {
+              oa._oa._performSecureRequest('token', 'token_secret', 'POST', 'http://originalurl.com', { 'scope': 'foobar,1,2' }, null, null, function(res, data, response) {
                 assert.equal(res.statusCode, 301);
               });
             } finally {
-              oa._createClient = op;
+              oa._oa._createClient = op;
               oa.setClientOptions({ followRedirects: true });
             }
           }
