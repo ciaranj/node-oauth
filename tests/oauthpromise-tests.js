@@ -158,8 +158,8 @@ vows.describe('OAuth').addBatch({
   'When signing a url': {
     topic: function() {
       var oa= new OAuth(null, null, "consumerkey", "consumersecret", "1.0", null, "HMAC-SHA1");
-      oa._getTimestamp= function(){ return "1272399856"; };
-      oa._getNonce= function(){ return "ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp"; };
+      oa._oa._getTimestamp= function(){ return "1272399856"; };
+      oa._oa._getNonce= function(){ return "ybHPeOEkAUJ3k2wJT9Xb43MjtSgTvKqp"; };
       return oa;
     },
     'Provide a valid signature when no token present': function(oa) {
