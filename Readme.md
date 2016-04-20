@@ -162,6 +162,24 @@ describe('OAuth2',function() {
    });
 ```
 
+## Examples Using Web-Based Interface
+
+Included with the source code are examples of using a web-based interface to login with:
+
+* Github: `examples/github-example.js`
+
+### Example: Authentication with Github
+
+1. Create a Github account
+1. Create a new Developer Application (Settings > OAuth applications > Developer Applications)
+1. Fill in the Authorization callback URL with `http://localhost:8080/code`
+1. Copy the Client ID into `examples/github-example.js` where it says `clientID`
+1. Copy the Client Secret into `examples/github-example.js` where it says `clientSecret`
+1. Run the web server: `node examples/github-example.js`
+1. Open the website: `http://localhost:8080/`
+1. Click the link that says "Get Code"
+1. Login to Github and authorize the application
+1. You will be returned to `http://localhost:8080/code` and should see the access token, on the command-line you will see something like "Obtained access_token: ..."
 # Change History
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
