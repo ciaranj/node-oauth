@@ -1,26 +1,75 @@
-node-oauth
-===========
+# node-oauth
 A simple oauth API for node.js .  This API allows users to authenticate against OAUTH providers, and thus act as OAuth consumers. It also has support for OAuth Echo, which is used for communicating with 3rd party media providers such as TwitPic and yFrog.
 
 Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/example/), TwitPic, and Yahoo!
 
 Also provides rudimentary OAuth2 support, tested against facebook, github, foursquare, google and Janrain.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
-[![Clone in Koding](http://learn.koding.com/btn/clone_d.png)][koding]
-[koding]: https://koding.com/Teamwork?import=https://github.com/ciaranj/node-oauth/archive/master.zip&c=git1
-[![Pair on Thinkful](https://tf-assets-staging.s3.amazonaws.com/badges/thinkful_repo_badge.svg)][Thinkful]
-[Thinkful]: http://start.thinkful.com/node/?utm_source=github&utm_medium=badge&utm_campaign=node-oauth
+## License and Copyright
 
-Installation
-============== 
+This code is covered under the GNU GPL version 3 or later with parts of the code also covered by the MIT license.
 
-    $ npm install oauth
+If you modify the code in this project, your changes will be under the GNU GPL version 3 or later.
+
+If you go to the original project and modify the code there, your changes will be under the MIT license.
+
+# Installation
+
+    npm install oauth-libre
 
 
-Examples
-==========
+# Examples
 
 To run examples/tests install Mocha `$ npm install -g mocha` and run `$ mocha you-file-name.js`:
+
+## Using Promises
+
+Using promises is *optional*.
+
+Install the bluebird promises library:
+
+    npm install bluebird
+
+An example of using oauth-libre with Promises:
+
+```
+var OAuth2 = require('oauth-libre').PromiseOAuth2;
+
+var clientId = '';
+var clientSecret = '';
+
+// Fill these in:
+var user = 'USER';
+var personalAccessToken = 'PERSONAL_ACCESS_TOKEN';
+
+var baseSiteUrl = 'https://' + user + ':' + personalAccessToken + '@api.github.com/';
+var authorizePath = 'oauth2/authorize';
+var accessTokenPath = 'oauth2/access_token';
+var customHeaders = null;
+
+var oauth2 = new OAuth2(
+  clientId, clientSecret, baseSiteUrl, authorizePath, accessTokenPath, customHeaders
+);
+
+var url = 'https://api.github.com/users/' + user + '/received_events';
+oauth2
+  .get(url, personalAccessToken)
+  .then(jsonParse)
+  .then(function(json) {
+    for (var i = 0; i < json.length; i += 1) {
+      console.log(json[i]['id'] + ': ' + json[i].type);
+    }
+  })
+  .catch(function(err) {
+    console.log('Error: ' + err);
+  });
+
+function jsonParse(data) {
+  return JSON.parse(data);
+}
+```
+
+Note that in the first line you must explicitly import OAuth2 with promises.
 
 ## OAuth1.0
 
@@ -52,8 +101,43 @@ describe('OAuth1.0',function(){
 ```
 
 ## OAuth2.0 
+
+### Usage
+
 ```javascript
-describe('OAuth2',function(){
+var OAuth2 = require('oauth').OAuth2;
+
+console.log("Login here to get an authorization code: " + oauth2.getAuthorizeUrl());
+
+var oauth2 = new OAuth2(
+  "client_id", // client id
+  "client_secret", // client secret
+  "http://localhost:3000/", // base site url
+  null, // authorize path
+  "/oauth/token", // access token path
+  null // custom headers object
+);
+
+oauth2.getOAuthAccessToken(
+  "auth_code",
+  {
+    "grant_type": "authorization_code",
+    "redirect_uri": "http://example.com/redirect_uri"
+  },
+  function(error, accessToken, refreshToken, results) {
+    if (error) {
+      console.log("Error: " + error);
+    } else {
+      console.log("Results: " + results);
+    }
+  }
+);
+```
+
+### Test
+
+```javascript
+describe('OAuth2',function() {
   var OAuth = require('oauth');
 
    it('gets bearer token', function(done){
@@ -76,8 +160,7 @@ describe('OAuth2',function(){
    });
 ```
 
-Change History
-============== 
+# Change History
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
 * 0.9.13
@@ -156,8 +239,7 @@ Change History
 * 0.7.0
     - OAuth1/2: Introduces support for HTTPS end points and callback URLS for OAuth 1.0A and Oauth 2 (Please be aware that this was a breaking change to the constructor arguments order)  
 
-Contributors (In no particular order)
-=====================================
+# Contributors (In no particular order)
 
 * Evan Prodromou
 * Jose Ignacio Andres
