@@ -19,7 +19,7 @@ the GPLv3 bits if they want to use them in a proprietary project
 
 # Installation
 
-    npm install oauth-libre@0.9.15-alpha
+    npm install oauth-libre
 
 # Examples
 
