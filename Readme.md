@@ -200,6 +200,11 @@ The Google example was removed due to the need for a custom Google-specific OAut
 1. You will be returned to `http://localhost:8080/code` and should see some results from the response on the command-line
 
 # Change History
+* 0.9.15
+    - Promises for OAuth1 and OAuth2 with multiArgs
+    - PATCH support for OAuth1 and OAuth2
+    - GPLv3+ licensing
+    - Code examples updated, tested and working
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
 * 0.9.13
