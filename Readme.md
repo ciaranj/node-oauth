@@ -190,6 +190,16 @@ The Google example was removed due to the need for a custom Google-specific OAut
 
 ### Example: Authentication with Twitter
 
+1. Create a Twitter account
+1. Create a new Developer Application https://apps.twitter.com/ > Create New App
+1. Fill in the Callback URL with `http://127.0.0.1:8080/callback`
+1. Copy the Consumer Key (API Key) into `examples/twitter-example.js` where it says `clientID`
+1. Copy the Consumer Secret (API Secret) into `examples/twitter-example.js` where it says `clientSecret`
+1. Run the web server: `node examples/twitter-example.js`
+1. Open the website: `http://localhost:8080/`
+1. Login to Twitter and authorize the application
+1. You will be returned to `http://localhost:8080/code` and should see some results from the response on the command-line
+
 # Change History
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
