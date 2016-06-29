@@ -21,7 +21,6 @@ the GPLv3 bits if they want to use them in a proprietary project
 
     npm install oauth-libre
 
-
 # Examples
 
 ## Using Promises
