@@ -167,8 +167,9 @@ describe('OAuth2',function() {
 Included with the source code are examples of using a web-based interface to login with:
 
 * Github: `examples/github-example.js`
-* Google: `examples/express-gdata/server.js`
 * Twitter: `examples/twitter-example.js`
+
+The Google example was removed due to the need for a custom Google-specific OAuth2 library for authentication.
 
 ### Example: Authentication with Github
 
@@ -185,14 +186,7 @@ Included with the source code are examples of using a web-based interface to log
 
 ### Example: Authentication with Google
 
-1. Create Google Account
-1. Create credentials in Google APIs Developer Console
-1. Create OAuth Client ID, Web Application
-1. Set the Authorized redirect URIs to `http://localhost:8080/google_cb`
-1. Install express and its dependencies: `npm install express morgan body-parser express-session`
-1. Run the web server: `node examples/express-gdata/server.js`
-1. Open the website: `http://localhost:8080`
-1.
+*Note: This example has been removed because Google needs a custom OAuth2 client library: https://github.com/google/google-auth-library-nodejs*
 
 ### Example: Authentication with Twitter
 
