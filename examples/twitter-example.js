@@ -50,7 +50,7 @@ http.createServer(function (request, response) {
                            function (error, twitterResponseData, result) {
                                if (error) {
                                    console.log(error)
-                                   res.end(JSON.stringify(error));
+                                   response.end(JSON.stringify(error));
                                    return;
                                }
                                try {
