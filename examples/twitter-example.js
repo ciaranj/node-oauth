@@ -69,6 +69,7 @@ http.createServer(function (request, response) {
 
             }
         };
+      if (typeof handlers[urlObj.pathname] === 'function')
         handlers[urlObj.pathname](request, response);
     })
 
