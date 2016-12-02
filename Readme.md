@@ -10,7 +10,7 @@ Also provides rudimentary OAuth2 support, tested against facebook, github, fours
 
 ## Related Libraries
 
-- [pasport-oauth2-libre](https://github.com/caco0516/passport-oauth2-libre) Passport OAuth2 Strategy using node-oauth-libre.
+- [passport-oauth2-libre](https://github.com/caco0516/passport-oauth2-libre) Passport OAuth2 Strategy using node-oauth-libre.
 
 ## License and Copyright
 
