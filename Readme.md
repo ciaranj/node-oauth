@@ -8,6 +8,10 @@ Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/examp
 
 Also provides rudimentary OAuth2 support, tested against facebook, github, foursquare, google and Janrain.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
+## Related Libraries
+
+- [passport-oauth2-libre](https://github.com/caco0516/passport-oauth2-libre) Passport OAuth2 Strategy using node-oauth-libre.
+
 ## License and Copyright
 
 **This code is covered under the GNU GPL version 3 or later with parts of the code also covered by the MIT license.**
