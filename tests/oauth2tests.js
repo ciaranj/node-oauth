@@ -4,6 +4,7 @@ var vows = require('vows'),
     DummyRequest= require('./shared').DummyRequest,
     https = require('https'),
     OAuth2= require('../lib/oauth2').OAuth2,
+    request = require('request'),
     url = require('url');
 
 vows.describe('OAuth2').addBatch({
@@ -157,7 +158,7 @@ vows.describe('OAuth2').addBatch({
           { 'SomeHeader': '123' }),
       'When GETing': {
         'we should see the custom headers mixed into headers property in options passed to http-library' : function(oa) {
-          oa._executeRequest= function( http_library, options, callback ) {
+          request.get = function(options, callback) {
             assert.equal(options.headers["SomeHeader"], "123");
           };
           oa.get("", {});
@@ -169,96 +170,55 @@ vows.describe('OAuth2').addBatch({
         'When POSTing': {
           'we should see a given string being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
-              return {
-                request: function(options) {
-                  assert.equal(options.headers["Content-Type"], "text/plain");
-                  assert.equal(options.headers["Content-Length"], 26);
-                  assert.equal(options.method, "POST");
-                  return  {
-                    end: function() {},
-                    on: function() {},
-                    write: function(body) {
-                      bodyWritten= true;
-                      assert.isNotNull(body);
-                      assert.equal(body, "THIS_IS_A_POST_BODY_STRING")
-                    }
-                  }
-                }
-              };
-            }
-            oa._request("POST", "", {"Content-Type":"text/plain"}, "THIS_IS_A_POST_BODY_STRING");
+            request.post = function(options, callback) {
+              assert.equal(options.headers["Content-Type"], "text/plain");
+              callback(null, {statusCode: 200}, options.body);
+            };
+            oa._request("POST", "", {"Content-Type":"text/plain"}, "THIS_IS_A_POST_BODY_STRING", null, function(err, body){
+              bodyWritten= true;
+              assert.equal(body, "THIS_IS_A_POST_BODY_STRING")
+            });
             assert.ok( bodyWritten );
           },
           'we should see a given buffer being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
-              return {
-                request: function(options) {
-                  assert.equal(options.headers["Content-Type"], "application/octet-stream");
-                  assert.equal(options.headers["Content-Length"], 4);
-                  assert.equal(options.method, "POST");
-                  return  {
-                    end: function() {},
-                    on: function() {},
-                    write: function(body) {
-                      bodyWritten= true;
-                      assert.isNotNull(body);
-                      assert.equal(4, body.length)
-                    }
-                  }
-                }
-              };
-            }
-            oa._request("POST", "", {"Content-Type":"application/octet-stream"}, new Buffer([1,2,3,4]));
+            request.post = function(options, callback) {
+              assert.equal(options.headers["Content-Type"], "application/octet-stream");
+              callback(null, {statusCode: 200}, options.body);
+            };
+            oa._request("POST", "", {"Content-Type":"application/octet-stream"}, new Buffer([1,2,3,4]), null, function(err, body){
+              bodyWritten= true;
+              assert.isNotNull(body);
+              assert.equal(4, body.length)
+            });
             assert.ok( bodyWritten );
           }
         },
         'When PUTing': {
           'we should see a given string being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
-              return {
-                request: function(options) {
-                  assert.equal(options.headers["Content-Type"], "text/plain");
-                  assert.equal(options.headers["Content-Length"], 25);
-                  assert.equal(options.method, "PUT");
-                  return  {
-                    end: function() {},
-                    on: function() {},
-                    write: function(body) {
-                      bodyWritten= true;
-                      assert.isNotNull(body);
-                      assert.equal(body, "THIS_IS_A_PUT_BODY_STRING")
-                    }
-                  }
-                }
-              };
-            }
-            oa._request("PUT", "", {"Content-Type":"text/plain"}, "THIS_IS_A_PUT_BODY_STRING");
+            request.put = function(options, callback) {
+              assert.equal(options.headers["Content-Type"], "text/plain");
+              callback(null, {statusCode: 200}, options.body);
+            };
+            oa._request("PUT", "", {"Content-Type":"text/plain"}, "THIS_IS_A_PUT_BODY_STRING", null, function(err, body){
+              bodyWritten= true;
+              assert.isNotNull(body);
+              assert.equal(body, "THIS_IS_A_PUT_BODY_STRING");
+            });
             assert.ok( bodyWritten );
           },
           'we should see a given buffer being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
-              return {
-                request: function(options) {
-                  assert.equal(options.headers["Content-Type"], "application/octet-stream");
-                  assert.equal(options.headers["Content-Length"], 4);
-                  assert.equal(options.method, "PUT");
-                  return  {
-                    end: function() {},
-                    on: function() {},
-                    write: function(body) {
-                      bodyWritten= true;
-                      assert.isNotNull(body);
-                      assert.equal(4, body.length)
-                    }
-                  }
-                }
-              };
-            }
-            oa._request("PUT", "", {"Content-Type":"application/octet-stream"}, new Buffer([1,2,3,4]));
+            request.put = function(options, callback) {
+              assert.equal(options.headers["Content-Type"], "application/octet-stream");
+              callback(null, {statusCode: 200}, options.body);
+            };
+            oa._request("PUT", "", {"Content-Type":"application/octet-stream"}, new Buffer([1,2,3,4]), null, function(err, body){
+              bodyWritten= true;
+              assert.isNotNull(body);
+              assert.equal(4, body.length)
+            });
             assert.ok( bodyWritten );
           }
         }
@@ -268,7 +228,7 @@ vows.describe('OAuth2').addBatch({
           { 'User-Agent': '123Agent' }),
       'When calling get': {
         'we should see the User-Agent mixed into headers property in options passed to http-library' : function(oa) {
-          oa._executeRequest= function( http_library, options, callback ) {
+          request.get = function(options, callback){
             assert.equal(options.headers["User-Agent"], "123Agent");
           };
           oa.get("", {});
@@ -280,9 +240,9 @@ vows.describe('OAuth2').addBatch({
         undefined),
       'When calling get': {
         'we should see the default User-Agent mixed into headers property in options passed to http-library' : function(oa) {
-          oa._executeRequest= function( http_library, options, callback ) {
+          request.get = function(options, callback){
             assert.equal(options.headers["User-Agent"], "Node-oauth");
-            };
+          };
           oa.get("", {});
         }
       }
