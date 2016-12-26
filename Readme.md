@@ -212,6 +212,8 @@ The Google example was removed due to the need for a custom Google-specific OAut
     - PATCH support for OAuth1 and OAuth2
     - GPLv3+ licensing
     - Code examples updated, tested and working
+    - OAuth2: Authorization header added for POST token
+    - OAuth1: Able to set HTTPS/HTTP options
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
 * 0.9.13
