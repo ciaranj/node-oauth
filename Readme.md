@@ -304,6 +304,7 @@ The Google example was removed due to the need for a custom Google-specific OAut
 * Derek Brooks
 * Evan Prodromou
 * Garrick Cheung - http://www.garrickcheung.com/
+* George Haddad - https://github.com/george-haddad
 * Jeffrey D. Van Alstine
 * Joe Rozer - http://www.deadbytes.net
 * Jose Ignacio Andres
