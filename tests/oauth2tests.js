@@ -72,8 +72,14 @@ vows.describe('OAuth2').addBatch({
           var authHeaderContent = oa._getAuthorizationHeader();
           var headerSplit = authHeaderContent.split(' ');
           assert.equal(headerSplit[0], 'Basic');
-
-          var decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
+          var decodedAuthHeader = '';
+          try {
+            //newer node versions
+            decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
+          } catch (e) {
+            //node version 5 and older
+            decodedAuthHeader = new Buffer(headerSplit[1], 'base64').toString('ascii');
+          }
           assert.equal(decodedAuthHeader, 'hello:world');
         },
         'we should correctly send Authorization header encoded Base64 for token request': function (oa) {
@@ -87,8 +93,14 @@ vows.describe('OAuth2').addBatch({
 
             var headerSplit = authHeaderContent.split(' ');
             assert.equal("Basic", headerSplit[0]);
-
-            var decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
+            var decodedAuthHeader = '';
+            try {
+              //newer node versions
+              decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
+            } catch (e) {
+              //node version 5 and older
+              decodedAuthHeader = new Buffer(headerSplit[1], 'base64').toString('ascii');
+            }
             assert.equal(decodedAuthHeader,"clientId:clientSecret");
             callback(null, "access_token=access&refresh_token=refresh");
           };
