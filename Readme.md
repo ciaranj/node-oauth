@@ -30,6 +30,12 @@ the GPLv3 bits if they want to use them in a proprietary project
 
     npm install oauth-libre
 
+# Build the Docs
+
+Requires JSDoc to be installed:
+
+    npm run build-docs
+
 # Examples
 
 ## Using Promises

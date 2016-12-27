@@ -1,15 +1,16 @@
 {
   "opts": {
-    "destination": "api-docs"
+    "destination": "api-docs",
+    "readme": "Readme.md"
   },
   "tags": {
     "allowUnknownTags": true,
     "dictionaries": ["jsdoc","closure"]
   },
   "source": {
-    "includePattern": ".+\\.js(doc|x)?$",
-    "excludePattern": "(^|\\/|\\\\)_",
+    "includePattern": ".+\\.js(doc|x|on)?$",
     "include": [
+      "Readme.md",
       "index.js",
       "lib"
     ]
