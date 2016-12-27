@@ -185,7 +185,7 @@ vows.describe("OAuth2").addBatch({
     }
   },
   "Given an OAuth2 instance with clientId, clientSecret and customHeaders": {
-    topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined, { "SomeHeader": "123" }),
+    topic: new OAuth2("clientId", "clientSecret", null, null, null, { "SomeHeader": "123" }),
     "When GETing": {
       "we should see the custom headers mixed into headers property in options passed to http-library": function (oa) {
         oa._executeRequest = function (httpLibrary, options, callback) {
@@ -212,9 +212,9 @@ vows.describe("OAuth2").addBatch({
                 write: function (body) {
                   bodyWritten = true;
                   assert.isNotNull(body);
-                  assert.equal(body, "THIS_IS_A_POST_BODY_STRING")
+                  assert.equal(body, "THIS_IS_A_POST_BODY_STRING");
                 }
-              }
+              };
             }
           };
         }
@@ -235,9 +235,9 @@ vows.describe("OAuth2").addBatch({
                 write: function (body) {
                   bodyWritten = true;
                   assert.isNotNull(body);
-                  assert.equal(4, body.length)
+                  assert.equal(4, body.length);
                 }
-              }
+              };
             }
           };
         }
@@ -260,9 +260,9 @@ vows.describe("OAuth2").addBatch({
                 write: function (body) {
                   bodyWritten = true;
                   assert.isNotNull(body);
-                  assert.equal(body, "THIS_IS_A_PUT_BODY_STRING")
+                  assert.equal(body, "THIS_IS_A_PUT_BODY_STRING");
                 }
-              }
+              };
             }
           };
         }
@@ -295,7 +295,7 @@ vows.describe("OAuth2").addBatch({
     }
   },
   "When the user passes in the User-Agent in customHeaders": {
-    topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined, { "User-Agent": "123Agent" }),
+    topic: new OAuth2("clientId", "clientSecret", null, null, null, { "User-Agent": "123Agent" }),
     "When calling get": {
       "we should see the User-Agent mixed into headers property in options passed to http-library": function (oa) {
         oa._executeRequest = function (httpLibrary, options, callback) {
@@ -306,7 +306,7 @@ vows.describe("OAuth2").addBatch({
     }
   },
   "When the user does not pass in a User-Agent in customHeaders": {
-    topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined, undefined),
+    topic: new OAuth2("clientId", "clientSecret", null, null, null, null),
     "When calling get": {
       "we should see the default User-Agent mixed into headers property in options passed to http-library": function (oa) {
         oa._executeRequest = function (httpLibrary, options, callback) {
