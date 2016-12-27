@@ -29,7 +29,7 @@
  */
 
 var http = require("http");
-var oauth = require("../lib/oauth-promise").OAuth;
+var OAuth = require("../lib/oauth-promise").OAuth;
 var express = require("express");
 
 const callbackURL = "http://localhost:5000/oauth_callback";
@@ -42,7 +42,7 @@ var reqTokenSecrets = {};
 /*
   STEP 1 - init the OAuth Client!
 */
-var oa = new oauth(
+var oa = new OAuth(
   "https://api.twitter.com/oauth/request_token",
   "https://api.twitter.com/oauth/access_token",
   yourConsumerKey,    // CONSUMER KEY
