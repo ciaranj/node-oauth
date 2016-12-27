@@ -125,7 +125,7 @@ vows.describe("OAuth2").addBatch({
     "When no grant_type parameter is specified": {
       "we should pass the value of the code argument as the code parameter": function (oa) {
         oa._request = function (method, url, headers, postBody, accessToken, callback) {
-          assert.isTrue(postBody.indexOf("code=xsds23") != -1);
+          assert.isTrue(postBody.indexOf("code=xsds23") !== -1);
         };
         oa.getOAuthAccessToken("xsds23", {});
       }
@@ -133,19 +133,19 @@ vows.describe("OAuth2").addBatch({
     "When an invalid grant_type parameter is specified": {
       "we should pass the value of the code argument as the code parameter": function (oa) {
         oa._request = function (method, url, headers, postBody, accessToken, callback) {
-          assert.isTrue(postBody.indexOf("code=xsds23") != -1);
+          assert.isTrue(postBody.indexOf("code=xsds23") !== -1);
         };
-        oa.getOAuthAccessToken("xsds23", {grant_type: "refresh_toucan" });
+        oa.getOAuthAccessToken("xsds23", { "grant_type": "refresh_toucan" });
       }
     },
     "When a grant_type parameter of value 'refresh_token' is specified": {
       "we should pass the value of the code argument as the refresh_token parameter, should pass a grant_type parameter, but shouldn\"t pass a code parameter": function (oa) {
         oa._request = function (method, url, headers, postBody, accessToken, callback) {
-          assert.isTrue(postBody.indexOf("refresh_token=sdsds2") != -1);
-          assert.isTrue(postBody.indexOf("grant_type=refresh_token") != -1);
-          assert.isTrue(postBody.indexOf("code=") == -1);
+          assert.isTrue(postBody.indexOf("refresh_token=sdsds2") !== -1);
+          assert.isTrue(postBody.indexOf("grant_type=refresh_token") !== -1);
+          assert.isTrue(postBody.indexOf("code=") === -1);
         };
-        oa.getOAuthAccessToken("sdsds2", {grant_type: "refresh_token" });
+        oa.getOAuthAccessToken("sdsds2", { "grant_type": "refresh_token" });
       }
     },
     "When we use the authorization header": {
@@ -217,7 +217,7 @@ vows.describe("OAuth2").addBatch({
               };
             }
           };
-        }
+        };
         oa._request("POST", "", { "Content-Type": "text/plain" }, "THIS_IS_A_POST_BODY_STRING");
         assert.ok(bodyWritten);
       },
@@ -265,7 +265,7 @@ vows.describe("OAuth2").addBatch({
               };
             }
           };
-        }
+        };
         oa._request("PUT", "", { "Content-Type": "text/plain" }, "THIS_IS_A_PUT_BODY_STRING");
         assert.ok(bodyWritten);
       },
@@ -283,12 +283,12 @@ vows.describe("OAuth2").addBatch({
                 write: function (body) {
                   bodyWritten = true;
                   assert.isNotNull(body);
-                  assert.equal(4, body.length)
+                  assert.equal(4, body.length);
                 }
-              }
+              };
             }
           };
-        }
+        };
         oa._request("PUT", "", { "Content-Type": "application/octet-stream" }, new Buffer([1,2,3,4]));
         assert.ok(bodyWritten);
       }
