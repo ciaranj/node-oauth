@@ -66,6 +66,16 @@ vows.describe('OAuth2').addBatch({
               assert.equal( refresh_token, "refresh");
             });
         },
+        'we should correctly create base64-encoded authorization header from client id and secret': function (oa) {
+          oa._clientId = 'hello';
+          oa._clientSecret = 'world';
+          var authHeaderContent = oa._getAuthorizationHeader();
+          var headerSplit = authHeaderContent.split(' ');
+          assert.equal(headerSplit[0], 'Basic');
+
+          var decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
+          assert.equal(decodedAuthHeader, 'hello:world');
+        },
         'we should correctly send Authorization header encoded Base64 for token request': function (oa) {
           var originalClientId = oa._clientId;
           var originalClientSecret = oa._clientSecret;
