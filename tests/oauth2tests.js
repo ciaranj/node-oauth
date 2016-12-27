@@ -66,19 +66,27 @@ vows.describe('OAuth2').addBatch({
               assert.equal( refresh_token, "refresh");
             });
         },
-          'we should correctly send Authorization header encoded Base64 for token request': function (oa) {
-              oa._request= function( method, url, postHeaders, bar, bleh, callback) {
-                  var authHeaderContent = postHeaders.Authorization;
-                  assert.isNotNull(authHeaderContent, "Authorization header for token request must to be present.");
-                  var headerSplit = authHeaderContent.split(' ');
-                  assert.equal("Basic", headerSplit[0]);
-                  var decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
-                  assert.equal(decodedAuthHeader,"clientId:clientSecret");
-                  callback(null, "access_token=access&refresh_token=refresh");
-              };
-              oa.getOAuthAccessToken("", {}, function(error, access_token, refresh_token) { });
-          }
-        ,
+        'we should correctly send Authorization header encoded Base64 for token request': function (oa) {
+          var originalClientId = oa._clientId;
+          var originalClientSecret = oa._clientSecret;
+          oa._clientId = 'clientId';
+          oa._clientSecret = 'clientSecret';
+          oa._request= function( method, url, postHeaders, bar, bleh, callback) {
+            var authHeaderContent = postHeaders['Authorization'];
+            assert.isNotNull(authHeaderContent, "Authorization header for token request must to be present.");
+
+            var headerSplit = authHeaderContent.split(' ');
+            assert.equal("Basic", headerSplit[0]);
+
+            var decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
+            assert.equal(decodedAuthHeader,"clientId:clientSecret");
+            callback(null, "access_token=access&refresh_token=refresh");
+          };
+          oa.getOAuthAccessToken("", {}, function(error, access_token, refresh_token) {
+            oa._clientId = originalClientId;
+            oa._clientSecret = originalClientSecret;
+          });
+        },
         'we should not include access token in both querystring and headers (favours headers if specified)': function (oa) {
             oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
             oa._executeRequest= function( http_library, options, post_body, callback) {
