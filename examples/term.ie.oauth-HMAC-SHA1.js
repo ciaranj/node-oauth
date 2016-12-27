@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-var util = require("util")
+var util = require("util");
 var OAuth = require("../lib/oauth").OAuth;
 
 var oa = new OAuth(
@@ -29,29 +29,29 @@ var oa = new OAuth(
   "HMAC-SHA1"
 );
 
-oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results) {
+oa.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results) {
   if (error) {
     util.puts("error :" + error);
     return;
   }
-  util.puts("oauth_token :" + oauth_token);
-  util.puts("oauth_token_secret :" + oauth_token_secret);
+  util.puts("oauth_token :" + oauthToken);
+  util.puts("oauth_token_secret :" + oauthTokenSecret);
   util.puts("requestoken results :" + util.inspect(results));
   util.puts("Requesting access token");
   oa.getOAuthAccessToken(
-    oauth_token,
-    oauth_token_secret,
-    function(error, oauth_access_token, oauth_access_token_secret, results2) {
-      util.puts("oauth_access_token :" + oauth_access_token);
-      util.puts("oauth_token_secret :" + oauth_access_token_secret);
+    oauthToken,
+    oauthTokenSecret,
+    function(error, oauthAccessToken, oauthAccessTokenSecret, results2) {
+      util.puts("oauth_access_token :" + oauthAccessToken);
+      util.puts("oauth_token_secret :" + oauthAccessTokenSecret);
       util.puts("accesstoken results :" + util.inspect(results2));
       util.puts("Requesting access token");
       var data = "";
       oa.getProtectedResource(
         "http://term.ie/oauth/example/echo_api.php?foo=bar&too=roo",
         "GET",
-        oauth_access_token,
-        oauth_access_token_secret,
+        oauthAccessToken,
+        oauthAccessTokenSecret,
         function (error, data, response) {
           util.puts(data);
         });
