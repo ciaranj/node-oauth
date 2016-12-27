@@ -1,26 +1,85 @@
-node-oauth
-===========
+# node-oauth
+
+[![Build Status](https://travis-ci.org/omouse/node-oauth-libre.svg)](https://travis-ci.org/omouse/node-oauth-libre)
+[![License](http://img.shields.io/:license-gpl3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
+[![Flattr This](http://button.flattr.com/flattr-badge-large.png)](https://flattr.com/submit/auto?fid=y0jx3j&url=https%3A%2F%2Fgithub.com%2Fomouse%2Fnode-oauth-libre)
+
 A simple oauth API for node.js .  This API allows users to authenticate against OAUTH providers, and thus act as OAuth consumers. It also has support for OAuth Echo, which is used for communicating with 3rd party media providers such as TwitPic and yFrog.
 
 Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/example/), TwitPic, and Yahoo!
 
 Also provides rudimentary OAuth2 support, tested against facebook, github, foursquare, google and Janrain.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
-[![Clone in Koding](http://learn.koding.com/btn/clone_d.png)][koding]
-[koding]: https://koding.com/Teamwork?import=https://github.com/ciaranj/node-oauth/archive/master.zip&c=git1
-[![Pair on Thinkful](https://tf-assets-staging.s3.amazonaws.com/badges/thinkful_repo_badge.svg)][Thinkful]
-[Thinkful]: http://start.thinkful.com/node/?utm_source=github&utm_medium=badge&utm_campaign=node-oauth
+## Related Libraries
 
-Installation
-============== 
+- [passport-oauth2-libre](https://github.com/caco0516/passport-oauth2-libre) Passport OAuth2 Strategy using node-oauth-libre.
 
-    $ npm install oauth
+## License and Copyright
 
+**This code is covered under the GNU GPL version 3 or later with parts of the code also covered by the MIT license.**
 
-Examples
-==========
+If you modify the code in this project, your changes will be under the GNU GPL version 3 or later.
 
-To run examples/tests install Mocha `$ npm install -g mocha` and run `$ mocha you-file-name.js`:
+If you go to the original project and modify the code there, your changes will be under the MIT license.
+
+*Note: if you submit patches to the original project and they are applied here, I will assume that they
+are under the MIT license.* But someone else will have to go through the work to extract them away from
+the GPLv3 bits if they want to use them in a proprietary project
+
+# Installation
+
+    npm install oauth-libre
+
+# Examples
+
+## Using Promises
+
+Using promises is *optional*.
+
+Install the bluebird promises library:
+
+    npm install bluebird
+
+An example of using oauth-libre with Promises:
+
+```
+var OAuth2 = require('oauth-libre').PromiseOAuth2;
+
+var clientId = '';
+var clientSecret = '';
+
+// Fill these in:
+var user = 'USER';
+var personalAccessToken = 'PERSONAL_ACCESS_TOKEN';
+
+var baseSiteUrl = 'https://' + user + ':' + personalAccessToken + '@api.github.com/';
+var authorizePath = 'oauth2/authorize';
+var accessTokenPath = 'oauth2/access_token';
+var customHeaders = null;
+
+var oauth2 = new OAuth2(
+  clientId, clientSecret, baseSiteUrl, authorizePath, accessTokenPath, customHeaders
+);
+
+var url = 'https://api.github.com/users/' + user + '/received_events';
+oauth2
+  .get(url, personalAccessToken)
+  .then(jsonParse)
+  .then(function(json) {
+    for (var i = 0; i < json.length; i += 1) {
+      console.log(json[i]['id'] + ': ' + json[i].type);
+    }
+  })
+  .catch(function(err) {
+    console.log('Error: ' + err);
+  });
+
+function jsonParse(data) {
+  return JSON.parse(data);
+}
+```
+
+Note that in the first line you must explicitly import OAuth2 with promises.
 
 ## OAuth1.0
 
@@ -41,30 +100,65 @@ describe('OAuth1.0',function(){
     oauth.get(
       'https://api.twitter.com/1.1/trends/place.json?id=23424977',
       'your user token for this app', //test user token
-      'your user secret for this app', //test user secret            
+      'your user secret for this app', //test user secret
       function (e, data, res){
-        if (e) console.error(e);        
+        if (e) console.error(e);
         console.log(require('util').inspect(data));
-        done();      
-      });    
+        done();
+      });
   });
 });
 ```
 
-## OAuth2.0 
+## OAuth2.0
+
+### Usage
+
 ```javascript
-describe('OAuth2',function(){
+var OAuth2 = require('oauth').OAuth2;
+
+console.log("Login here to get an authorization code: " + oauth2.getAuthorizeUrl());
+
+var oauth2 = new OAuth2(
+  "client_id", // client id
+  "client_secret", // client secret
+  "http://localhost:3000/", // base site url
+  null, // authorize path
+  "/oauth/token", // access token path
+  null // custom headers object
+);
+
+oauth2.getOAuthAccessToken(
+  "auth_code",
+  {
+    "grant_type": "authorization_code",
+    "redirect_uri": "http://example.com/redirect_uri"
+  },
+  function(error, accessToken, refreshToken, results) {
+    if (error) {
+      console.log("Error: " + error);
+    } else {
+      console.log("Results: " + results);
+    }
+  }
+);
+```
+
+### Test
+
+```javascript
+describe('OAuth2',function() {
   var OAuth = require('oauth');
 
    it('gets bearer token', function(done){
-     var OAuth2 = OAuth.OAuth2;    
+     var OAuth2 = OAuth.OAuth2;
      var twitterConsumerKey = 'your key';
      var twitterConsumerSecret = 'your secret';
      var oauth2 = new OAuth2(server.config.keys.twitter.consumerKey,
-       twitterConsumerSecret, 
-       'https://api.twitter.com/', 
+       twitterConsumerSecret,
+       'https://api.twitter.com/',
        null,
-       'oauth2/token', 
+       'oauth2/token',
        null);
      oauth2.getOAuthAccessToken(
        '',
@@ -76,8 +170,52 @@ describe('OAuth2',function(){
    });
 ```
 
-Change History
-============== 
+## Examples Using Web-Based Interface
+
+Included with the source code are examples of using a web-based interface to login with:
+
+* Github: `examples/github-example.js`
+* Twitter: `examples/twitter-example.js`
+
+The Google example was removed due to the need for a custom Google-specific OAuth2 library for authentication.
+
+### Example: Authentication with Github
+
+1. Create a Github account
+1. Create a new Developer Application (Settings > OAuth applications > Developer Applications)
+1. Fill in the Authorization callback URL with `http://localhost:8080/code`
+1. Copy the Client ID into `examples/github-example.js` where it says `clientID`
+1. Copy the Client Secret into `examples/github-example.js` where it says `clientSecret`
+1. Run the web server: `node examples/github-example.js`
+1. Open the website: `http://localhost:8080/`
+1. Click the link that says "Get Code"
+1. Login to Github and authorize the application
+1. You will be returned to `http://localhost:8080/code` and should see the access token, on the command-line you will see something like "Obtained access_token: ..."
+
+### Example: Authentication with Google
+
+*Note: This example has been removed because Google needs a custom OAuth2 client library: https://github.com/google/google-auth-library-nodejs*
+
+### Example: Authentication with Twitter
+
+1. Create a Twitter account
+1. Create a new Developer Application https://apps.twitter.com/ > Create New App
+1. Fill in the Callback URL with `http://127.0.0.1:8080/callback`
+1. Copy the Consumer Key (API Key) into `examples/twitter-example.js` where it says `clientID`
+1. Copy the Consumer Secret (API Secret) into `examples/twitter-example.js` where it says `clientSecret`
+1. Run the web server: `node examples/twitter-example.js`
+1. Open the website: `http://localhost:8080/`
+1. Login to Twitter and authorize the application
+1. You will be returned to `http://localhost:8080/code` and should see some results from the response on the command-line
+
+# Change History
+* 0.9.15
+    - Promises for OAuth1 and OAuth2 with multiArgs
+    - PATCH support for OAuth1 and OAuth2
+    - GPLv3+ licensing
+    - Code examples updated, tested and working
+    - OAuth2: Authorization header added for POST token
+    - OAuth1: Able to set HTTPS/HTTP options
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
 * 0.9.13
@@ -106,82 +244,85 @@ Change History
     - OAuth2:   Don't force a https request if given a http url (Thanks to Damien Mathieu)
     - OAuth2:   Supports specifying a grant-type of 'refresh-token' (Thanks to Luke Baker)
 * 0.9.6
-    - OAuth2:   Support for 302 redirects (Thanks Patrick Negri). 
-    - OAuth1/2: Some code tidying. ( Thanks to Raoul Millais )  
+    - OAuth2:   Support for 302 redirects (Thanks Patrick Negri).
+    - OAuth1/2: Some code tidying. ( Thanks to Raoul Millais )
 * 0.9.5
-    - OAuth1:   Allow usage of HTTP verbs other than GET for retrieving the access and request tokens (Thanks to Raoul Millais)  
+    - OAuth1:   Allow usage of HTTP verbs other than GET for retrieving the access and request tokens (Thanks to Raoul Millais)
 * 0.9.4
-    - OAuth1/2: Support for OAuth providers that drop connections (don't send response lengths? [Google]) 
-    - OAuth2:   Change getOAuthAccessToken to POST rather than GET ( Possible Breaking change!!! ... re-tested against Google, Github, Facebook, FourSquare and Janrain and seems ok .. is closer to the spec (v20) )  
+    - OAuth1/2: Support for OAuth providers that drop connections (don't send response lengths? [Google])
+    - OAuth2:   Change getOAuthAccessToken to POST rather than GET ( Possible Breaking change!!! ... re-tested against Google, Github, Facebook, FourSquare and Janrain and seems ok .. is closer to the spec (v20) )
 * 0.9.3
-    - OAuth1:   Adds support for following 301 redirects (Thanks bdickason) 
-* 0.9.2 
-    - OAuth1:   Correct content length calculated for non-ascii post bodies (Thanks selead)  
-    - OAuth1:   Allowed for configuration of the 'access token' name used when requesting protected resources (OAuth2)  
+    - OAuth1:   Adds support for following 301 redirects (Thanks bdickason)
+* 0.9.2
+    - OAuth1:   Correct content length calculated for non-ascii post bodies (Thanks selead)
+    - OAuth1:   Allowed for configuration of the 'access token' name used when requesting protected resources (OAuth2)
 * 0.9.1
-    - OAuth1:   Added support for automatically following 302 redirects (Thanks neyric) 
-    - OAuth1:   Added support for OAuth Echo (Thanks Ryan LeFevre). 
-    - OAuth1:   Improved handling of 2xx responses (Thanks Neil Mansilla).  
+    - OAuth1:   Added support for automatically following 302 redirects (Thanks neyric)
+    - OAuth1:   Added support for OAuth Echo (Thanks Ryan LeFevre).
+    - OAuth1:   Improved handling of 2xx responses (Thanks Neil Mansilla).
 * 0.9.0
-    - OAuth1/2: Compatibility fixes to bring node-oauth up to speed with node.js 0.4x [thanks to Rasmus Andersson for starting the work ]  
+    - OAuth1/2: Compatibility fixes to bring node-oauth up to speed with node.js 0.4x [thanks to Rasmus Andersson for starting the work ]
 * 0.8.4
     - OAuth1:   Fixed issue #14 (Parameter ordering ignored encodings).
     - OAuth1:   Added support for repeated parameter names.
     - OAuth1/2: Implements issue #15 (Use native SHA1 if available, 10x speed improvement!).
     - OAuth2:   Fixed issue #16 (Should use POST when requesting access tokens.).
-    - OAuth2:   Fixed Issue #17 (OAuth2 spec compliance).  
-    - OAuth1:   Implemented enhancement #13 (Adds support for PUT & DELETE http verbs). 
-    - OAuth1:   Fixes issue #18 (Complex/Composite url arguments [thanks novemberborn])  
+    - OAuth2:   Fixed Issue #17 (OAuth2 spec compliance).
+    - OAuth1:   Implemented enhancement #13 (Adds support for PUT & DELETE http verbs).
+    - OAuth1:   Fixes issue #18 (Complex/Composite url arguments [thanks novemberborn])
 * 0.8.3
-    - OAuth1:   Fixed an issue where the auth header code depended on the Array's toString method (Yohei Sasaki) Updated the getOAuthRequestToken method so we can access google's OAuth secured methods. Also re-implemented and fleshed out the test suite.  
+    - OAuth1:   Fixed an issue where the auth header code depended on the Array's toString method (Yohei Sasaki) Updated the getOAuthRequestToken method so we can access google's OAuth secured methods. Also re-implemented and fleshed out the test suite.
 * 0.8.2
     - OAuth1:   The request returning methods will now write the POST body if provided (Chris Anderson), the code responsible for manipulating the headers is a bit safe now when working with other code (Paul McKellar)
-    - Package:  Tweaked the package.json to use index.js instead of main.js  
+    - Package:  Tweaked the package.json to use index.js instead of main.js
 * 0.8.1
-    - OAuth1:   Added mechanism to get hold of a signed Node Request object, ready for attaching response listeners etc. (Perfect for streaming APIs)  
+    - OAuth1:   Added mechanism to get hold of a signed Node Request object, ready for attaching response listeners etc. (Perfect for streaming APIs)
 * 0.8.0
-    - OAuth1:   Standardised method capitalisation, the old getOauthAccessToken is now getOAuthAccessToken (Breaking change to existing code)  
+    - OAuth1:   Standardised method capitalisation, the old getOauthAccessToken is now getOAuthAccessToken (Breaking change to existing code)
 * 0.7.7
-    - OAuth1:   Looks like non oauth_ parameters where appearing within the Authorization headers, which I believe to be incorrect.  
+    - OAuth1:   Looks like non oauth_ parameters where appearing within the Authorization headers, which I believe to be incorrect.
 * 0.7.6
-    - OAuth1:   Added in oauth_verifier property to getAccessToken required for 1.0A  
+    - OAuth1:   Added in oauth_verifier property to getAccessToken required for 1.0A
 * 0.7.5
-    - Package:  Added in a main.js to simplify the require'ing of OAuth  
+    - Package:  Added in a main.js to simplify the require'ing of OAuth
 * 0.7.4
-    - OAuth1:   Minor change to add an error listener to the OAuth client (thanks troyk)  
+    - OAuth1:   Minor change to add an error listener to the OAuth client (thanks troyk)
 * 0.7.3
-    - OAuth2:   Now sends a Content-Length Http header to keep nginx happy :)  
+    - OAuth2:   Now sends a Content-Length Http header to keep nginx happy :)
 * 0.7.2
-    - OAuth1:   Fixes some broken unit tests!  
+    - OAuth1:   Fixes some broken unit tests!
 * 0.7.0
-    - OAuth1/2: Introduces support for HTTPS end points and callback URLS for OAuth 1.0A and Oauth 2 (Please be aware that this was a breaking change to the constructor arguments order)  
+    - OAuth1/2: Introduces support for HTTPS end points and callback URLS for OAuth 1.0A and Oauth 2 (Please be aware that this was a breaking change to the constructor arguments order)
 
-Contributors (In no particular order)
-=====================================
+# Contributors (In first-name alphabetical order)
 
-* Evan Prodromou
-* Jose Ignacio Andres
-* Ted Goddard
-* Derek Brooks
-* Ciaran Jessup - ciaranj@gmail.com
-* Mark Wubben - http://equalmedia.com/
-* Ryan LeFevre - http://meltingice.net
-* Raoul Millais
-* Patrick Negri - http://github.com/pnegri
-* Tang Bo Hao - http://github.com/btspoony
-* Damien Mathieu - http://42.dmathieu.com
-* Luke Baker - http://github.com/lukebaker
-* Christian Schwarz  - http://github.com/chrischw/
-* Joe Rozer - http://www.deadbytes.net
-* Garrick Cheung - http://www.garrickcheung.com/
-* rolandboon - http://rolandboon.com
-* Brian Park - http://github.com/yaru22
-* José F. Romaniello - http://github.com/jfromaniello
-* bendiy - https://github.com/bendiy
-* Andrew Martins - http://www.andrewmartens.com
-* Daniel Mahlow - https://github.com/dmahlow
-* Pieter Joost van de Sande - https://github.com/pjvds
-* Jeffrey D. Van Alstine
-* Michael Garvin
-* Andreas Knecht
 * AJ ONeal
+* Alex Nuccio - https://github.com/anuccio1
+* Andreas Knecht
+* Andrew Martins - http://www.andrewmartens.com
+* Brian Park - http://github.com/yaru22
+* Christian Schwarz  - http://github.com/chrischw/
+* Ciaran Jessup - ciaranj@gmail.com
+* Damien Mathieu - http://42.dmathieu.com
+* Daniel Mahlow - https://github.com/dmahlow
+* Derek Brooks
+* Evan Prodromou
+* Garrick Cheung - http://www.garrickcheung.com/
+* George Haddad - https://github.com/george-haddad
+* Jeffrey D. Van Alstine
+* Joe Rozer - http://www.deadbytes.net
+* Jose Ignacio Andres
+* José F. Romaniello - http://github.com/jfromaniello
+* Luke Baker - http://github.com/lukebaker
+* Mark Wubben - http://equalmedia.com/
+* Michael Garvin
+* Oleg Zd - https://github.com/olegzd
+* Patrick Negri - http://github.com/pnegri
+* Pieter Joost van de Sande - https://github.com/pjvds
+* Raoul Millais
+* Rudolf Olah - http://neverfriday.com
+* Ryan LeFevre - http://meltingice.net
+* Tang Bo Hao - http://github.com/btspoony
+* Ted Goddard
+* bendiy - https://github.com/bendiy
+* rolandboon - http://rolandboon.com

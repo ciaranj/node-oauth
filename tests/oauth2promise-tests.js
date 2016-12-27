@@ -2,6 +2,7 @@
  * node-oauth-libre is a Node.js library for OAuth
  *
  * Copyright (C) 2010-2012 Ciaran Jessup
+ * Copyright (C) 2016 Rudolf Olah
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +23,10 @@ var vows = require('vows'),
     DummyResponse= require('./shared').DummyResponse,
     DummyRequest= require('./shared').DummyRequest,
     https = require('https'),
-    OAuth2= require('../lib/oauth2').OAuth2,
+    OAuth2= require('../lib/oauth2-promise').OAuth2,
     url = require('url');
 
-vows.describe('OAuth2').addBatch({
+vows.describe('OAuth2-Promise').addBatch({
     'Given an OAuth2 instance with clientId and clientSecret, ': {
       topic: new OAuth2("clientId", "clientSecret"),
       'When dealing with the response from the OP': {
@@ -65,37 +66,6 @@ vows.describe('OAuth2').addBatch({
               assert.equal( access_token, "access");
               assert.equal( refresh_token, "refresh");
             });
-        },
-        'we should correctly create base64-encoded authorization header from client id and secret': function (oa) {
-          oa._clientId = 'hello';
-          oa._clientSecret = 'world';
-          var authHeaderContent = oa._getAuthorizationHeader();
-          var headerSplit = authHeaderContent.split(' ');
-          assert.equal(headerSplit[0], 'Basic');
-
-          var decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
-          assert.equal(decodedAuthHeader, 'hello:world');
-        },
-        'we should correctly send Authorization header encoded Base64 for token request': function (oa) {
-          var originalClientId = oa._clientId;
-          var originalClientSecret = oa._clientSecret;
-          oa._clientId = 'clientId';
-          oa._clientSecret = 'clientSecret';
-          oa._request= function( method, url, postHeaders, bar, bleh, callback) {
-            var authHeaderContent = postHeaders['Authorization'];
-            assert.isNotNull(authHeaderContent, "Authorization header for token request must to be present.");
-
-            var headerSplit = authHeaderContent.split(' ');
-            assert.equal("Basic", headerSplit[0]);
-
-            var decodedAuthHeader = Buffer.from(headerSplit[1], 'base64').toString('ascii');
-            assert.equal(decodedAuthHeader,"clientId:clientSecret");
-            callback(null, "access_token=access&refresh_token=refresh");
-          };
-          oa.getOAuthAccessToken("", {}, function(error, access_token, refresh_token) {
-            oa._clientId = originalClientId;
-            oa._clientSecret = originalClientSecret;
-          });
         },
         'we should not include access token in both querystring and headers (favours headers if specified)': function (oa) {
             oa._request = new OAuth2("clientId", "clientSecret")._request.bind(oa);
@@ -219,7 +189,7 @@ vows.describe('OAuth2').addBatch({
         'When POSTing': {
           'we should see a given string being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
+            oa._oa._chooseHttpLibrary= function() {
               return {
                 request: function(options) {
                   assert.equal(options.headers["Content-Type"], "text/plain");
@@ -242,7 +212,7 @@ vows.describe('OAuth2').addBatch({
           },
           'we should see a given buffer being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
+            oa._oa._chooseHttpLibrary= function() {
               return {
                 request: function(options) {
                   assert.equal(options.headers["Content-Type"], "application/octet-stream");
@@ -267,7 +237,7 @@ vows.describe('OAuth2').addBatch({
         'When PUTing': {
           'we should see a given string being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
+            oa._oa._chooseHttpLibrary= function() {
               return {
                 request: function(options) {
                   assert.equal(options.headers["Content-Type"], "text/plain");
@@ -290,7 +260,7 @@ vows.describe('OAuth2').addBatch({
           },
           'we should see a given buffer being sent to the request' : function(oa) {
             var bodyWritten= false;
-            oa._chooseHttpLibrary= function() {
+            oa._oa._chooseHttpLibrary= function() {
               return {
                 request: function(options) {
                   assert.equal(options.headers["Content-Type"], "application/octet-stream");
