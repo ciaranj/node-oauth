@@ -222,6 +222,7 @@ The Google example was removed due to the need for a custom Google-specific OAut
     - Code examples updated, tested and working
     - OAuth2: Authorization header added for POST token
     - OAuth1: Able to set HTTPS/HTTP options
+    - OAuth1: getOAuthAccessToken now accepts an additional extraParams argument
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
 * 0.9.13
@@ -326,9 +327,10 @@ The Google example was removed due to the need for a custom Google-specific OAut
 * Patrick Negri - http://github.com/pnegri
 * Pieter Joost van de Sande - https://github.com/pjvds
 * Raoul Millais
-* Rudolf Olah - http://neverfriday.com
+* Rudolf Olah - https://neverfriday.com
 * Ryan LeFevre - http://meltingice.net
 * Tang Bo Hao - http://github.com/btspoony
 * Ted Goddard
 * bendiy - https://github.com/bendiy
 * rolandboon - http://rolandboon.com
+* cr24osome - https://github.com/cr24osome
