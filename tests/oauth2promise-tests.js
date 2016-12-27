@@ -31,8 +31,8 @@ vows.describe("OAuth2-Promise").addBatch({
     topic: new OAuth2("clientId", "clientSecret"),
     "When dealing with the response from the OP": {
       "we should treat a 201 response as a success": function (oa) {
-        var callbackCalled= false;
-        var httpLibrary= {
+        var callbackCalled = false;
+        var httpLibrary = {
           request: function () {
             return new DummyRequest(new DummyResponse(201));
           }
@@ -51,7 +51,7 @@ vows.describe("OAuth2-Promise").addBatch({
           }
         };
         oa._executeRequest(httpLibrary, {}, null, function (err, result, response) {
-          callbackCalled= true;
+          callbackCalled = true;
           assert.equal(err, null);
         });
         assert.ok(callbackCalled);
@@ -121,7 +121,7 @@ vows.describe("OAuth2-Promise").addBatch({
     "When an invalid grant_type parameter is specified": {
       "we should pass the value of the code argument as the code parameter": function (oa) {
         oa._request = function (method, url, headers, post_body, accessToken, callback) {
-          assert.isTrue(post_body.indexOf("code=xsds23") != -1);
+          assert.isTrue(post_body.indexOf("code=xsds23") !== -1);
         };
         oa.getOAuthAccessToken("xsds23", {grant_type: "refresh_toucan" });
       }
@@ -129,9 +129,9 @@ vows.describe("OAuth2-Promise").addBatch({
     "When a grant_type parameter of value 'refresh_token' is specified": {
       "we should pass the value of the code argument as the refresh_token parameter, should pass a grant_type parameter, but shouldn\"t pass a code parameter": function (oa) {
         oa._request = function (method, url, headers, post_body, accessToken, callback) {
-          assert.isTrue(post_body.indexOf("refresh_token=sdsds2") != -1);
-          assert.isTrue(post_body.indexOf("grant_type=refresh_token") != -1);
-          assert.isTrue(post_body.indexOf("code=") == -1);
+          assert.isTrue(post_body.indexOf("refresh_token=sdsds2") !== -1);
+          assert.isTrue(post_body.indexOf("grant_type=refresh_token") !== -1);
+          assert.isTrue(post_body.indexOf("code=") === -1);
         };
         oa.getOAuthAccessToken("sdsds2", {grant_type: "refresh_token" });
       }
@@ -173,11 +173,11 @@ vows.describe("OAuth2-Promise").addBatch({
     }
   },
   "Given an OAuth2 instance with clientId, clientSecret and customHeaders": {
-    topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+    topic: new OAuth2("clientId", "clientSecret", null, null, null,
                       { "SomeHeader": "123" }),
     "When GETing": {
       "we should see the custom headers mixed into headers property in options passed to http-library": function (oa) {
-        oa._executeRequest= function (httpLibrary, options, callback) {
+        oa._executeRequest = function (httpLibrary, options, callback) {
           assert.equal(options.headers["SomeHeader"], "123");
         };
         oa.get("", {});
@@ -188,7 +188,7 @@ vows.describe("OAuth2-Promise").addBatch({
     topic: new OAuth2("clientId", "clientSecret"),
     "When POSTing": {
       "we should see a given string being sent to the request": function (oa) {
-        var bodyWritten= false;
+        var bodyWritten = false;
         oa._oa._chooseHttpLibrary = function () {
           return {
             request: function (options) {
@@ -199,11 +199,11 @@ vows.describe("OAuth2-Promise").addBatch({
                 end: function () {},
                 on: function () {},
                 write: function (body) {
-                  bodyWritten= true;
+                  bodyWritten = true;
                   assert.isNotNull(body);
-                  assert.equal(body, "THIS_IS_A_POST_BODY_STRING")
+                  assert.equal(body, "THIS_IS_A_POST_BODY_STRING");
                 }
-              }
+              };
             }
           };
         }
@@ -211,7 +211,7 @@ vows.describe("OAuth2-Promise").addBatch({
         assert.ok(bodyWritten);
       },
       "we should see a given buffer being sent to the request": function (oa) {
-        var bodyWritten= false;
+        var bodyWritten = false;
         oa._oa._chooseHttpLibrary = function () {
           return {
             request: function (options) {
@@ -222,11 +222,11 @@ vows.describe("OAuth2-Promise").addBatch({
                 end: function () {},
                 on: function () {},
                 write: function (body) {
-                  bodyWritten= true;
+                  bodyWritten = true;
                   assert.isNotNull(body);
-                  assert.equal(4, body.length)
+                  assert.equal(4, body.length);
                 }
-              }
+              };
             }
           };
         }
@@ -236,7 +236,7 @@ vows.describe("OAuth2-Promise").addBatch({
     },
     "When PUTing": {
       "we should see a given string being sent to the request": function (oa) {
-        var bodyWritten= false;
+        var bodyWritten = false;
         oa._oa._chooseHttpLibrary = function () {
           return {
             request: function (options) {
@@ -247,11 +247,11 @@ vows.describe("OAuth2-Promise").addBatch({
                 end: function () {},
                 on: function () {},
                 write: function (body) {
-                  bodyWritten= true;
+                  bodyWritten = true;
                   assert.isNotNull(body);
-                  assert.equal(body, "THIS_IS_A_PUT_BODY_STRING")
+                  assert.equal(body, "THIS_IS_A_PUT_BODY_STRING");
                 }
-              }
+              };
             }
           };
         }
@@ -259,7 +259,7 @@ vows.describe("OAuth2-Promise").addBatch({
         assert.ok(bodyWritten);
       },
       "we should see a given buffer being sent to the request": function (oa) {
-        var bodyWritten= false;
+        var bodyWritten = false;
         oa._oa._chooseHttpLibrary = function () {
           return {
             request: function (options) {
@@ -270,11 +270,11 @@ vows.describe("OAuth2-Promise").addBatch({
                 end: function () {},
                 on: function () {},
                 write: function (body) {
-                  bodyWritten= true;
+                  bodyWritten = true;
                   assert.isNotNull(body);
                   assert.equal(4, body.length)
                 }
-              }
+              };
             }
           };
         }
@@ -284,7 +284,7 @@ vows.describe("OAuth2-Promise").addBatch({
     }
   },
   "When the user passes in the User-Agent in customHeaders": {
-    topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
+    topic: new OAuth2("clientId", "clientSecret", null, null, null,
                       { "User-Agent": "123Agent" }),
     "When calling get": {
       "we should see the User-Agent mixed into headers property in options passed to http-library": function (oa) {
@@ -296,8 +296,8 @@ vows.describe("OAuth2-Promise").addBatch({
     }
   },
   "When the user does not pass in a User-Agent in customHeaders": {
-    topic: new OAuth2("clientId", "clientSecret", undefined, undefined, undefined,
-                      undefined),
+    topic: new OAuth2("clientId", "clientSecret", null, null, null,
+                      null),
     "When calling get": {
       "we should see the default User-Agent mixed into headers property in options passed to http-library": function (oa) {
         oa._executeRequest = function (httpLibrary, options, callback) {
