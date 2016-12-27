@@ -17,21 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var OAuth = require('../index').PromiseOAuth;
+var OAuth = require("../index").PromiseOAuth;
 
 // Setting up the OAuth client
-var requestUrl = 'https://api.twitter.com/oauth/request_token';
-var accessUrl = 'https://api.twitter.com/oauth/access_token';
-var version = '1.0';
-var authorizeCallback = 'oob';
-var signatureMethod = 'HMAC-SHA1';
+var requestUrl = "https://api.twitter.com/oauth/request_token";
+var accessUrl = "https://api.twitter.com/oauth/access_token";
+var version = "1.0";
+var authorizeCallback = "oob";
+var signatureMethod = "HMAC-SHA1";
 var nonceSize = null;
 var customHeaders = null;
 
 // Go to https://dev.twitter.com/oauth/overview/application-owner-access-tokens
 // to fill these in:
-var consumerKey = 'your consumer key';
-var consumerSecret = 'your consumer secret';
+var consumerKey = "your consumer key";
+var consumerSecret = "your consumer secret";
 
 var client = new OAuth(
   requestUrl, accessUrl,
@@ -44,16 +44,16 @@ var client = new OAuth(
 );
 
 // Making a request to the API
-var url = 'https://api.twitter.com/1.1/statuses/home_timeline.json';
+var url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
 
 // Go to https://dev.twitter.com/oauth/overview/application-owner-access-tokens
 // to fill these in:
-var accessToken = 'your access token';
-var accessTokenSecret = 'your access token secret';
+var accessToken = "your access token";
+var accessTokenSecret = "your access token secret";
 
 client.get(url, accessToken, accessTokenSecret).then(function(data, response) {
-  console.log('Data: ' + data);
-  console.log('Response: ' + response);
-}).catch(function(err) {
-  console.log('Error: ' + error);
+  console.log("Data: " + data);
+  console.log("Response: " + response);
+}).catch(function(error) {
+  console.log("Error: " + error);
 });
