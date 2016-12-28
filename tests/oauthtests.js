@@ -225,7 +225,17 @@ vows.describe('OAuth').addBatch({
           oa.setClientOptions({});
           oa.getOAuthAccessToken(function() {});
           assert.equal(oa.requestArguments[2], "POST");
-        }
+        },
+      '': function(oa) {
+        var extraParams = { extra: 1, params: 2 };
+        oa.getOAuthAccessToken(null, null, null, function callback() { }, extraParams);
+        assert.ok('extra' in oa.requestArguments[4]);
+        assert.ok('params' in oa.requestArguments[4]);
+        assert.ok('oauth_verifier' in oa.requestArguments[4]);
+        assert.equal(oa.requestArguments[4].extra, extraParams.extra);
+        assert.equal(oa.requestArguments[4].params, extraParams.params);
+        assert.equal(oa.requestArguments[4].oauth_verifier, null);
+      }
     },
     'When get authorization header' : {
         topic: function() {

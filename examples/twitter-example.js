@@ -17,65 +17,64 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var http = require('http');
-var OAuth = require('../lib/oauth.js').OAuth;
-var nodeUrl = require('url');
-var clientID = '';
-var clientSecret = '';
-var callbackURL = 'http://localhost:8080/callback';
+var http = require("http");
+var OAuth = require("../lib/oauth.js").OAuth;
+var nodeUrl = require("url");
+var clientID = "";
+var clientSecret = "";
+var callbackURL = "http://localhost:8080/callback";
 
 var oa = new OAuth(
-  'https://api.twitter.com/oauth/request_token',
-  'https://api.twitter.com/oauth/access_token',
+  "https://api.twitter.com/oauth/request_token",
+  "https://api.twitter.com/oauth/access_token",
   clientID,
   clientSecret,
-  '1.0',
+  "1.0",
   callbackURL,
-  'HMAC-SHA1'
+  "HMAC-SHA1"
 );
 
 http.createServer(function (request, response) {
   oa.getOAuthRequestToken(function (error, oAuthToken, oAuthTokenSecret, results) {
     var urlObj = nodeUrl.parse(request.url, true);
     var handlers = {
-      '/': function (request, response) {
+      "/": function (request, response) {
         /**
          * Creating an anchor with authURL as href and sending as response
          */
-        oa.getOAuthRequestToken(function(error) {
+        oa.getOAuthRequestToken(function (error) {
           var statusCode;
           var body;
           var authURL;
           if (error) {
             statusCode = 401;
-            body = 'Error: ' + error.data;
+            body = "Error: " + error.data;
           } else {
             statusCode = 200;
-            authURL = 'https://api.twitter.com/oauth/authorize?oauth_token=' + oAuthToken;
-            body = '<a href="' + authURL + '"> Get Code </a>';
+            authURL = "https://api.twitter.com/oauth/authorize?oauth_token=" + oAuthToken;
+            body = "<a href='" + authURL + "'> Get Code </a>";
           }
           response.writeHead(statusCode, {
-            'Content-Length': body.length,
-            'Content-Type': 'text/html'
+            "Content-Length": body.length,
+            "Content-Type": "text/html"
           });
           response.end(body);
         });
       },
-      '/callback': function (request, response) {
+      "/callback": function (request, response) {
         /** Obtaining access_token */
-        var getOAuthRequestTokenCallback = function (error, oAuthAccessToken,
-                                                     oAuthAccessTokenSecret, results) {
+        var getOAuthRequestTokenCallback = function (error, oAuthAccessToken, oAuthAccessTokenSecret, results) {
           if (error) {
             console.log(error);
             response.end(JSON.stringify({
-              message: 'Error occured while getting access token',
+              message: "Error occured while getting access token",
               error: error
             }));
             return;
           }
 
           oa.get(
-            'https://api.twitter.com/1.1/account/verify_credentials.json',
+            "https://api.twitter.com/1.1/account/verify_credentials.json",
             oAuthAccessToken,
             oAuthAccessTokenSecret,
             function (error, twitterResponseData, result) {

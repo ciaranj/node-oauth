@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var events = require('events');
+var events = require("events");
 
 exports.DummyResponse = function(statusCode) {
   this.statusCode = statusCode;
@@ -38,13 +38,13 @@ exports.DummyRequest.prototype = events.EventEmitter.prototype;
 
 exports.DummyRequest.prototype.write = function(postBody) {
   this.responseSent = true;
-  this.emit('response', this.response);
+  this.emit("response", this.response);
 };
 
 exports.DummyRequest.prototype.end = function() {
   if (!this.responseSent) {
     this.responseSent = true;
-    this.emit('response',this.response);
+    this.emit("response",this.response);
   }
-  this.response.emit('end');
+  this.response.emit("end");
 };

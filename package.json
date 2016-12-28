@@ -18,10 +18,12 @@
     "url": "http://github.com/omouse/node-oauth-libre.git"
   },
   "devDependencies": {
+    "jsdoc": "^3.4.3",
     "vows": "0.5.x"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "build-docs": "jsdoc -c conf.json"
   },
   "licenses": [
     {

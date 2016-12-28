@@ -18,8 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Node OAuth Libre
+ * @module oauth-libre
+ */
+
+/**
+ * OAuth 1.0
+ * @see OAuth
+ */
 exports.OAuth = require("./lib/oauth").OAuth;
+
+/**
+ * OAuth 1.0 Echo
+ * @see OAuthEcho
+ */
 exports.OAuthEcho = require("./lib/oauth").OAuthEcho;
+
+/**
+ * OAuth 2.0
+ * @see OAuth2
+ */
 exports.OAuth2 = require("./lib/oauth2").OAuth2;
+
+/**
+ * OAuth 1.0 with Promises interface instead of callbacks
+ * @see OAuthPromise
+ */
 exports.PromiseOAuth = require("./lib/oauth-promise").OAuth;
+
+/**
+ * OAuth 2.0 with Promises interface instead of callbacks
+ * @see OAuth2Promise
+ */
 exports.PromiseOAuth2 = require("./lib/oauth2-promise").OAuth2;
