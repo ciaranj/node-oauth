@@ -66,14 +66,33 @@ vows.describe("OAuth2").addBatch({
           assert.equal(refreshToken, "refresh");
         });
       },
+      "we should correctly create base64-encoded authorization header from client id and secret": function (oa) {
+        oa._clientId = "hello";
+        oa._clientSecret = "world";
+        var authHeaderContent = oa._getAuthorizationHeader();
+        var headerSplit = authHeaderContent.split(" ");
+        assert.equal(headerSplit[0], "Basic");
+        var decodedAuthHeader = "";
+        try { // newer node versions
+          decodedAuthHeader = Buffer.from(headerSplit[1], "base64").toString("ascii");
+        } catch (e) { // node version 5 and older
+          decodedAuthHeader = new Buffer(headerSplit[1], "base64").toString("ascii");
+        }
+        assert.equal(decodedAuthHeader, oa._clientId + ":" + oa._clientSecret);
+      },
       "we should correctly send Authorization header encoded Base64 for token request": function (oa) {
         oa._request = function (method, url, postHeaders, bar, bleh, callback) {
           var authHeaderContent = postHeaders.Authorization;
           assert.isNotNull(authHeaderContent, "Authorization header for token request must to be present.");
           var headerSplit = authHeaderContent.split(" ");
           assert.equal("Basic", headerSplit[0]);
-          var decodedAuthHeader = Buffer.from(headerSplit[1], "base64").toString("ascii");
-          assert.equal(decodedAuthHeader, "clientId:clientSecret");
+          var decodedAuthHeader = "";
+          try { // newer node versions
+            decodedAuthHeader = Buffer.from(headerSplit[1], "base64").toString("ascii");
+          } catch (e) { // node version 5 and older
+            decodedAuthHeader = new Buffer(headerSplit[1], "base64").toString("ascii");
+          }
+          assert.equal(decodedAuthHeader, oa._clientId + ":" + oa._clientSecret);
           callback(null, "access_token=access&refresh_token=refresh");
         };
         oa.getOAuthAccessToken("", {}, function (error, accessToken, refreshToken) { });
@@ -84,7 +103,6 @@ vows.describe("OAuth2").addBatch({
         oa._executeRequest = function (httpLibrary, options, postBody, callback) {
           callback(null, url.parse(options.path, true).query, options.headers);
         };
-
         oa._request("GET", "http://foo/", { "Authorization": "Bearer BadNews" }, null, "accessx", function (error, query, headers) {
           assert.ok(!("access_token" in query), "access_token also in query");
           assert.ok("Authorization" in headers, "Authorization not in headers");
