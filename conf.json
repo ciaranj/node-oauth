@@ -1,0 +1,23 @@
+{
+  "opts": {
+    "destination": "api-docs",
+    "readme": "Readme.md"
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc","closure"]
+  },
+  "source": {
+    "includePattern": ".+\\.js(doc|x|on)?$",
+    "include": [
+      "Readme.md",
+      "index.js",
+      "lib"
+    ]
+  },
+  "plugins": [],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}
