@@ -286,5 +286,19 @@ vows.describe('OAuth2').addBatch({
           oa.get("", {});
         }
       }
+    },
+    'When specifying an agent, that agent is passed to the HTTP request method' : {
+      topic : new OAuth2('clientId', 'clientSecret', undefined, undefined, undefined, undefined),
+      'When calling _executeRequest': {
+        'we whould see the agent being put into the options' : function(oa) {
+          oa.setAgent('awesome agent');
+          oa._executeRequest({
+            request : function(options, cb) {
+              assert.equal(options.agent, 'awesome agent');
+              return new DummyRequest(new DummyResponse(200));
+            }
+          }, {}, null, function() {});
+        }
+      }
     }
 }).export(module);
