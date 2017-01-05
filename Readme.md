@@ -78,6 +78,8 @@ describe('OAuth2',function(){
 
 Change History
 ============== 
+* 0.9.15
+    - OAuth2:   Allow specification of agent
 * 0.9.14
     - OAuth2:   Extend 'successful' token responses to include anything in the 2xx range.
 * 0.9.13
@@ -185,3 +187,4 @@ Contributors (In no particular order)
 * Michael Garvin
 * Andreas Knecht
 * AJ ONeal
+* Philip Skinner - https://github.com/PhilipSkinner
