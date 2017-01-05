@@ -4,6 +4,7 @@
 , "directories" : { "lib" : "./lib" }
 , "main" : "index.js"
 , "author" : "Ciaran Jessup <ciaranj@gmail.com>"
+, "typings": "index.d.ts"
 , "repository" : { "type":"git", "url":"http://github.com/ciaranj/node-oauth.git" }
 , "devDependencies": {
     "vows": "0.5.x"
