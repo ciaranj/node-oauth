@@ -76,6 +76,28 @@ describe('OAuth2',function(){
    });
 ```
 
+### Proxy
+
+Behind corporate proxy, just set your configuration by this way :
+
+```javascript
+// oauth or oauth2
+oauth2.setTunnel({
+    proxy: {
+        host: '10.115.100.103', // your proxy address
+        port: 8080
+    }
+});
+````
+
+Proxy setting options are:
+* `host`: Defaults to 'localhost'
+* `port`: Defaults to 80
+* `localAddress`: Local interface if necessary
+* `proxyAuth`: Basic authorization for proxy server if necessary 'user:password'
+* `headers`: Header fields for proxy server if necessary, json object {'User-Agent': 'Node'...}
+* `servername`: Server name for verification if necessary
+
 Change History
 ============== 
 * 0.9.15
