@@ -9,6 +9,7 @@
     "vows": "0.5.x"
   }
 , "scripts": {
+    "pretest": "npm install",
     "test": "make test"
   }
 , "license": "MIT" 
