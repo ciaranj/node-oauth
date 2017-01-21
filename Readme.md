@@ -310,6 +310,7 @@ The Google example was removed due to the need for a custom Google-specific OAut
 * Andreas Knecht
 * Andrew Martins - http://www.andrewmartens.com
 * Brian Park - http://github.com/yaru22
+* Carlos Castillo Oporta - https://github.com/caco0516
 * Christian Schwarz  - http://github.com/chrischw/
 * Ciaran Jessup - ciaranj@gmail.com
 * Damien Mathieu - http://42.dmathieu.com
