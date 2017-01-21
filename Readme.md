@@ -46,7 +46,7 @@ Install the bluebird promises library:
 
     npm install bluebird
 
-An example of using oauth-libre with Promises:
+An example of using oauth-libre with OAuth2 and Promises to access the Github API:
 
 ```
 var OAuth2 = require('oauth-libre').PromiseOAuth2;
@@ -88,6 +88,8 @@ function jsonParse(data) {
 Note that in the first line you must explicitly import OAuth2 with promises.
 
 ## OAuth1.0
+
+Example of using OAuth 1.0 with the Twitter API.
 
 ```javascript
 describe('OAuth1.0',function(){
