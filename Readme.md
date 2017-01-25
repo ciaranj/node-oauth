@@ -152,6 +152,38 @@ oauth2.getOAuthAccessToken(
 );
 ```
 
+### Hooks
+OAuth 2.0 implements hooks for every request before and after it is executed. We're using the [EventEmitter](https://nodejs.org/api/events.html) Node.js class to implement this.
+
+#### request:before
+This event is emitted before the HTTP (or HTTPS) request is executed. At this point we can modify the information in the request, such as the headers and POST data. Also we are given a `done` function because this event blocks request execution and we need to specify when to resume the current process.
+
+Let's see an example:
+
+```javascript
+  oa2.on('request:before', (options, postBody, done) => {
+    // here you can add anything you want to the request before execution
+    // can add new headers or add new data to body.
+    //
+    // NOTE: you must call done and send 3 parameters without exception.
+    // The 3rd parameter must to be true if you want to execute request
+    // immediately.
+    done(options, postBody, true);
+  });
+```
+
+You must call `done(modifiedOptions, modifiedPostBody, shouldExecute)` always. The `shouldExecute` parameter exists because if we have more listeners for the `request:before` event we want to make sure all of the listeners are able to receive the event. The request should execute only once, that's why we have this parameter to tell event that we want to execute the request immediately.
+
+### request:after
+This event is emitted after the request has been executed, we receive information about status and body of the response.
+
+```javascript
+  oa2.on('request:after', (status, response) => {
+    console.log('Status :' + JSON.stringify(status));
+    console.log('Response : ' + JSON.stringify(response));
+  });
+```
+
 ### Test
 
 ```javascript
@@ -183,6 +215,7 @@ describe('OAuth2',function() {
 Included with the source code are examples of using a web-based interface to login with:
 
 * Github: `examples/github-example.js`
+* Github OAuth 2.0 and Hooks: `examples/github-oauth2-authentication.js`
 * Twitter: `examples/twitter-example.js`
 
 The Google example was removed due to the need for a custom Google-specific OAuth2 library for authentication.
@@ -199,6 +232,28 @@ The Google example was removed due to the need for a custom Google-specific OAut
 1. Click the link that says "Get Code"
 1. Login to Github and authorize the application
 1. You will be returned to `http://localhost:8080/code` and should see the access token, on the command-line you will see something like "Obtained access_token: ..."
+
+
+### Example: Authentication with Github OAuth 2.0 and Hooks
+
+1. Create a Github account
+1. Create a new Developer Application (Settings > OAuth applications > Developer Applications)
+1. Fill in the Authorization callback URL with `http://localhost:3000/github/callback`
+1. Complete this with your information:
+```javascript
+  const clientId = 'YOURCLIENTID';
+  const clientSecret = 'YOURCLIENTSECRET';
+  const scope = 'user';
+  const redirectUrl = 'http://localhost:' + port + '/github/callback';
+  const baseUrl = 'https://github.com';
+  const authorizeUrl = '/login/oauth/authorize';
+  const tokenUrl = '/login/oauth/access_token';
+```
+1. Run the web server: `node examples/github-oauth2-authentication.js`
+1. Open the website: `http://localhost:3000/`
+1. Click the link that says "Sign In with Github"
+1. Login to Github and authorize the application
+1. You will be returned to `http://localhost:8080/github/callback` and that's it.
 
 ### Example: Authentication with Google
 
@@ -217,6 +272,8 @@ The Google example was removed due to the need for a custom Google-specific OAut
 1. You will be returned to `http://localhost:8080/code` and should see some results from the response on the command-line
 
 # Change History
+* 0.9.16
+    - OAuth2 hooks for before and after a request is executed
 * 0.9.15
     - Promises for OAuth1 and OAuth2 with multiArgs
     - PATCH support for OAuth1 and OAuth2
