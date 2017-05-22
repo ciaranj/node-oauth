@@ -308,6 +308,7 @@ vows.describe('OAuth2').addBatch({
         'we should see the agent options mixed into options property passed to http-library' : function(oa) {
           oa._executeRequest= function( http_library, options, callback ) {
             assert.equal(options["rejectUnauthorized"], false);
+            assert.equal(options.headers["rejectUnauthorized"], undefined);
           };
           oa.get("", {});
         }
