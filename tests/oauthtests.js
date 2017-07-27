@@ -320,7 +320,48 @@ vows.describe('OAuth').addBatch({
             oa._createClient= op;
           }
         }
-      }
+      },
+        'Setting content-type on OAuth object should set content-type on request to value passed to setContentType': function(oa) {
+            var op= oa._createClient;
+            var opContentType = oa._contentType;
+            var expectedContentType = 'application/json';
+            oa.setContentType(expectedContentType);
+            var createClientHeaders = null;
+            try {
+                oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                    createClientHeaders = headers;
+                    return {
+                        write: function(post_body){
+                        }
+                    };
+                };
+                oa._performSecureRequest("token", "token_secret", 'POST', 'http://foo.com/protected_resource', {"scope": "foobar,1,2"});
+                assert.equal(createClientHeaders['Content-Type'], expectedContentType);
+            }
+            finally {
+                oa._createClient= op;
+                oa._contentType = opContentType;
+            }
+        },
+        'Not setting content-type on OAuth object should set content-type on request to application/x-www-form-urlencoded': function(oa) {
+            var createClientHeaders = null;
+            var op= oa._createClient;
+            try {
+                oa._createClient= function( port, hostname, method, path, headers, sshEnabled ) {
+                    createClientHeaders = headers;
+                    return {
+                        write: function(post_body){
+                        }
+                    };
+                };
+                oa._performSecureRequest("token", "token_secret", 'POST', 'http://foo.com/protected_resource', {"scope": "foobar,1,2"});
+                assert.equal(createClientHeaders['Content-Type'], 'application/x-www-form-urlencoded');
+            }
+            finally {
+                oa.setContentType(null);
+                oa._createClient= op;
+            }
+        }
     },
     'When performing a secure' : {
       topic: new OAuth("http://foo.com/RequestToken",
