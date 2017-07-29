@@ -93,7 +93,7 @@ Example of using OAuth 1.0 with the Twitter API.
 
 ```javascript
 describe('OAuth1.0',function(){
-  var OAuth = require('oauth');
+  var OAuth = require('oauth-libre');
 
   it('tests trends Twitter API v1.1',function(done){
     var oauth = new OAuth.OAuth(
@@ -105,6 +105,7 @@ describe('OAuth1.0',function(){
       null,
       'HMAC-SHA1'
     );
+    oauth.setDefaultContentType('application/json');
     oauth.get(
       'https://api.twitter.com/1.1/trends/place.json?id=23424977',
       'your user token for this app', //test user token
@@ -123,7 +124,7 @@ describe('OAuth1.0',function(){
 ### Usage
 
 ```javascript
-var OAuth2 = require('oauth').OAuth2;
+var OAuth2 = require('oauth-libre').OAuth2;
 
 console.log("Login here to get an authorization code: " + oauth2.getAuthorizeUrl());
 
@@ -188,7 +189,7 @@ This event is emitted after the request has been executed, we receive informatio
 
 ```javascript
 describe('OAuth2',function() {
-  var OAuth = require('oauth');
+  var OAuth = require('oauth-libre');
 
    it('gets bearer token', function(done){
      var OAuth2 = OAuth.OAuth2;
