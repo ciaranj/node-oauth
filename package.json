@@ -1,7 +1,7 @@
 {
   "name": "oauth-libre",
   "description": "Library for interacting with OAuth 1.0, 1.0A, 2 and Echo.  Provides simplified client access and allows for construction of more complex apis and OAuth providers. Licensed under the GNU GPL version 3 or later.",
-  "version": "0.9.16",
+  "version": "0.9.17",
   "directories": {
     "lib": "./lib"
   },
