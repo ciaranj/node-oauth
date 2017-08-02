@@ -273,6 +273,8 @@ The Google example was removed due to the need for a custom Google-specific OAut
 1. You will be returned to `http://localhost:8080/code` and should see some results from the response on the command-line
 
 # Change History
+* 0.9.17
+    - OAuth1: Allow setting of default Content-Type for requests, either through constructor's `customHeaders` parameter or through `setDefaultContentType` method
 * 0.9.16
     - OAuth2 hooks for before and after a request is executed
 * 0.9.15
@@ -389,6 +391,7 @@ The Google example was removed due to the need for a custom Google-specific OAut
 * Pieter Joost van de Sande - https://github.com/pjvds
 * Raoul Millais
 * Rudolf Olah - https://neverfriday.com
+* Ryan Ausanka-Crues - http://quanticmind.com/
 * Ryan LeFevre - http://meltingice.net
 * Tang Bo Hao - http://github.com/btspoony
 * Ted Goddard
