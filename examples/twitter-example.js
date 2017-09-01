@@ -38,7 +38,7 @@ http.createServer(function (request, response) {
                     if (error) {
                         console.log(error);
                         response.end(JSON.stringify({
-                            message: 'Error occured while getting access token',
+                            message: 'Error occurred while getting access token',
                             error: error
                         }));
                         return;
