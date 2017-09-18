@@ -10,6 +10,19 @@ Tested against Twitter (http://twitter.com), term.ie (http://term.ie/oauth/examp
 
 Also provides rudimentary OAuth2 support, tested against facebook, github, foursquare, google and Janrain.   For more complete usage examples please take a look at connect-auth (http://github.com/ciaranj/connect-auth)
 
+## How can I help/contribute?
+
+* You can help by reporting any bugs that you find:
+  * [report new issue](https://github.com/omouse/node-oauth-libre/issues/new)
+* You can write code to fix bugs (some of them are labeled as "help wanted"):
+  * [submit a patch to one of these issues](https://github.com/omouse/node-oauth-libre/issues)
+* You can find a bug fix or new feature in the original project, node-oauth, and add it to node-oauth-libre:
+  * [find a bug in node-oauth and fix it for node-oauth-libre](https://github.com/ciaranj/node-oauth/issues)
+  * [find a feature/bug fix to add to node-oauth-libre](https://github.com/ciaranj/node-oauth/pulls?utf8=%E2%9C%93&q=is%3Apr)
+* Write documentation in [JSDoc](http://usejsdoc.org/) for each function/method/class in the codebase:
+  * [write documentation](https://github.com/omouse/node-oauth-libre/tree/master/lib)
+* Use the library in your own project and promote it.
+
 ## Related Libraries
 
 - [passport-oauth2-libre](https://github.com/caco0516/passport-oauth2-libre) Passport OAuth2 Strategy using node-oauth-libre.
