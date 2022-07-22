@@ -78,6 +78,8 @@ describe('OAuth2',function(){
 
 Change History
 ============== 
+* 0.10.0
+    - OAuth2:   No longer allows repeated callbacks 'on error' to propagate to calling code (googleapi often did this apparently)
 * 0.9.15
     - OAuth2:   Allow specification of agent
 * 0.9.14
@@ -188,3 +190,4 @@ Contributors (In no particular order)
 * Andreas Knecht
 * AJ ONeal
 * Philip Skinner - https://github.com/PhilipSkinner
+* Tom Ciborski - https://ciborski.com/
