@@ -1,15 +1,20 @@
+var cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session')
+var bodyParser = require('body-parser');
+ var logger = require('morgan');
+
 var express = require('express'),
 	 OAuth = require('oauth').OAuth,
 	 querystring = require('querystring');
 
 // Setup the Express.js server
-var app = express.createServer();
-app.use(express.logger());
-app.use(express.bodyParser());
-app.use(express.cookieParser());
-app.use(express.session({
-	secret: "skjghskdjfhbqigohqdiouk"
-}));
+var app = express();
+app.use(logger('dev'));
+app.use(bodyParser());
+app.use(cookieParser());
+app.use(cookieSession({
+    keys: ['secret1', 'secret2']
+}))
 
 // Home Page
 app.get('/', function(req, res){
