@@ -17,5 +17,8 @@
     "scripts": {
         "test": "make test"
     },
+    "files": [
+        "/lib/**"
+    ],
     "license": "MIT"
 }
