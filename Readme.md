@@ -78,6 +78,9 @@ describe('OAuth2',function(){
 
 Change History
 ============== 
+* 0.10.1
+    - OAuth1:   Supports HMAC-256 signature hashing (Non standard, but common signature e.g. https://developer.adobe.com/commerce/webapi/get-started/authentication/gs-authentication-oauth/) (Thank you Martino Massalini)
+    - OAuth1/2: Adds devcontainer support for use in Vscode (Thanks PinyiSong)
 * 0.10.0
     - OAuth2:   No longer allows repeated callbacks 'on error' to propagate to calling code (googleapi often did this apparently)
 * 0.9.15
@@ -191,3 +194,5 @@ Contributors (In no particular order)
 * AJ ONeal
 * Philip Skinner - https://github.com/PhilipSkinner
 * Tom Ciborski - https://ciborski.com/
+* Martino Massalini - https://github.com/massalinux
+* PinyiSong https://github.com/PinyiSong
