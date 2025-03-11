@@ -60,6 +60,22 @@ vows.describe('OAuth').addBatch({
             assert.ok( valid, "Signature could not be verified with RSA public key");
         }
     },
+    'When generating the signature with HMAC-SHA1': {
+      topic: new OAuth(null, null, null, "ascas2312dxc1sdsdk!", null, null, "HMAC-SHA1"),
+      'we get a valid oauth signature': function (oa) {
+          var signatureBase = "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Dascas2312dxc1sdsdk!%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal";
+          var oauthSignature = oa._createSignature(signatureBase, "xyz4992k83j47x0b");
+          assert.equal( oauthSignature, "+hNqPWWDh/Mt8O0WtwGqKx6eTyU=");
+      },
+      'When generating the signature with HMAC-SHA256': {
+        topic: new OAuth(null, null, null, "ascas2312dxc1sdsdk!", null, null, "HMAC-SHA256"),
+        'we get a valid oauth signature': function (oa) {
+            var signatureBase = "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Dascas2312dxc1sdsdk!%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA256%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal";
+            var oauthSignature = oa._createSignature(signatureBase, "xyz4992k83j47x0b");
+            assert.equal( oauthSignature, "EOsB30iY9SudzlaHbZtBLoQoKo/WG8NhwUm9HBzdtZ8=");
+        }
+      }
+  },
     'When generating the signature base string with PLAINTEXT': {
         topic: new OAuth(null, null, null, null, null, null, "PLAINTEXT"),
         'we get the expected result string': function (oa) {
