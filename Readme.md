@@ -78,6 +78,8 @@ describe('OAuth2',function(){
 
 Change History
 ============== 
+* 0.10.2
+    - OAuth1/2: Added a .npmignore to stop shipping tests and other noise in the published package
 * 0.10.1
     - OAuth1:   Supports HMAC-256 signature hashing (Non standard, but common signature e.g. https://developer.adobe.com/commerce/webapi/get-started/authentication/gs-authentication-oauth/) (Thank you Martino Massalini)
     - OAuth1/2: Adds devcontainer support for use in Vscode (Thanks PinyiSong)
